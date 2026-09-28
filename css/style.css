@@ -529,3 +529,5 @@ footer{
 .genre-card .count .unit{font-family:var(--maru);font-size:14px;color:var(--sub);}
 .genre-card h3{font-family:var(--maru);font-size:15px;font-weight:700;margin-top:8px;margin-bottom:8px;}
 .genre-card p{font-size:14px;color:var(--sub);}
+
+.org-icon .kamon{width:72px;height:72px;}
