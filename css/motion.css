@@ -1,0 +1,179 @@
+/* ============================================================
+   MORINOA モーション
+   御簾の入場／見出しの幕開け／判子／家紋／五手の線／ヘッダー／
+   カード傾き／ボタン吸い付き／見出しの墨入れ／紐のスクロールバー
+   body.motion-off（訪問者がOFFを選択）と prefers-reduced-motion では動きを止める
+   ============================================================ */
+
+/* ---------- 御簾の入場 ----------
+   暗がり → 御簾の向こうに灯りがともる → 房が揺れて間を取る → 御簾がしずしずと上がる */
+.misu-intro{position:fixed;inset:0;z-index:1000;cursor:pointer;overflow:hidden;}
+.misu-dark{position:absolute;inset:0;background:#0b1209;}
+.misu-glow{
+  position:absolute;inset:0;opacity:0;
+  background:radial-gradient(ellipse 60% 55% at 50% 58%, rgba(255,214,150,.30), rgba(255,214,150,0) 70%);
+}
+.misu{
+  position:absolute;left:0;right:0;top:0;height:100%;opacity:0;
+  display:flex;flex-direction:column;
+}
+/* 帽額（もこう）：家紋入りの上帯 */
+.misu-mokou{
+  flex:none;height:64px;position:relative;
+  background:
+    repeating-linear-gradient(45deg, rgba(201,169,107,.10) 0 2px, transparent 2px 8px),
+    linear-gradient(#1f3d1d,#254723);
+  border-bottom:3px solid #C9A96B;
+  display:flex;align-items:center;justify-content:space-around;
+}
+.misu-mon{
+  width:38px;height:38px;background:#C9A96B;
+  -webkit-mask:url(../kamon.svg) center/contain no-repeat;mask:url(../kamon.svg) center/contain no-repeat;
+}
+/* 御簾の本体：極細の竹ひご＋左右と裾の縁 */
+.misu-body{
+  flex:1;position:relative;
+  border-left:14px solid #254723;border-right:14px solid #254723;
+  box-shadow:inset 3px 0 0 #C9A96B, inset -3px 0 0 #C9A96B;
+  background:repeating-linear-gradient(180deg,
+    rgba(120,92,52,.82) 0 3px,
+    rgba(60,44,22,.55) 3px 4px,
+    rgba(20,16,8,.12) 4px 6px);
+}
+.misu-body::after{
+  /* 竹ひごを編む縦糸 */
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg, transparent 0 calc(20% - 1px), rgba(40,26,12,.55) calc(20% - 1px) 20%);
+}
+.misu-hem{flex:none;height:18px;background:#254723;border-top:3px solid #C9A96B;}
+/* 房（総角結び＋房糸） */
+.misu-fusa{
+  position:absolute;top:64px;width:28px;margin-left:-14px;
+  transform-origin:50% 0;display:flex;flex-direction:column;align-items:center;z-index:2;
+}
+.misu-fusa.l{left:22%;}
+.misu-fusa.r{left:78%;}
+.misu-fusa .cord{width:3px;height:120px;background:linear-gradient(#a8452c,#8C4229);}
+.misu-fusa .knot{
+  width:22px;height:22px;margin-top:-2px;transform:rotate(45deg);border-radius:4px;
+  background:#8C4229;box-shadow:inset 0 0 0 3px #a8452c, inset 0 0 0 6px #8C4229, inset 0 0 0 7px #c05a3c;
+}
+.misu-fusa .fringe{
+  width:26px;height:78px;margin-top:4px;border-radius:3px 3px 10px 10px;
+  background:repeating-linear-gradient(90deg,#8C4229 0 2px,#a8452c 2px 4px);
+  -webkit-mask:linear-gradient(#000 70%,transparent);mask:linear-gradient(#000 70%,transparent);
+  clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);
+}
+
+@keyframes misu-dark-soft{0%{opacity:1}100%{opacity:.35}}
+@keyframes misu-dark-out{0%{opacity:.35}100%{opacity:0}}
+@keyframes misu-in{0%{opacity:0}100%{opacity:1}}
+@keyframes misu-glow{0%{opacity:0}100%{opacity:1}}
+@keyframes misu-sway{0%{transform:rotate(0)}30%{transform:rotate(5deg)}65%{transform:rotate(-3deg)}100%{transform:rotate(0)}}
+@keyframes misu-rise{0%{transform:translateY(0)}100%{transform:translateY(-104%)}}
+@keyframes misu-out{0%{opacity:1}100%{opacity:0;visibility:hidden}}
+
+.misu-intro.go .misu-dark{animation:misu-dark-soft 1.4s ease .3s both, misu-dark-out 1.3s ease 2.6s forwards;}
+.misu-intro.go .misu{animation:misu-in 1.2s ease .3s both, misu-rise 1.6s cubic-bezier(.55,0,.35,1) 2.5s forwards;}
+.misu-intro.go .misu-glow{animation:misu-glow 1.6s ease .6s both;}
+.misu-intro.go .misu-fusa.l{animation:misu-sway 1.3s ease-in-out 1.3s both;}
+.misu-intro.go .misu-fusa.r{animation:misu-sway 1.3s ease-in-out 1.45s both;}
+.misu-intro.go{animation:misu-out .5s ease 3.9s forwards;}
+.misu-intro.skip{animation:misu-out .3s ease forwards !important;}
+
+/* 見出しの幕開け中は、御簾の下の文字を待機させる */
+.motion .hero h1 .ln{display:block;overflow:hidden;}
+.motion .hero h1 .ln > span{display:inline-block;transform:translateY(105%);transition:transform .9s cubic-bezier(.2,.7,.1,1);}
+.motion .hero.play h1 .ln > span{transform:none;}
+.motion .hero h1 .ln:nth-child(2) > span{transition-delay:.15s;}
+.motion .hero h1 .ln:nth-child(3) > span{transition-delay:.3s;}
+.motion .hero .hero-tag,.motion .hero .hero-motto,.motion .hero .hero-sub,.motion .hero .hero-actions{
+  opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease;
+}
+.motion .hero.play .hero-tag{opacity:1;transform:none;}
+.motion .hero.play .hero-motto{opacity:1;transform:none;transition-delay:.6s;}
+.motion .hero.play .hero-sub{opacity:1;transform:none;transition-delay:.75s;}
+.motion .hero.play .hero-actions{opacity:1;transform:none;transition-delay:.9s;}
+
+/* ---------- 判子スタンプ ---------- */
+@keyframes stamp{
+  0%{opacity:0;transform:scale(1.6) rotate(8deg);}
+  60%{opacity:1;transform:scale(.94) rotate(-1deg);}
+  100%{opacity:1;transform:scale(1) rotate(0);}
+}
+.motion .hanko{opacity:0;}
+.motion .hanko.show{animation:stamp .45s cubic-bezier(.3,1.4,.5,1) .25s both;}
+
+/* ---------- 家紋の回転出現 ---------- */
+.motion .org-card .kamon{transform:rotate(-90deg) scale(.6);opacity:0;transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity .6s ease;}
+.motion .org-card.show .kamon{transform:none;opacity:1;}
+.motion .org-card:hover .kamon{transform:rotate(90deg);transition:transform 1.2s cubic-bezier(.2,.8,.2,1);}
+
+/* ---------- 五手を線でつなぐ ---------- */
+.motion .flow-grid{position:relative;}
+.flow-line{
+  position:absolute;left:10%;right:10%;top:52px;height:2px;z-index:0;
+  background:linear-gradient(90deg,#5BA0C1,#8AA344);
+  transform:scaleX(0);transform-origin:left;transition:transform 1.8s ease .2s;
+}
+.motion .flow-grid.play .flow-line{transform:scaleX(1);}
+.motion .step{position:relative;z-index:1;}
+.motion .step .step-kanji{transform:scale(.4);opacity:0;transition:transform .5s cubic-bezier(.3,1.5,.5,1),opacity .4s ease;}
+.motion .flow-grid.play .step .step-kanji{transform:none;opacity:1;}
+.motion .flow-grid.play .step:nth-child(2) .step-kanji{transition-delay:.35s;}
+.motion .flow-grid.play .step:nth-child(3) .step-kanji{transition-delay:.7s;}
+.motion .flow-grid.play .step:nth-child(4) .step-kanji{transition-delay:1.05s;}
+.motion .flow-grid.play .step:nth-child(5) .step-kanji{transition-delay:1.4s;}
+@media(max-width:920px){.flow-line{display:none;}}
+
+/* ---------- ヘッダー縮小＋読み進みバー ---------- */
+header{transition:box-shadow .3s ease;}
+header .nav{transition:height .3s ease;}
+header.scrolled{box-shadow:0 4px 16px rgba(17,29,15,.08);}
+header.scrolled .nav{height:54px;}
+.read-progress{position:fixed;left:0;top:0;height:3px;z-index:60;width:0;background:linear-gradient(90deg,var(--sora),var(--avocado));}
+
+/* ---------- カードの立体傾き・ボタンの吸い付き（JSで制御） ---------- */
+.motion .svc,.motion .org-card,.motion .about-card{transform-style:preserve-3d;}
+.motion .btn-primary{transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s ease;}
+
+/* ---------- 見出しの墨入れ ---------- */
+.motion .sec-title{background:linear-gradient(90deg,var(--ink) 50%,rgba(17,29,15,.12) 50%);background-size:200% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent;transition:background-position 1.2s ease;}
+.motion .sec-title.inked{background-position:0 0;}
+
+/* ---------- 御簾の紐スクロールバー ---------- */
+html{scrollbar-width:thin;scrollbar-color:#7A5A34 transparent;}
+html::-webkit-scrollbar{width:16px;}
+html::-webkit-scrollbar-track{background:linear-gradient(90deg, transparent 7px, rgba(107,78,46,.55) 7px 9px, transparent 9px);}
+html::-webkit-scrollbar-thumb{
+  border:3px solid transparent;background-clip:padding-box;border-radius:6px;background-color:#7A5A34;
+  background-image:
+    linear-gradient(180deg, #4A3620 0 7px, transparent 7px calc(100% - 7px), #4A3620 calc(100% - 7px)),
+    repeating-linear-gradient(135deg, rgba(255,240,210,.28) 0 3px, rgba(40,26,12,.35) 3px 6px);
+}
+html::-webkit-scrollbar-thumb:hover{background-color:#8C6A3E;}
+html::-webkit-scrollbar-thumb:active{background-color:#254723;}
+
+/* ---------- 訪問者向け：演出ON/OFF（2回目以降） ---------- */
+.motion-toggle{
+  position:fixed;left:16px;bottom:16px;z-index:900;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(242,238,224,.92);backdrop-filter:blur(6px);
+  border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 10px;
+  font-family:var(--maru);font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--forest);cursor:pointer;
+  transition:border-color .2s ease;
+}
+.motion-toggle:hover{border-color:var(--avocado);}
+.motion-toggle i{width:26px;height:14px;border-radius:999px;background:var(--sand);position:relative;flex:none;transition:background .2s ease;}
+.motion-toggle i::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--cream);box-shadow:0 1px 2px rgba(17,29,15,.3);transition:transform .2s ease;}
+.motion-toggle[aria-pressed="true"] i{background:var(--avocado);}
+.motion-toggle[aria-pressed="true"] i::after{transform:translateX(12px);}
+
+/* ---------- OFF・動きを減らす設定：動きを止め、内容はすべて表示 ---------- */
+body.motion-off .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+body.motion-off .hero h1 .ln > span,body.motion-off .hero .hero-tag,body.motion-off .hero .hero-motto,
+body.motion-off .hero .hero-sub,body.motion-off .hero .hero-actions{opacity:1 !important;transform:none !important;transition:none !important;}
+body.motion-off .hanko{opacity:1 !important;animation:none !important;}
+body.motion-off .org-card .kamon,body.motion-off .step .step-kanji{opacity:1 !important;transform:none !important;transition:none !important;}
+body.motion-off .flow-line{transform:scaleX(1) !important;transition:none !important;}
+body.motion-off .sec-title{background-position:0 0 !important;transition:none !important;}
