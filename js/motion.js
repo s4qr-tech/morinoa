@@ -83,6 +83,23 @@
     });
   }
 
+  // ---------- ロゴを「マーク」と「文字」に分けて重ねる ----------
+  // 同じ画像を2枚重ね、上＝マークだけ、下＝morinoa の文字だけを切り抜いて、別々の時間に出す
+  function splitLogo(){
+    var img = document.querySelector('.hero-logo .logo-img');
+    if (!img || img.parentNode.classList.contains('logo-stack')) return;
+    var stack = document.createElement('span');
+    stack.className = 'logo-stack';
+    img.parentNode.insertBefore(stack, img);
+    stack.appendChild(img);
+    var word = img.cloneNode(false);
+    word.className = 'logo-word';
+    word.alt = '';
+    word.removeAttribute('onerror');
+    word.setAttribute('aria-hidden', 'true');
+    stack.appendChild(word);
+  }
+
   // ---------- 御簾の入場（トップページのみ） ----------
   var intro = null;
   function playIntro(){
@@ -99,6 +116,9 @@
         '<div class="misu-fusa r"><i class="cord"></i><i class="knot"></i><i class="fringe"></i></div>' +
       '</div>';
     body.appendChild(intro);
+    body.classList.add('misu-entering');
+    splitLogo();
+    setTimeout(function(){ body.classList.add('misu-entered'); }, 6400);
     var heroTimer = setTimeout(playHero, 3400);
     function finish(){ if (!intro) return; intro.remove(); intro = null; }
     intro.addEventListener('click', function(){ clearTimeout(heroTimer); playHero(); intro.classList.add('skip'); setTimeout(finish, 400); });
