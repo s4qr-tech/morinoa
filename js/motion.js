@@ -120,7 +120,7 @@
     body.appendChild(intro);
     body.classList.add('misu-entering');
     splitLogo();
-    setTimeout(function(){ body.classList.add('misu-entered'); }, 6400);
+    setTimeout(function(){ body.classList.add('misu-entered'); }, 5000);
     var heroTimer = setTimeout(playHero, 3400);
     function finish(){ if (!intro) return; intro.remove(); intro = null; }
     intro.addEventListener('click', function(){ clearTimeout(heroTimer); playHero(); intro.classList.add('skip'); setTimeout(finish, 400); });
