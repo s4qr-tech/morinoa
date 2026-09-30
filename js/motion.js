@@ -8,7 +8,9 @@
   function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e) {} }
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function motionOn(){ return !reduce && lsGet(PREF_KEY) !== 'off'; }
+  // 端末の「動きを減らす」設定がオンでも演出は出す（ご要望）。
+  // その代わり、その端末では初回から演出ON/OFFのスイッチを表示し、すぐ止められるようにする。
+  function motionOn(){ return lsGet(PREF_KEY) !== 'off'; }
 
   var visits = (parseInt(lsGet(VISIT_KEY), 10) || 0) + 1;
   lsSet(VISIT_KEY, visits);
@@ -137,7 +139,7 @@
       toggle.querySelector('span').textContent = motionOn() ? '演出 ON' : '演出 OFF';
     }
   }
-  if (visits >= 2 && !reduce) {
+  if (visits >= 2 || reduce) {
     toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'motion-toggle';
