@@ -539,3 +539,175 @@ footer{
   .why-card{flex-direction:column-reverse;align-items:flex-start;gap:20px;}
   .why-card .why-kamon{width:88px;}
 }
+
+/* ---------- ABOUT：縦書き ---------- */
+.about-tate{display:grid;grid-template-columns:auto 1fr;gap:clamp(40px,7vw,96px);align-items:start;margin-bottom:56px;}
+.tate-copy{
+  writing-mode:vertical-rl;font-family:var(--mincho);font-weight:700;
+  font-size:clamp(40px,5.2vw,64px);line-height:1.5;letter-spacing:.18em;color:var(--ink);
+  border-left:1px solid var(--line);padding-left:clamp(20px,3vw,36px);
+}
+.tate-copy span{display:block;}
+.tate-copy span + span{margin-top:2.2em;color:var(--forest);}
+.tate-body{display:flex;flex-direction:column;gap:48px;padding-top:8px;max-width:560px;}
+.tate-block{border-top:1px solid var(--line);padding-top:22px;}
+.tate-block p{color:var(--sub);font-size:15px;line-height:2;}
+.tate-kicker{font-family:var(--mincho);font-size:13px !important;letter-spacing:.4em;color:var(--forest) !important;margin-bottom:10px;}
+.tate-trio{list-style:none;display:flex;gap:28px;margin-top:22px;}
+.tate-trio li{writing-mode:vertical-rl;font-family:var(--mincho);font-size:22px;font-weight:600;letter-spacing:.3em;color:var(--ink);
+  padding:4px 0 4px 14px;border-right:1px solid var(--line);}
+.tate-trio li:first-child{border-right-color:#5BA0C1;}
+.tate-trio li:nth-child(2){border-right-color:#75A97F;}
+.tate-trio li:last-child{border-right-color:#8AA344;}
+@media(max-width:820px){
+  .about-tate{grid-template-columns:auto 1fr;gap:24px;}
+  .tate-copy{font-size:34px;padding-left:16px;}
+  .tate-body{gap:36px;}
+  .tate-trio{gap:18px;}
+  .tate-trio li{font-size:19px;}
+}
+
+/* 縦書き見出しを右に置く版（.about-tate.tate-right） */
+.about-tate.tate-right{grid-template-columns:1fr auto;}
+.about-tate.tate-right .tate-copy{order:2;border-left:none;border-right:1px solid var(--line);padding-left:0;padding-right:clamp(20px,3vw,36px);}
+.about-tate.tate-right .tate-body{order:1;justify-self:end;}
+@media(max-width:820px){.about-tate.tate-right .tate-copy{padding-right:16px;}}
+
+/* 再生・維持・持続：旗指物
+   竿（茶の木）・横木・色の布・竿に布を留める乳（ち）・布の家紋・裾の房 */
+.tate-trio{list-style:none;display:flex;gap:30px;margin-top:34px;padding-top:14px;align-items:flex-start;}
+.tate-trio li{
+  --hata:#5BA0C1;
+  position:relative;writing-mode:horizontal-tb;
+  width:56px;height:196px;margin-right:8px;
+  border:none;padding:0;
+}
+.tate-trio li:nth-child(2){--hata:#75A97F;}
+.tate-trio li:last-child{--hata:#8AA344;}
+/* 竿：布の右側を通り、下へ伸びる */
+.tate-trio li::after{
+  content:"";position:absolute;right:-8px;top:-14px;bottom:-26px;width:5px;border-radius:3px;
+  background:linear-gradient(90deg,#4A3620,#7A5A34 45%,#4A3620);
+}
+/* 竿の先の飾り（宝珠） */
+.tate-trio li::before{
+  content:"";position:absolute;right:-11px;top:-22px;width:11px;height:12px;border-radius:50% 50% 45% 45%;
+  background:radial-gradient(circle at 35% 30%,#d9bf8a,#8a6a38);z-index:2;
+}
+/* 布 */
+.tate-trio .hata{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.10),transparent 18%,transparent 82%,rgba(0,0,0,.08)),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 2px,transparent 2px 4px),
+    var(--hata);
+  border-top:5px solid #4A3620; /* 横木 */
+  box-shadow:0 2px 6px rgba(17,29,15,.18);
+  clip-path:polygon(0 0,100% 0,100% 100%,74% 94%,50% 100%,26% 94%,0 100%); /* 裾を燕尾に */
+  transform-origin:100% 0;transition:transform .6s ease;
+}
+/* 布を竿に留める乳（輪） */
+.tate-trio .hata::after{
+  content:"";position:absolute;right:-1px;top:18px;bottom:30px;width:4px;
+  background:repeating-linear-gradient(180deg,#F2EEE0 0 3px,transparent 3px 26px);
+  opacity:.75;
+}
+/* 布の上の家紋 */
+.tate-trio .hata i{
+  margin-top:10px;width:22px;height:22px;flex:none;background:#F2EEE0;opacity:.9;
+  -webkit-mask:url(../kamon.svg) center/contain no-repeat;mask:url(../kamon.svg) center/contain no-repeat;
+}
+/* 文字：筆書体を白抜きで縦に */
+.tate-trio .hata b{
+  writing-mode:vertical-rl;margin-top:10px;
+  font-family:'Yuji Syuku',var(--mincho);font-weight:400;font-size:30px;line-height:1;letter-spacing:.12em;
+  color:#F2EEE0;text-shadow:0 1px 0 rgba(17,29,15,.25);
+}
+.tate-trio li:hover .hata{transform:rotate(-2deg);}
+@media(max-width:820px){
+  .tate-trio{gap:22px;}
+  .tate-trio li{width:48px;height:172px;}
+  .tate-trio .hata b{font-size:26px;}
+  .tate-trio .hata i{width:18px;height:18px;}
+}
+
+html,body{overflow-x:clip;}
+
+/* ---------- 一座：木札（紐で吊るした名札） ---------- */
+.org-grid{gap:28px;}
+.org-card.fuda{
+  position:relative;display:flex;flex-direction:column;align-items:center;
+  padding:30px 14px 26px;margin-top:22px;border-radius:4px;
+  background:
+    repeating-linear-gradient(92deg,rgba(120,90,50,.05) 0 2px,transparent 2px 9px),
+    linear-gradient(180deg,#EFE6CF,#E3D6B5);
+  border:1px solid #CDBB92;
+  box-shadow:inset 0 0 0 4px rgba(242,238,224,.55),0 6px 14px rgba(17,29,15,.08);
+  clip-path:polygon(14% 0,86% 0,100% 9%,100% 100%,0 100%,0 9%); /* 上の角を落とした札の形 */
+  text-align:center;
+}
+.org-card.fuda .fuda-himo{
+  position:absolute;top:-22px;left:50%;width:2px;height:30px;margin-left:-1px;background:#8C4229;
+}
+.org-card.fuda .kamon{width:40px;height:40px;opacity:.85;margin-bottom:16px;}
+.org-card.fuda .org-title{
+  writing-mode:vertical-rl;font-family:'Yuji Syuku',var(--mincho);font-weight:400;
+  font-size:40px;letter-spacing:.18em;line-height:1;color:var(--ink);min-height:4.2em;
+}
+.org-card.fuda .org-role{
+  margin-top:14px;padding:0;background:none;border-radius:0;
+  font-family:var(--mincho);font-size:14px;letter-spacing:.3em;color:var(--forest);
+  border-top:1px solid #CDBB92;padding-top:10px;width:70%;
+}
+.org-card.fuda .org-item{margin-top:6px;font-family:var(--mincho);font-size:12px;letter-spacing:.2em;color:var(--sub);}
+.org-card.fuda .org-item::before{content:"象 ";color:#8C4229;}
+@media(max-width:560px){
+  .org-grid{grid-template-columns:repeat(2,1fr);gap:18px;}
+  .org-card.fuda .org-title{font-size:34px;}
+}
+
+/* ---------- 事業番号：家紋風（二重丸に漢数字） ---------- */
+.svc-num{
+  width:46px;height:46px;padding:0;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--ink);color:var(--base);
+  box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--ink);
+  font-family:'Yuji Syuku',var(--mincho);font-weight:400;font-size:22px;letter-spacing:0;line-height:1;
+}
+.svc .svc-num{position:static;margin:4px 0 18px 5px;}
+.svc{padding-top:30px;}
+.detail-hero .svc-num{display:inline-flex;margin:0 0 20px 5px;}
+
+/* ---------- 一座：裏返る名札（表＝役職、裏＝本人） ---------- */
+.org-card.fuda{background:none;border:none;box-shadow:none;clip-path:none;padding:0;perspective:1000px;}
+.org-card.fuda .fuda-inner{
+  position:relative;width:100%;min-height:340px;transform-style:preserve-3d;
+  transition:transform .8s cubic-bezier(.3,.7,.2,1);
+}
+.org-card.fuda.flipped .fuda-inner{transform:rotateY(180deg);}
+.fuda-face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;
+  padding:30px 14px 26px;border-radius:4px;text-align:center;
+  background:
+    repeating-linear-gradient(92deg,rgba(120,90,50,.05) 0 2px,transparent 2px 9px),
+    linear-gradient(180deg,#EFE6CF,#E3D6B5);
+  border:1px solid #CDBB92;
+  box-shadow:inset 0 0 0 4px rgba(242,238,224,.55),0 6px 14px rgba(17,29,15,.08);
+  clip-path:polygon(14% 0,86% 0,100% 9%,100% 100%,0 100%,0 9%);
+}
+.fuda-face.back{transform:rotateY(180deg);padding:0;overflow:hidden;justify-content:flex-end;}
+.fuda-face.back img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;}
+.fuda-face.back .fuda-name{
+  position:relative;width:100%;padding:34px 10px 14px;
+  background:linear-gradient(180deg,transparent,rgba(17,29,15,.82) 45%);
+  color:#F2EEE0;
+}
+.fuda-name b{display:block;font-family:'Yuji Syuku',var(--mincho);font-weight:400;font-size:24px;letter-spacing:.2em;}
+.fuda-name small{display:block;margin-top:2px;font-family:var(--maru);font-size:11px;letter-spacing:.2em;opacity:.85;}
+.org-card.fuda.has-back{cursor:pointer;}
+.org-card.fuda.has-back:focus-visible{outline:2px solid var(--avocado);outline-offset:6px;}
+.fuda-hint{margin-top:auto;padding-top:10px;font-family:var(--maru);font-size:10px;letter-spacing:.2em;color:#8C4229;}
+.org-card.fuda .fuda-himo{z-index:3;}
+@media(max-width:560px){.org-card.fuda .fuda-inner{min-height:330px;}}
+.mekuru{margin-top:10px;font-family:'Yuji Syuku',var(--mincho);font-size:18px;letter-spacing:.3em;color:#8C4229;}

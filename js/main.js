@@ -15,3 +15,15 @@
   },{threshold:.15});
   items.forEach(function(el){io.observe(el);});
 })();
+
+// 一座の名札：押すと裏返って本人の写真を表示（裏面がある札のみ）
+document.querySelectorAll('.org-card.has-back').forEach(function(card){
+  function flip(){
+    var on = card.classList.toggle('flipped');
+    card.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  card.addEventListener('click', flip);
+  card.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+  });
+});
