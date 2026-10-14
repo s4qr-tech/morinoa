@@ -362,7 +362,7 @@ footer{
 .breadcrumb{
   display:flex;align-items:center;gap:8px;
   font-family:var(--maru);font-size:12px;font-weight:700;color:var(--sub);
-  padding:22px 0 0;
+  padding:22px 24px 0;
 }
 .breadcrumb a{color:var(--forest);}
 .breadcrumb a:hover{color:var(--avocado);}
