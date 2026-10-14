@@ -711,3 +711,17 @@ html,body{overflow-x:clip;}
 .org-card.fuda .fuda-himo{z-index:3;}
 @media(max-width:560px){.org-card.fuda .fuda-inner{min-height:330px;}}
 .mekuru{margin-top:10px;font-family:'Yuji Syuku',var(--mincho);font-size:18px;letter-spacing:.3em;color:#8C4229;}
+
+/* MORINOAの青のCTAカード（文字は墨色にして読みやすさを確保） */
+.detail-cta.cta-sora{background:#42ACD0;color:var(--ink);}
+.detail-cta.cta-sora p{color:var(--ink);opacity:.85;}
+.detail-cta.cta-sora .btn-secondary{border-color:var(--ink) !important;color:var(--ink) !important;}
+.detail-cta.cta-sora .btn-secondary:hover{background:var(--ink);color:#42ACD0 !important;}
+
+/* 朱のCTAカード（深緑の担当カードと並んでも見分けやすい「ここぞ」の色） */
+.detail-cta.cta-shu{background:var(--shu);color:var(--cream);}
+.detail-cta.cta-shu p{color:var(--cream);opacity:.9;}
+.detail-cta.cta-shu .btn-primary{background:var(--cream);color:var(--shu);}
+.detail-cta.cta-shu .btn-primary:hover{background:var(--base);}
+.detail-cta.cta-shu .btn-secondary{border-color:var(--cream) !important;color:var(--cream) !important;}
+.detail-cta.cta-shu .btn-secondary:hover{background:var(--cream);color:var(--shu) !important;}
