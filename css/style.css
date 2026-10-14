@@ -725,3 +725,4 @@ html,body{overflow-x:clip;}
 .detail-cta.cta-shu .btn-primary:hover{background:var(--base);}
 .detail-cta.cta-shu .btn-secondary{border-color:var(--cream) !important;color:var(--cream) !important;}
 .detail-cta.cta-shu .btn-secondary:hover{background:var(--cream);color:var(--shu) !important;}
+.foot-brand img{width:44px;height:auto;flex:none;}
