@@ -726,3 +726,118 @@ html,body{overflow-x:clip;}
 .detail-cta.cta-shu .btn-secondary{border-color:var(--cream) !important;color:var(--cream) !important;}
 .detail-cta.cta-shu .btn-secondary:hover{background:var(--cream);color:var(--shu) !important;}
 .foot-brand img{width:44px;height:auto;flex:none;}
+
+/* ============================================================
+   お札（おふだ）風カード：和紙・二重罫・上の帯・朱の家紋印
+   事業カード（トップ）と、事業ページの課題／提供内容カードに使う
+   ============================================================ */
+.svc,.feature-card{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.45),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#F5EFDD,#ECE2C8);
+  border:1px solid #CDBB92;border-radius:2px;
+  box-shadow:inset 0 0 0 7px #F5EFDD,inset 0 0 0 8px #CDBB92,0 6px 16px rgba(17,29,15,.07);
+}
+/* 上の帯：墨の帯に金の細線（お札の上包み） */
+.svc::before,.feature-card::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:12px;
+  background:linear-gradient(180deg,var(--forest) 0 9px,#C9A96B 9px 11px,transparent 11px);
+}
+/* 右下の朱の家紋印 */
+.svc::after,.feature-card::after{
+  content:"";position:absolute;right:16px;bottom:16px;width:30px;height:30px;
+  background:var(--shu);opacity:.75;transform:rotate(-8deg);
+  -webkit-mask:url(../kamon.svg) center/contain no-repeat;mask:url(../kamon.svg) center/contain no-repeat;
+}
+.svc{padding-top:38px;}
+.feature-card{padding-top:34px;padding-bottom:50px;}
+.svc h3,.feature-card h3{letter-spacing:.06em;}
+/* 箇条書きの点を、四角から墨の「・」に */
+.svc li::before{width:6px;height:6px;border-radius:50%;top:10px;background:var(--forest) !important;}
+.svc:hover{border-color:#B9A170;}
+/* 番号：漢数字に */
+.feature-card .num{
+  display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--forest);color:var(--forest);font-family:'Yuji Syuku',var(--mincho);font-size:0;
+}
+.feature-card .num::before{font-size:15px;}
+.feature-grid .feature-card:nth-child(1) .num::before{content:"一";}
+.feature-grid .feature-card:nth-child(2) .num::before{content:"二";}
+.feature-grid .feature-card:nth-child(3) .num::before{content:"三";}
+
+/* ---------- 事業ページ：ヒーローの大きな筆数字（透かし） ---------- */
+.detail-hero{position:relative;overflow:hidden;}
+.detail-hero .wrap{position:relative;}
+.hero-mark{
+  position:absolute;right:0;top:-30px;z-index:0;pointer-events:none;
+  font-family:'Yuji Syuku',var(--mincho);font-size:clamp(160px,26vw,300px);line-height:1;
+  color:rgba(37,71,35,.07);
+}
+.detail-hero .wrap > *:not(.hero-mark){position:relative;z-index:1;}
+
+/* ---------- 事業ページ：進め方の番号を家紋風の二重丸に ---------- */
+.detail-flow-num{
+  background:var(--ink);color:var(--base);
+  box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--ink);
+  font-family:'Yuji Syuku',var(--mincho);font-weight:400;font-size:18px;
+}
+.detail-flow-item{border-bottom:1px dashed #CDBB92;}
+
+/* お札カード：四隅を少し斜めに切り落とす */
+.svc,.feature-card{
+  --kado:14px;
+  clip-path:polygon(var(--kado) 0,calc(100% - var(--kado)) 0,100% var(--kado),100% calc(100% - var(--kado)),calc(100% - var(--kado)) 100%,var(--kado) 100%,0 calc(100% - var(--kado)),0 var(--kado));
+  border-radius:0;
+}
+/* 切り落とした角にも細い縁の線を引く（四隅のななめ線） */
+.svc,.feature-card{
+  --kado:10px;
+  --kl:transparent 6.4px,#CDBB92 6.4px 7.6px,transparent 7.6px;
+  background:
+    linear-gradient(135deg,var(--kl)) top left/16px 16px no-repeat,
+    linear-gradient(225deg,var(--kl)) top right/16px 16px no-repeat,
+    linear-gradient(315deg,var(--kl)) bottom right/16px 16px no-repeat,
+    linear-gradient(45deg,var(--kl)) bottom left/16px 16px no-repeat,
+    radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.45),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#F5EFDD,#ECE2C8);
+}
+/* 縁は外周の細線（内側の影）＋四隅のななめ線で描く。border は使わない */
+.svc,.feature-card{
+  border:none;
+  box-shadow:inset 0 0 0 1px #CDBB92,inset 0 0 0 7px #F5EFDD,inset 0 0 0 8px #CDBB92;
+}
+.svc:hover{box-shadow:inset 0 0 0 1px #B9A170,inset 0 0 0 7px #F5EFDD,inset 0 0 0 8px #CDBB92;}
+/* 内側の罫線は背景で描き、内側の影は外周1本だけにする（影が角のななめ線を隠さないように） */
+.svc,.feature-card{
+  box-shadow:inset 0 0 0 1px #CDBB92;
+  background:
+    linear-gradient(135deg,var(--kl)) top left/16px 16px no-repeat,
+    linear-gradient(225deg,var(--kl)) top right/16px 16px no-repeat,
+    linear-gradient(315deg,var(--kl)) bottom right/16px 16px no-repeat,
+    linear-gradient(45deg,var(--kl)) bottom left/16px 16px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px 8px/calc(100% - 16px) 1px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px calc(100% - 8px)/calc(100% - 16px) 1px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px 8px/1px calc(100% - 16px) no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) calc(100% - 8px) 8px/1px calc(100% - 16px) no-repeat,
+    radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.45),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#F5EFDD,#ECE2C8);
+}
+.svc:hover{box-shadow:inset 0 0 0 1px #B9A170;}
+/* 事業カード：角を落とすのは上だけ（一座の名札と同じ考え方） */
+.svc,.feature-card{
+  clip-path:polygon(var(--kado) 0,calc(100% - var(--kado)) 0,100% var(--kado),100% 100%,0 100%,0 var(--kado));
+  background:
+    linear-gradient(135deg,var(--kl)) top left/16px 16px no-repeat,
+    linear-gradient(225deg,var(--kl)) top right/16px 16px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px 8px/calc(100% - 16px) 1px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px calc(100% - 8px)/calc(100% - 16px) 1px no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) 8px 8px/1px calc(100% - 16px) no-repeat,
+    linear-gradient(#CDBB92,#CDBB92) calc(100% - 8px) 8px/1px calc(100% - 16px) no-repeat,
+    radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.45),transparent 60%),
+    repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#F5EFDD,#ECE2C8);
+}
