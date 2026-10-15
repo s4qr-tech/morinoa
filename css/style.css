@@ -841,3 +841,32 @@ html,body{overflow-x:clip;}
     repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 5px),
     linear-gradient(180deg,#F5EFDD,#ECE2C8);
 }
+
+/* ---------- 三本線メニュー（相談するの横） ---------- */
+.menu-li{display:flex;}
+.menu-btn{
+  width:42px;height:42px;border-radius:8px;border:1px solid var(--line);background:var(--cream);
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  transition:border-color .2s ease;
+}
+.menu-btn:hover{border-color:var(--avocado);}
+.menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:transform .3s ease,opacity .2s ease;}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+@media(max-width:880px){.nav-links li.menu-li{display:flex;}}
+
+.site-menu{
+  position:absolute;left:0;right:0;top:100%;z-index:49;
+  background:rgba(242,238,224,.98);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(17,29,15,.08);
+}
+.site-menu[hidden]{display:none;}
+.site-menu-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding-top:26px;padding-bottom:30px;}
+@media(max-width:720px){.site-menu-inner{grid-template-columns:1fr;gap:20px;max-height:calc(100vh - 70px);overflow:auto;}}
+.menu-head{font-family:var(--maru);font-size:11px;font-weight:700;letter-spacing:.24em;color:var(--teal);margin-bottom:10px;}
+.menu-col a{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);
+  font-family:var(--mincho);font-size:16px;font-weight:600;color:var(--ink);}
+.menu-col a:hover{color:var(--forest);}
+.menu-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+  background:var(--ink);color:var(--base);font-family:'Yuji Syuku',var(--mincho);font-size:13px;font-weight:400;flex:none;}

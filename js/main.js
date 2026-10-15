@@ -27,3 +27,18 @@ document.querySelectorAll('.org-card.has-back').forEach(function(card){
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
   });
 });
+
+// 三本線メニュー：開閉、外側クリック・Escキー・リンク選択で閉じる
+(function(){
+  var btn = document.querySelector('.menu-btn'), menu = document.getElementById('site-menu');
+  if (!btn || !menu) return;
+  function set(open){
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    menu.hidden = !open;
+  }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); set(menu.hidden); });
+  menu.addEventListener('click', function(e){ if (e.target.closest('a')) set(false); });
+  document.addEventListener('click', function(e){ if (!menu.hidden && !menu.contains(e.target)) set(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); } });
+})();

@@ -250,3 +250,44 @@ body.motion-off .hero-logo .logo-img{animation:none !important;filter:none !impo
 }
 .logo-assembled .hero-logo .logo-canvas{opacity:0;}
 body.motion-off .hero-logo .logo-canvas{display:none;}
+
+
+/* ============================================================
+   五手：細い矢印がカードの後ろを通り、カードの間に見える
+   色は青 → 緑 → 明るい黄。スクロールに合わせて一手ずつ伸び、届いた手が灯る
+   ============================================================ */
+.flow-line{display:none !important;}
+#flow .flow-grid{position:relative;gap:26px;}
+#flow .step{position:relative;z-index:1;}
+.voyage{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.trail-rest{position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;
+  background:repeating-linear-gradient(90deg,#D3C9AE 0 8px,transparent 8px 16px);}
+.trail{position:absolute;left:0;top:calc(50% - 5px);height:10px;width:0;
+  transition:width .8s cubic-bezier(.6,.04,.18,1),height .8s cubic-bezier(.6,.04,.18,1);}
+.trail::before{content:"";position:absolute;left:0;right:0;top:4px;height:1.5px;border-radius:2px;
+  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/var(--route,800px) 100% no-repeat;}
+.trail::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/var(--route,800px) 100% no-repeat;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3Cpath d='M3 2 L7 5 L3 8 M8 2 L12 5 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x 0 0/16px 10px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3Cpath d='M3 2 L7 5 L3 8 M8 2 L12 5 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x 0 0/16px 10px;
+  animation:chev-flow .5s linear infinite;}
+@keyframes chev-flow{to{-webkit-mask-position:16px 0;mask-position:16px 0}}
+
+.motion #flow .step .step-kanji{transform:none;opacity:1;filter:none;
+  transition:transform .5s cubic-bezier(.3,1.5,.5,1),filter .5s ease,opacity .5s ease;}
+.motion #flow .step:not(.lit) .step-kanji{filter:grayscale(1) brightness(1.25);opacity:.55;transform:scale(.85);}
+.motion #flow .step.lit{border-color:#C9A96B;}
+.motion #flow .step.here{box-shadow:0 0 0 2px #C9A96B inset,0 10px 24px rgba(17,29,15,.1);}
+body.motion-off .trail{transition:none;}
+body.motion-off .trail::after{animation:none;}
+
+@media(max-width:920px){
+  .trail-rest{left:calc(50% - .5px);right:auto;top:0;bottom:0;width:1px;height:auto;
+    background:repeating-linear-gradient(180deg,#D3C9AE 0 8px,transparent 8px 16px);}
+  .trail{left:calc(50% - 5px);top:0;width:10px;height:0;}
+  .trail::before{left:4px;right:auto;top:0;bottom:0;width:1.5px;height:auto;
+    background:linear-gradient(180deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/100% var(--route,800px) no-repeat;}
+  .trail::after{background:linear-gradient(180deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/100% var(--route,800px) no-repeat;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cpath d='M2 3 L5 7 L8 3 M2 8 L5 12 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-y 0 0/10px 16px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cpath d='M2 3 L5 7 L8 3 M2 8 L5 12 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-y 0 0/10px 16px;
+    animation:chev-flow-y .5s linear infinite;}
+  @keyframes chev-flow-y{to{-webkit-mask-position:0 16px;mask-position:0 16px}}
+}

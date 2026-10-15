@@ -29,7 +29,43 @@
 
   // ---------- 五手の線・読み進みバー ----------
   var flow = document.querySelector('.flow-grid');
-  if (flow) { var line = document.createElement('div'); line.className = 'flow-line'; flow.appendChild(line); }
+  // 五手：細い矢印がカードの後ろを通り、カードの間に見える。スクロールに合わせて一手ずつ伸びる
+  var refreshFlow = function(){};
+  if (flow) refreshFlow = flowArrows(flow);
+  function flowArrows(grid){
+    var voy = document.createElement('div');
+    voy.className = 'voyage'; voy.setAttribute('aria-hidden', 'true');
+    voy.innerHTML = '<div class="trail-rest"></div><div class="trail"></div>';
+    grid.appendChild(voy);   // 最後の子にして、手の色分け（nth-child）をずらさない
+    var trail = voy.querySelector('.trail'), steps = [].slice.call(grid.querySelectorAll('.step')), idx = -2;
+    function mobile(){ return window.matchMedia && matchMedia('(max-width:920px)').matches; }
+    function centers(){
+      var g = grid.getBoundingClientRect();
+      return steps.map(function(st){ var r = st.getBoundingClientRect(); return mobile() ? r.top + r.height / 2 - g.top : r.left + r.width / 2 - g.left; });
+    }
+    function go(i){
+      if (i === idx) return;
+      idx = i;
+      var c = centers(), pos = i < 0 ? 0 : c[i];
+      trail.style.setProperty('--route', (c[c.length - 1] + 10) + 'px');
+      if (mobile()) { trail.style.height = pos + 'px'; trail.style.width = ''; }
+      else { trail.style.width = pos + 'px'; trail.style.height = ''; }
+      steps.forEach(function(st, k){ st.classList.toggle('lit', k <= i); st.classList.toggle('here', k === i && motionOn()); });
+    }
+    function fromScroll(){
+      if (!motionOn()) { go(steps.length - 1); return; }
+      var r = grid.getBoundingClientRect(), vh = innerHeight, i;
+      if (mobile()) { var c = centers(); i = -1; c.forEach(function(y, k){ if (r.top + y < vh * .62) i = k; }); }
+      else { var p = (vh * .8 - r.top) / (vh * .55); i = Math.min(steps.length - 1, Math.floor(p * 5.5) - 1); }
+      go(Math.max(-1, i));
+    }
+    addEventListener('scroll', fromScroll, { passive: true });
+    addEventListener('resize', function(){ var k = idx; idx = -2; go(k); });
+    trail.style.transition = 'none';
+    fromScroll();
+    setTimeout(function(){ trail.style.transition = ''; }, 60);
+    return function(){ idx = -2; fromScroll(); };
+  }
   var bar = document.createElement('div'); bar.className = 'read-progress'; body.appendChild(bar);
   var header = document.querySelector('header');
 
@@ -229,6 +265,7 @@
     toggle.addEventListener('click', function(){
       lsSet(PREF_KEY, motionOn() ? 'off' : 'on');
       applyPref();
+      refreshFlow();
       if (!motionOn()) {
         playHero();
         if (intro) intro.classList.add('skip');
