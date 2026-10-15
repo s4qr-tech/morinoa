@@ -265,9 +265,9 @@ body.motion-off .hero-logo .logo-canvas{display:none;}
 .trail{position:absolute;left:0;top:calc(50% - 5px);height:10px;width:0;
   transition:width .8s cubic-bezier(.6,.04,.18,1),height .8s cubic-bezier(.6,.04,.18,1);}
 .trail::before{content:"";position:absolute;left:0;right:0;top:4px;height:1.5px;border-radius:2px;
-  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/var(--route,800px) 100% no-repeat;}
+  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 45%,#8AB657 72%,#C0502E 82%,#C0502E 100%) 0 0/var(--route,800px) 100% no-repeat;}
 .trail::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/var(--route,800px) 100% no-repeat;
+  background:linear-gradient(90deg,#42ACD0 0%,#8AB657 45%,#8AB657 72%,#C0502E 82%,#C0502E 100%) 0 0/var(--route,800px) 100% no-repeat;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3Cpath d='M3 2 L7 5 L3 8 M8 2 L12 5 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x 0 0/16px 10px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3Cpath d='M3 2 L7 5 L3 8 M8 2 L12 5 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x 0 0/16px 10px;
   animation:chev-flow .5s linear infinite;}
 @keyframes chev-flow{to{-webkit-mask-position:16px 0;mask-position:16px 0}}
@@ -285,8 +285,8 @@ body.motion-off .trail::after{animation:none;}
     background:repeating-linear-gradient(180deg,#D3C9AE 0 8px,transparent 8px 16px);}
   .trail{left:calc(50% - 5px);top:0;width:10px;height:0;}
   .trail::before{left:4px;right:auto;top:0;bottom:0;width:1.5px;height:auto;
-    background:linear-gradient(180deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/100% var(--route,800px) no-repeat;}
-  .trail::after{background:linear-gradient(180deg,#42ACD0 0%,#8AB657 50%,#FFE066 85%,#FFF6C2 100%) 0 0/100% var(--route,800px) no-repeat;
+    background:linear-gradient(180deg,#42ACD0 0%,#8AB657 45%,#8AB657 72%,#C0502E 82%,#C0502E 100%) 0 0/100% var(--route,800px) no-repeat;}
+  .trail::after{background:linear-gradient(180deg,#42ACD0 0%,#8AB657 45%,#8AB657 72%,#C0502E 82%,#C0502E 100%) 0 0/100% var(--route,800px) no-repeat;
     -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cpath d='M2 3 L5 7 L8 3 M2 8 L5 12 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-y 0 0/10px 16px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cpath d='M2 3 L5 7 L8 3 M2 8 L5 12 L8 8' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-y 0 0/10px 16px;
     animation:chev-flow-y .5s linear infinite;}
   @keyframes chev-flow-y{to{-webkit-mask-position:0 16px;mask-position:0 16px}}

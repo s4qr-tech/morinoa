@@ -29,7 +29,7 @@
 
   // ---------- 五手の線・読み進みバー ----------
   var flow = document.querySelector('.flow-grid');
-  // 五手：細い矢印がカードの後ろを通り、カードの間に見える。スクロールに合わせて一手ずつ伸びる
+  // 五手：細い矢印がカードの後ろを通り、カードの間に見える（常時表示）
   var refreshFlow = function(){};
   if (flow) refreshFlow = flowArrows(flow);
   function flowArrows(grid){
@@ -50,16 +50,16 @@
       trail.style.setProperty('--route', (c[c.length - 1] + 10) + 'px');
       if (mobile()) { trail.style.height = pos + 'px'; trail.style.width = ''; }
       else { trail.style.width = pos + 'px'; trail.style.height = ''; }
-      steps.forEach(function(st, k){ st.classList.toggle('lit', k <= i); st.classList.toggle('here', k === i && motionOn()); });
+      steps.forEach(function(st, k){ st.classList.toggle('lit', k <= i); st.classList.toggle('here', false); });
     }
     function fromScroll(){
-      if (!motionOn()) { go(steps.length - 1); return; }
+      // スクロールには同期させず、常に最後の手まで矢印を表示する
+      go(steps.length - 1); return;
       var r = grid.getBoundingClientRect(), vh = innerHeight, i;
       if (mobile()) { var c = centers(); i = -1; c.forEach(function(y, k){ if (r.top + y < vh * .62) i = k; }); }
       else { var p = (vh * .8 - r.top) / (vh * .55); i = Math.min(steps.length - 1, Math.floor(p * 5.5) - 1); }
       go(Math.max(-1, i));
     }
-    addEventListener('scroll', fromScroll, { passive: true });
     addEventListener('resize', function(){ var k = idx; idx = -2; go(k); });
     trail.style.transition = 'none';
     fromScroll();
