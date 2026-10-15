@@ -238,3 +238,15 @@ body.motion-off .hero-logo .logo-img{animation:none !important;filter:none !impo
   .motion-toggle{left:auto;right:12px;bottom:12px;padding:8px;gap:0;}
   .motion-toggle span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 }
+
+/* ---------- ロゴの組み上がり（キャンバス）：今のライトアップをキャンバスに当てる ---------- */
+.logo-assembling .hero-logo .logo-stack{opacity:0;}
+.logo-assembling.logo-assembled .hero-logo .logo-stack{opacity:1;transition:opacity .6s ease;}
+.logo-assembling .hero-logo .logo-img,.logo-assembling .hero-logo .logo-word{animation:none !important;filter:none !important;}
+.hero-logo .logo-canvas{
+  position:absolute;pointer-events:none;
+  animation:logo-backlit 4.6s ease-in-out .5s both;
+  transition:opacity .6s ease;
+}
+.logo-assembled .hero-logo .logo-canvas{opacity:0;}
+body.motion-off .hero-logo .logo-canvas{display:none;}

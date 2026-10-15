@@ -102,6 +102,86 @@
     stack.appendChild(word);
   }
 
+  // ---------- ロゴの組み上がり（御簾の奥で、後ろから照らされながら） ----------
+  // 墨の菱形が左から、緑の菱形が右から転がって重なり、円が入り、最後に文字が出る。
+  // 描く座標はロゴ画像（681×573）と同じにして、最後に本物の画像へすり替えても位置がずれないようにする。
+  function assembleLogo(){
+    var card = document.querySelector('.hero-logo'), stack = card && card.querySelector('.logo-stack');
+    var img = stack && stack.querySelector('.logo-img');
+    if (!stack || !img) return;
+    body.classList.add('logo-assembling');
+    var cv = document.createElement('canvas');
+    cv.className = 'logo-canvas';
+    cv.setAttribute('aria-hidden', 'true');
+    card.appendChild(cv);
+    function place(){
+      var a = card.getBoundingClientRect(), b = stack.getBoundingClientRect();
+      cv.style.left = (b.left - a.left - card.clientLeft) + 'px'; cv.style.top = (b.top - a.top - card.clientTop) + 'px';
+      cv.style.width = b.width + 'px'; cv.style.height = b.height + 'px';
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = Math.round(b.width * dpr); cv.height = Math.round(b.height * dpr);
+    }
+    place();
+
+    var TAU = Math.PI * 2, LW = 681, LH = 573;
+    var INK = '#111D0F', GREEN = '#82C147', BLUE = '#42ACD0';
+    // 実ロゴの菱形：中心→先端 212px、中心→辺 179px。これに合う角丸正方形（一辺358・角の丸み99）
+    var A = { x: 212, y: 212 }, B = { x: 467, y: 220 }, S = 358, RAD = 99, R = 97.5;
+    // 内側の円は菱形の中心から少しずれている（実ロゴを計測）
+    var CA = { x: 212.5, y: 214.5 }, CB = { x: 467.5, y: 214.5 };
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function bez(x1, y1, x2, y2){
+      var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+      function sx(t){ return ((ax * t + bx) * t + cx) * t; } function sy(t){ return ((ay * t + by) * t + cy) * t; }
+      function dx(t){ return (3 * ax * t + 2 * bx) * t + cx; }
+      return function(x){ if (x <= 0) return 0; if (x >= 1) return 1; var t = x; for (var i = 0; i < 8; i++) { var e = sx(t) - x, d = dx(t); if (Math.abs(e) < 1e-6 || Math.abs(d) < 1e-6) break; t -= e / d; } return sy(t); };
+    }
+    // 転がりは加速・減速のなめらかなカーブ、円は軽く弾む程度に
+    var roll = bez(.33, 0, .2, 1), back = bez(.3, 1.3, .6, 1), out = bez(.22, 1, .36, 1);
+    function seg(t, a, b, e){ return e(clamp((t - a) / (b - a))); }
+    function rsq(g, x, y, rot, fill){
+      var h = S / 2, r = RAD;
+      g.save(); g.translate(x, y); g.rotate(rot); g.beginPath();
+      g.moveTo(-h + r, -h); g.arcTo(h, -h, h, h, r); g.arcTo(h, h, -h, h, r); g.arcTo(-h, h, -h, -h, r); g.arcTo(-h, -h, h, -h, r); g.closePath();
+      g.fillStyle = fill; g.fill(); g.restore();
+    }
+    // 転がる正方形：進んだ距離に合わせて90°ずつ回り、角で立つたびに中心が上下する
+    var BOB = .35;   // 角で立つときの上下の揺れ（1だと実際の転がり、小さいほど滑らか）
+    function rolled(from, to, restY, p, dir){
+      var x = from + (to - from) * p, rot = Math.PI / 4 + dir * (x - to) / S * (Math.PI / 2);
+      var local = ((rot % (Math.PI / 2)) + Math.PI / 2) % (Math.PI / 2);
+      var lift = (S / Math.SQRT2) * Math.cos(local - Math.PI / 4);
+      return { x: x, y: restY + (S / Math.SQRT2 - lift) * BOB, rot: rot };   // 静止時にちょうど restY に収まる
+    }
+    function draw(t){
+      var g = cv.getContext('2d'), sc = cv.width / LW;
+      g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height);
+      g.setTransform(sc, 0, 0, sc, 0, 0);
+      var pA = seg(t, .1, 1.7, roll), pB = seg(t, .9, 2.4, roll);
+      var cA = seg(t, 2.2, 2.9, back), cB = seg(t, 2.45, 3.15, back), word = seg(t, 3.0, 3.9, out);
+      var a = rolled(-260, A.x, A.y, pA, 1);
+      rsq(g, a.x, a.y, a.rot, INK);
+      if (cA > 0) { g.beginPath(); g.arc(CA.x, CA.y, R * cA, 0, TAU); g.fillStyle = BLUE; g.fill(); }
+      if (pB > 0) { var b = rolled(LW + 260, B.x, B.y, pB, 1); rsq(g, b.x, b.y, b.rot, GREEN); }
+      if (cB > 0) { g.beginPath(); g.arc(CB.x, CB.y, R * cB, 0, TAU); g.fillStyle = INK; g.fill(); }
+      if (word > 0 && img.complete) {
+        g.globalAlpha = word;
+        g.drawImage(img, 0, 436, LW, LH - 436, 0, 436 + (1 - word) * 14, LW, LH - 436);
+        g.globalAlpha = 1;
+      }
+    }
+    var t0 = performance.now(), DELAY = .9, END = 4.6;
+    (function tick(now){
+      if (!cv.isConnected) return;
+      var t = (now - t0) / 1000 - DELAY;
+      draw(Math.max(0, Math.min(t, END)));
+      if (t < END) requestAnimationFrame(tick);
+    })(t0);
+    // 組み上がったら本物のロゴ画像に切り替える
+    setTimeout(function(){ body.classList.add('logo-assembled'); }, 5400);
+    setTimeout(function(){ cv.remove(); }, 6200);   // logo-assembling は残す（外すと旧来の浮かび上がりが再生されるため）
+  }
+
   // ---------- 御簾の入場（トップページのみ） ----------
   var intro = null;
   function playIntro(){
@@ -120,7 +200,8 @@
     body.appendChild(intro);
     body.classList.add('misu-entering');
     splitLogo();
-    setTimeout(function(){ body.classList.add('misu-entered'); }, 5000);
+    assembleLogo();
+    setTimeout(function(){ body.classList.add('misu-entered'); }, 5400);
     var heroTimer = setTimeout(playHero, 3400);
     function finish(){ if (!intro) return; intro.remove(); intro = null; }
     intro.addEventListener('click', function(){ clearTimeout(heroTimer); playHero(); intro.classList.add('skip'); setTimeout(finish, 400); });
