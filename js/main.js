@@ -42,3 +42,12 @@ document.querySelectorAll('.org-card.has-back').forEach(function(card){
   document.addEventListener('click', function(e){ if (!menu.hidden && !menu.contains(e.target)) set(false); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); } });
 })();
+
+// 飲食事業：BAR のネオン看板は、見えたときに通電させる
+(function(){
+  var signs = document.querySelectorAll('.neon-sign');
+  if (!signs.length) return;
+  if (!('IntersectionObserver' in window)) { [].forEach.call(signs, function(el){ el.classList.add('on'); }); return; }
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }); }, { threshold: .6 });
+  [].forEach.call(signs, function(el){ io.observe(el); });
+})();
