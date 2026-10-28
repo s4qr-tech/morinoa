@@ -223,7 +223,7 @@ a.org-card:hover{
 .org-desc{margin-top:10px;font-size:14px;color:var(--sub);text-align:left;}
 
 /* ---------- Service ---------- */
-.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;max-width:920px;margin:0 auto;}
 @media(max-width:920px){.service-grid{grid-template-columns:1fr;}}
 .svc{
   position:relative;padding-top:34px;
@@ -766,6 +766,9 @@ html,body{overflow-x:clip;}
 .feature-grid .feature-card:nth-child(1) .num::before{content:"一";}
 .feature-grid .feature-card:nth-child(2) .num::before{content:"二";}
 .feature-grid .feature-card:nth-child(3) .num::before{content:"三";}
+.feature-grid .feature-card:nth-child(4) .num::before{content:"四";}
+.feature-grid .feature-card:nth-child(5) .num::before{content:"五";}
+.feature-grid .feature-card:nth-child(6) .num::before{content:"六";}
 
 /* ---------- 事業ページ：ヒーローの大きな筆数字（透かし） ---------- */
 .detail-hero{position:relative;overflow:hidden;}
