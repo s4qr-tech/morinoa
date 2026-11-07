@@ -221,3 +221,57 @@
 /* 一座：大老は緑、老中は黄（鬱金）の帯に */
 .org-card.fuda:nth-child(2){--band:#7da83a;--bandd:#5d8226;--seal:#B7282E;}
 .org-card.fuda:nth-child(3){--band:#F0B323;--bandd:#BF8A10;--seal:#C7601A;}
+
+/* ============================================================
+   一座：札掛け（横木から札を吊るす）。長さをずらし、スクロールで一枚ずつ落ちて揺れて止まる
+   ============================================================ */
+.org-grid{position:relative;padding-top:58px;align-items:start;}
+.org-grid::before{ /* 横木 */
+  content:"";position:absolute;left:-18px;right:-18px;top:14px;height:24px;border-radius:5px;z-index:0;
+  background:
+    repeating-linear-gradient(92deg,rgba(255,255,255,.1) 0 1px,transparent 1px 9px),
+    linear-gradient(#8a6338,#5f4224 58%,#3f2b16);
+  box-shadow:0 7px 0 rgba(40,24,8,.22),inset 0 2px 0 rgba(255,255,255,.18);
+}
+.org-grid::after{ /* 横木の釘 */
+  content:"";position:absolute;left:-6px;right:-6px;top:22px;height:8px;z-index:0;pointer-events:none;
+  background:radial-gradient(circle,#e8c764 0 2.4px,#8a6a2a 2.6px 3.6px,transparent 4px) 0 0/ calc(100% - 0px) 8px no-repeat;
+  opacity:0;
+}
+.org-card.fuda{--drop:0px;margin-top:var(--drop);position:relative;}
+.org-card.fuda:nth-child(1){--drop:0px;}
+.org-card.fuda:nth-child(2){--drop:34px;}
+.org-card.fuda:nth-child(3){--drop:12px;}
+.org-card.fuda:nth-child(4){--drop:46px;}
+.org-card.fuda::before{ /* 横木までの縄 */
+  content:"";position:absolute;left:50%;margin-left:-4px;width:8px;top:calc(-34px - var(--drop));height:var(--drop);
+  background:repeating-linear-gradient(135deg,#9b3a1e 0 3px,#6a2512 3px 5px);z-index:2;
+}
+.org-card.fuda:nth-child(n){transform-origin:50% -34px;}
+/* 落ちて、揺れて、止まる */
+.org-card.fuda.reveal{opacity:0;transform:translateY(-110px) rotate(-9deg);transition:none;}
+.org-card.fuda.reveal.show{
+  opacity:1;transform:none;
+  animation:fudaDrop 1.15s cubic-bezier(.22,.9,.3,1) both,fudaSway 7s ease-in-out 1.6s infinite;
+}
+.org-card.fuda:nth-child(2).reveal.show{animation-delay:.18s,1.78s;}
+.org-card.fuda:nth-child(3).reveal.show{animation-delay:.36s,1.96s;}
+.org-card.fuda:nth-child(4).reveal.show{animation-delay:.54s,2.14s;}
+.org-card.fuda.reveal.show:hover,.org-card.fuda.reveal.show:focus-within{animation-play-state:running,paused;}
+@keyframes fudaDrop{
+  0%{opacity:0;transform:translateY(-110px) rotate(-9deg);}
+  45%{opacity:1;transform:translateY(8px) rotate(6deg);}
+  66%{transform:translateY(-2px) rotate(-3.4deg);}
+  84%{transform:rotate(1.6deg);}
+  100%{opacity:1;transform:none;}
+}
+@keyframes fudaSway{0%,100%{transform:rotate(-.9deg);}50%{transform:rotate(.9deg);}}
+@media(max-width:920px){
+  .org-card.fuda:nth-child(n){--drop:0px;}
+  .org-grid::before{top:10px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .org-card.fuda.reveal{opacity:1;transform:none;}
+  .org-card.fuda.reveal.show{animation:none;}
+}
+body.motion-off .org-card.fuda.reveal.show{animation:none !important;}
