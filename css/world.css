@@ -1,0 +1,271 @@
+/* ============================================================
+   MORINOAの世界（world.html）：画面の中を流れる絵巻
+   仮の絵は CSS の影絵。world/scene-N.png を置くとその絵が上に重なる
+   ============================================================ */
+.world .nav .nav-cta{font-family:var(--maru);font-size:13px;font-weight:700;}
+
+/* スクロール区間：この高さぶん下へ進むと、絵巻が端から端まで流れる */
+.emaki-track{position:relative;height:auto;padding:0;}
+.desk{
+  position:relative;top:0;min-height:calc(100vh - 68px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:12px 16px 18px;
+}
+.desk-lead{font-family:'Yuji Syuku',var(--mincho);font-size:clamp(22px,3vw,30px);color:var(--ink);letter-spacing:.2em;text-align:center;line-height:1.3;}
+.desk-lead small{display:block;font-family:var(--maru);font-size:11px;letter-spacing:.3em;color:var(--sub);margin-top:4px;}
+
+/* ---------- PC画面 ---------- */
+.monitor{
+  position:relative;width:min(1600px,96vw,calc((100vh - 235px) * 16 / 9));aspect-ratio:16/9;
+  background:#1c1f1a;border-radius:14px;padding:14px 14px 30px;
+  box-shadow:0 18px 40px rgba(17,29,15,.25),inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{position:relative;width:100%;height:100%;overflow:hidden;border-radius:4px;background:#efe7d2;}
+.bezel{position:absolute;left:0;right:0;bottom:6px;display:flex;justify-content:center;align-items:center;gap:10px;}
+.bezel .led{width:5px;height:5px;border-radius:50%;background:#3a3f37;transition:background .4s ease,box-shadow .4s ease;}
+.on .bezel .led{background:#8AB657;box-shadow:0 0 6px #8AB657;}
+.stand{width:120px;height:26px;background:linear-gradient(#2a2e27,#1c1f1a);clip-path:polygon(30% 0,70% 0,100% 100%,0 100%);margin-top:-14px;}
+
+/* ---------- 起動画面 ---------- */
+.boot{
+  position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:#F2EEE0;color:var(--ink);text-align:center;transition:opacity .8s ease;
+}
+.boot img{width:72px;height:auto;opacity:0;animation:boot-in 1.2s ease .3s forwards;}
+.boot p{font-family:var(--maru);font-weight:900;letter-spacing:.2em;font-size:18px;opacity:0;animation:boot-in 1s ease .9s forwards;}
+.boot p small{display:block;font-family:var(--mincho);font-weight:500;font-size:13px;letter-spacing:.15em;margin-top:6px;color:var(--sub);}
+.boot button{
+  opacity:0;animation:boot-in 1s ease 1.4s forwards;
+  padding:10px 26px;border:1px solid var(--ink);border-radius:4px;background:transparent;color:var(--ink);
+  font-family:var(--maru);font-weight:700;letter-spacing:.15em;cursor:pointer;
+}
+.boot button:hover{background:var(--ink);color:var(--base);}
+@keyframes boot-in{to{opacity:1}}
+.on .boot{opacity:0;pointer-events:none;}
+
+/* ---------- 小窓 ---------- */
+.popup{position:absolute;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;background:rgba(17,29,15,.45);}
+.popup[hidden]{display:none;}
+.popup-card{
+  position:relative;width:min(420px,86%);padding:30px 26px 24px;
+  background:linear-gradient(180deg,#F5EFDD,#ECE2C8);box-shadow:inset 0 0 0 1px #CDBB92,inset 0 0 0 7px #F5EFDD,inset 0 0 0 8px #CDBB92;
+}
+.popup-card::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(180deg,var(--forest) 0 8px,#C9A96B 8px 10px);}
+.popup-card h4{font-family:var(--mincho);font-weight:700;font-size:20px;letter-spacing:.12em;margin-bottom:10px;}
+.popup-card p{font-size:14px;line-height:1.9;color:var(--sub);}
+.popup-close{position:absolute;right:10px;top:14px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--sub);}
+
+/* ---------- 目盛り：再生 → 維持 → 持続 ---------- */
+.scale{width:min(520px,86vw);}
+.scale-bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;}
+.scale-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5BA0C1,#75A97F,#8AA344);}
+.scale-labels{display:flex;justify-content:space-between;margin-top:8px;font-family:'Yuji Syuku',var(--mincho);font-size:16px;letter-spacing:.2em;color:var(--sub);}
+.scale-labels span.on{color:var(--ink);}
+.hint{font-family:var(--maru);font-size:12px;letter-spacing:.2em;color:var(--sub);transition:opacity .4s ease;}
+
+.world-after{padding-top:40px;}
+
+/* IP・デザインページの入口カード */
+.world-link{
+  display:block;position:relative;overflow:hidden;padding:34px 30px;color:var(--base);
+  background:#111D0F;box-shadow:inset 0 0 0 1px #3a3f37;
+  clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%,0 14px);
+  transition:transform .3s ease;
+}
+.world-link::after{
+  content:"";position:absolute;right:-30px;top:50%;width:200px;height:200px;transform:translateY(-50%);opacity:.12;
+  background:#efe7d2;-webkit-mask:url(../kamon.svg) center/contain no-repeat;mask:url(../kamon.svg) center/contain no-repeat;
+}
+.world-link:hover{transform:translateY(-3px);}
+.wl-label{display:block;font-family:var(--maru);font-size:12px;font-weight:700;letter-spacing:.3em;color:var(--avocado);}
+.wl-title{display:block;margin-top:8px;font-family:'Yuji Syuku',var(--mincho);font-size:clamp(24px,3.4vw,34px);letter-spacing:.12em;}
+.wl-sub{display:block;margin-top:8px;font-size:14px;color:var(--sand);}
+.world-link .svc-more{color:var(--base);}
+.world-link-block{padding-bottom:20px;}
+
+/* ---------- 絵巻（三層） ---------- */
+.emaki{position:absolute;inset:0;}
+.layer{position:absolute;top:0;left:0;will-change:transform;}
+.layer .art{display:block;width:100%;height:100%;}
+.layer.far{z-index:1;}
+.layer.hill{z-index:1;}
+.layer.mid{z-index:2;transition:filter .3s linear;}
+.layer.near{z-index:3;pointer-events:none;}
+
+/* 場面の題と語り（画面の左上） */
+.narr{position:absolute;left:14px;bottom:14px;z-index:6;display:flex;align-items:baseline;gap:10px;max-width:46%;padding:6px 12px 6px 10px;
+  background:rgba(17,29,15,.55);backdrop-filter:blur(3px);border-left:3px solid #C9A96B;opacity:0;transform:translateY(4px);transition:opacity .5s ease,transform .5s ease;}
+.narr.show{opacity:1;transform:none;}
+.narr-no{font-family:'Yuji Syuku',var(--mincho);font-size:11px;letter-spacing:.2em;color:#E8C98A;white-space:nowrap;}
+.narr-title{font-family:var(--mincho);font-weight:700;font-size:14px;letter-spacing:.12em;color:#F2EEE0;white-space:nowrap;}
+.narr-body{font-size:11px;line-height:1.5;color:rgba(242,238,224,.82);}
+
+/* 札 */
+.fuda-tag{
+  position:absolute;z-index:5;transform:translate(-50%,-100%);transform-origin:50% 0;
+  padding:22px 9px 13px;writing-mode:vertical-rl;border:none;cursor:pointer;
+  font-family:'Yuji Syuku',var(--mincho);font-size:15px;letter-spacing:.2em;color:var(--ink);
+  background:linear-gradient(180deg,#EFE6CF,#E3D6B5);box-shadow:inset 0 0 0 1px #CDBB92,0 4px 10px rgba(17,29,15,.22);
+  clip-path:polygon(25% 0,75% 0,100% 12px,100% 100%,0 100%,0 12px);
+  animation:tag-sway 3.4s ease-in-out infinite;
+}
+.fuda-tag::before{content:"";position:absolute;top:5px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--shu);}
+.fuda-tag:hover{background:linear-gradient(180deg,#f7efd9,#e9dcbb);}
+.fuda-tag:focus-visible{outline:2px solid var(--avocado);outline-offset:3px;}
+@keyframes tag-sway{0%,100%{transform:translate(-50%,-100%) rotate(-2.5deg)}50%{transform:translate(-50%,-100%) rotate(2.5deg)}}
+.popup-kind{font-family:'Yuji Syuku',var(--mincho);font-size:13px;letter-spacing:.3em;color:var(--shu);margin-bottom:4px;}
+
+/* 絵の中の小さな動き */
+.art .walker{animation:walk .7s ease-in-out infinite alternate;transform-box:fill-box;}
+.art .walker.d1{animation-delay:-.2s}.art .walker.d2{animation-delay:-.4s}.art .walker.d3{animation-delay:-.55s}
+@keyframes walk{to{translate:0 -4px}}
+.art .sit{animation:walk 1.6s ease-in-out infinite alternate;}
+.art .cloud{animation:drift 22s ease-in-out infinite alternate;}
+@keyframes drift{to{translate:60px 0}}
+.art .bird{animation:flap 1.2s ease-in-out infinite alternate;}
+@keyframes flap{to{translate:12px -6px}}
+.art .crow{animation:flap 2s ease-in-out infinite alternate;}
+.art .glow{animation:glow 2.4s ease-in-out infinite alternate;}
+@keyframes glow{from{opacity:.85}to{opacity:1;filter:drop-shadow(0 0 8px #f3b96b)}}
+.art .steam{animation:steam 2.6s ease-in-out infinite;}
+@keyframes steam{0%{opacity:0;translate:0 0}40%{opacity:.8}100%{opacity:0;translate:0 -24px}}
+.art .coin.drop{animation:drop 2.4s cubic-bezier(.5,0,.75,0) infinite;}
+.art .coin.d1{animation-delay:.3s}.art .coin.d2{animation-delay:.6s}.art .coin.d3{animation-delay:.9s}.art .coin.d4{animation-delay:1.2s}
+@keyframes drop{0%{translate:0 -90px;opacity:0}20%{opacity:1}70%{translate:0 0;opacity:1}100%{translate:0 0;opacity:0}}
+.art .paper.fly{animation:fly 4s ease-in-out infinite;}
+.art .paper.d1{animation-delay:-.7s}.art .paper.d2{animation-delay:-1.4s}.art .paper.d3{animation-delay:-2.1s}.art .paper.d4{animation-delay:-2.8s}.art .paper.d5{animation-delay:-3.4s}
+@keyframes fly{0%{translate:0 0}50%{translate:40px -30px}100%{translate:0 0}}
+.art .cart.go{animation:cart 6s ease-in-out infinite;}
+@keyframes cart{0%{translate:0 0}50%{translate:420px 0}100%{translate:0 0}}
+.art .flow-line{animation:flow 1.4s linear infinite;}
+.art .flow-line.back{animation-direction:reverse;}
+@keyframes flow{to{stroke-dashoffset:-44}}
+
+/* 目盛り */
+.scale{width:min(620px,70vw);}
+.scale-bar{position:relative;overflow:visible;}
+.scale-bar b{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px var(--base),0 0 0 4.5px var(--ink);}
+
+/* PC専用：狭い画面では絵巻を出さない */
+.pc-only-note{display:none;}
+@media(max-width:900px){
+  .world .emaki-track{display:none;}
+  .pc-only-note{display:block;margin:60px auto;padding:0 24px;text-align:center;font-family:var(--mincho);font-size:16px;color:var(--sub);}
+}
+@media(prefers-reduced-motion:reduce){.art *,.fuda-tag{animation:none !important;}}
+
+.art .end-mark{opacity:0;transition:opacity .4s ease;}
+
+/* 結び：丸窓の白い壁。真ん中の穴から町が見え、寄るほど穴が広がる */
+.peek{
+  position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transform-origin:50% 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 25.5vh, #6b5036 25.5vh 27vh, #8a6a44 27vh 28vh, transparent 28vh),
+    radial-gradient(circle at 50% 50%, transparent 0 28vh, #F2EEE0 28vh);
+}
+.peek::after{   /* 漆喰の壁の質感 */
+  content:"";position:absolute;inset:0;
+  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 28vh, #000 28vh);mask:radial-gradient(circle at 50% 50%, transparent 0 28vh, #000 28vh);
+  background:repeating-linear-gradient(0deg,rgba(120,90,50,.035) 0 1px,transparent 1px 6px);
+}
+.emaki{transform-origin:50% 50%;}
+
+/* 情景の空気感：紙の粒子・周辺減光・斜めの日差し */
+.emaki::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:
+    linear-gradient(115deg,rgba(255,236,190,.22) 0%,rgba(255,236,190,0) 40%),
+    radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 55%,rgba(30,20,5,.28) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;}
+.sway{transform-box:fill-box;transform-origin:top center;animation:willow 5s ease-in-out infinite alternate;}
+@keyframes willow{from{transform:rotate(-2deg)}to{transform:rotate(2.5deg)}}
+
+/* 絵巻の最後に出るサイトへのリンク */
+.endlink{position:absolute;left:50%;bottom:8%;z-index:7;transform:translate(-50%,10px);opacity:0;pointer-events:none;
+  padding:12px 28px;background:#111D0F;color:#F2EEE0;font-family:var(--mincho);font-weight:700;font-size:16px;letter-spacing:.16em;text-decoration:none;
+  border:1px solid #C9A96B;box-shadow:0 6px 20px rgba(0,0,0,.3);transition:opacity .6s ease,transform .6s ease,background .2s;}
+.endlink.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;}
+.endlink:hover{background:#254723;}
+.endlink span{color:#C9A96B;margin-left:6px;}
+
+.petal{animation:petal 7s linear infinite;}
+@keyframes petal{from{transform:translate(0,0)}to{transform:translate(-90px,230px)}}
+.bird-sit{animation:hop 4s ease-in-out infinite;}
+@keyframes hop{0%,90%,100%{translate:0 0}95%{translate:0 -5px}}
+
+/* 3D版：キャンバス・札の置き場・色分けの凡例 */
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .3s linear;}
+.tags{position:absolute;inset:0;pointer-events:none;}
+.tags .fuda-tag{opacity:0;pointer-events:none;transition:opacity .45s ease;}
+.tags .fuda-tag.on{opacity:1;pointer-events:auto;}
+.legend{position:absolute;right:14px;bottom:14px;z-index:6;list-style:none;margin:0;padding:6px 10px;display:flex;gap:12px;
+  background:rgba(17,29,15,.55);backdrop-filter:blur(3px);font-size:11px;color:#F2EEE0;letter-spacing:.08em;}
+.legend li{display:flex;align-items:center;gap:5px;}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);}
+
+/* 自由に歩く：キャラ選び・HUD・ひとこと */
+.endlink.alt{bottom:calc(8% + 58px);background:#C9A96B;color:#111D0F;border-color:#111D0F;cursor:pointer;font-size:15px;}
+.endlink.alt span{color:#111D0F;}
+.endlink.alt:hover{background:#d8b97a;}
+.freebtn,.exitbtn{position:absolute;top:14px;right:14px;z-index:8;padding:7px 16px;border:1px solid #C9A96B;background:rgba(17,29,15,.7);color:#F2EEE0;font-family:var(--mincho);font-weight:700;font-size:13px;letter-spacing:.14em;cursor:pointer;backdrop-filter:blur(3px);}
+.freebtn:hover,.exitbtn:hover{background:#254723;}
+.freebtn[hidden],.exitbtn[hidden],.pick[hidden],.hud[hidden]{display:none;}
+.pick{position:absolute;inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:rgba(17,29,15,.55);backdrop-filter:blur(4px);}
+.pick-lead{font-family:var(--mincho);font-weight:700;font-size:22px;letter-spacing:.2em;color:#F2EEE0;}
+.pick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:min(92%,880px);}
+.pick-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 12px 18px;border:1px solid #CDBB92;background:linear-gradient(180deg,#F5EEDA,#E7DCBD);cursor:pointer;text-align:center;transition:transform .2s ease,box-shadow .2s ease;}
+.pick-card:hover,.pick-card:focus-visible{transform:translateY(-4px);box-shadow:0 10px 22px rgba(0,0,0,.3);outline:2px solid #8AB657;}
+.pick-card b{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',var(--mincho);font-size:28px;color:#F2EEE0;background:var(--forest);}
+.pick-card[data-who="大"] b{background:#3f6b3a;}.pick-card[data-who="老"] b{background:#4E9495;}.pick-card[data-who="絵"] b{background:#8C4229;}
+.pick-card strong{font-family:var(--mincho);font-size:18px;letter-spacing:.14em;color:var(--ink);}
+.pick-card em{font-style:normal;font-family:var(--maru);font-weight:700;font-size:12px;letter-spacing:.1em;color:var(--shu);}
+.pick-card span{font-size:12px;line-height:1.7;color:var(--sub);}
+.pick-back{border:none;background:none;color:#F2EEE0;font-size:12px;letter-spacing:.16em;text-decoration:underline;cursor:pointer;}
+.hud{position:absolute;left:14px;top:14px;z-index:7;max-width:330px;padding:9px 14px;background:rgba(17,29,15,.62);backdrop-filter:blur(3px);border-left:3px solid #C9A96B;color:#F2EEE0;}
+.hud strong{font-family:var(--mincho);font-size:17px;letter-spacing:.16em;margin-right:10px;}
+.hud em{font-style:normal;font-size:12px;letter-spacing:.1em;color:#E8C98A;}
+.hud-desc{margin-top:3px;font-size:11px;line-height:1.6;color:rgba(242,238,224,.85);}
+.hud-count{margin-top:3px;font-family:var(--maru);font-weight:700;font-size:13px;color:#ffe38a;}
+.hud-keys{margin-top:5px;font-size:10px;letter-spacing:.06em;color:rgba(242,238,224,.6);}
+.talk{position:absolute;left:50%;bottom:18px;z-index:8;width:min(70%,640px);transform:translate(-50%,8px);opacity:0;pointer-events:none;padding:11px 18px 12px;
+  background:rgba(242,238,224,.95);border:1px solid #CDBB92;box-shadow:0 6px 18px rgba(0,0,0,.3);transition:opacity .35s ease,transform .35s ease;}
+.talk.show{opacity:1;transform:translate(-50%,0);}
+.talk b{font-family:var(--mincho);font-size:13px;letter-spacing:.16em;color:var(--shu);}
+.talk p{margin-top:3px;font-family:var(--mincho);font-weight:500;font-size:15px;line-height:1.7;color:var(--ink);}
+.exploring .narr,.exploring .legend{display:none;}
+.exploring #gl{cursor:grab;}
+
+.pick-lead small{display:block;margin-top:6px;font-family:var(--maru);font-weight:500;font-size:12px;letter-spacing:.2em;color:rgba(242,238,224,.8);}
+.exitbtn{top:14px;right:14px;}
+
+.introskip{position:absolute;right:14px;bottom:14px;z-index:9;padding:6px 14px;border:1px solid rgba(242,238,224,.6);background:rgba(17,29,15,.55);color:#F2EEE0;font-size:12px;letter-spacing:.14em;cursor:pointer;}
+.introskip[hidden]{display:none;}
+/* 背中の画面：町が見えるよう、選択カードは下に寄せて薄く */
+.pick{justify-content:flex-end;padding-bottom:26px;background:linear-gradient(180deg,rgba(17,29,15,0) 30%,rgba(17,29,15,.62) 100%);backdrop-filter:none;animation:pick-in .8s ease both;}
+@keyframes pick-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pick-grid{width:min(92%,820px);}
+.pick-card{padding:12px 10px 12px;gap:3px;}
+.pick-card b{width:40px;height:40px;font-size:22px;}
+.pick-card span{font-size:11px;line-height:1.55;}
+
+/* ---------- 没入：物語がはじまったら、PCの枠をなくしてページ際まで広げる ---------- */
+html.immersive,html.immersive body{overflow:hidden;}
+html.immersive header,html.immersive .breadcrumb,html.immersive .desk-lead,html.immersive .stand,html.immersive .bezel,html.immersive .hint,html.immersive .world-after,html.immersive footer{display:none !important;}
+html.immersive .emaki-track,html.immersive .desk{padding:0;min-height:0;height:0;}
+html.immersive .monitor{position:fixed;inset:0;z-index:60;width:100vw;height:100vh;aspect-ratio:auto;padding:0;border-radius:0;background:#000;box-shadow:none;}
+html.immersive .screen{border-radius:0;}
+html.immersive .scale{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:70;width:min(420px,60vw);pointer-events:none;}
+html.immersive .scale-bar{height:3px;background:rgba(255,255,255,.3);}
+html.immersive .scale-labels{margin-top:4px;font-size:13px;color:rgba(255,255,255,.65);text-shadow:0 1px 3px rgba(0,0,0,.6);}
+html.immersive .scale-labels span.on{color:#fff;}
+.backlink{display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:9;padding:5px 12px;color:rgba(242,238,224,.85);font-size:12px;letter-spacing:.14em;text-decoration:none;background:rgba(17,29,15,.45);}
+html.immersive .backlink{display:block;}
+.backlink:hover{background:rgba(17,29,15,.8);}
+/* 画面を埋めないよう、説明は小さく・すぐ引っ込める */
+.hud{max-width:240px;padding:6px 11px;}
+.hud strong{font-size:14px;} .hud-desc{display:none;}
+.hud-keys{transition:opacity 1.2s ease;}
+.hud.quiet .hud-keys{opacity:0;height:0;margin:0;overflow:hidden;}
+.talk{width:min(52%,520px);padding:7px 14px 8px;bottom:34px;}
+.talk p{font-size:13px;line-height:1.6;} .talk b{font-size:11px;}
+.narr{bottom:34px;}
+.legend{bottom:34px;}
