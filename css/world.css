@@ -265,7 +265,68 @@ html.immersive .backlink{display:block;}
 .hud strong{font-size:14px;} .hud-desc{display:none;}
 .hud-keys{transition:opacity 1.2s ease;}
 .hud.quiet .hud-keys{opacity:0;height:0;margin:0;overflow:hidden;}
-.talk{width:min(52%,520px);padding:7px 14px 8px;bottom:34px;}
+.talk{width:min(52%,520px);padding:7px 14px 8px;bottom:58px;}
 .talk p{font-size:13px;line-height:1.6;} .talk b{font-size:11px;}
-.narr{bottom:34px;}
-.legend{bottom:34px;}
+.narr{bottom:58px;}
+.legend{bottom:58px;}
+
+/* 2D版：区画の名前（入ったときだけ大きく出る） */
+.zone-name{position:absolute;top:12%;left:50%;transform:translateX(-50%);z-index:6;font-family:'Yuji Syuku',var(--mincho);font-size:44px;letter-spacing:.3em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.55);opacity:0;pointer-events:none;}
+.zone-name.show{animation:zone-in 2.6s ease both;}
+@keyframes zone-in{0%{opacity:0;transform:translate(-50%,10px)}15%{opacity:1;transform:translate(-50%,0)}75%{opacity:1}100%{opacity:0}}
+
+/* ================= 近大100周年サイトに寄せた見た目：紙の白・インクの濃紺・墨絵のくすみ ================= */
+.screen,.hud,.talk,.kbar,.stagebig,.scale,.endlink,.zone-name,.legend,.boot{font-family:'Zen Kaku Gothic New','Noto Sans JP',sans-serif;}
+.screen{background:#f4f1e8;}
+/* 上の帯：濃紺 */
+.kbar{position:absolute;top:0;left:0;right:0;height:56px;z-index:12;display:flex;align-items:center;gap:10px;padding:0 18px;background:#00517e;color:#fff;}
+.kbar-brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;}
+.kbar-brand img{width:30px;height:30px;object-fit:contain;}
+.kbar-brand span{display:flex;flex-direction:column;font-family:'Barlow','Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:18px;letter-spacing:.14em;line-height:1.1;}
+.kbar-brand small{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:500;font-size:10px;letter-spacing:.2em;opacity:.85;}
+.kbar-spacer{flex:1;}
+.kbar-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:4px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:12px;letter-spacing:.06em;text-decoration:none;}
+.kbar-btn i{font-style:normal;}
+.kbar-btn.gold{background:#b6b666;color:#26280e;}
+.kbar-btn:hover{filter:brightness(1.12);}
+.kbar{display:none;} html.immersive .kbar{display:flex;}
+/* 大きな年号の代わり：段階（壱 再生 —） */
+.stagebig{position:absolute;top:70px;left:30px;z-index:6;display:none;align-items:baseline;gap:12px;color:#00517e;pointer-events:none;}
+html.immersive .stagebig{display:flex;flex-wrap:wrap;}
+.stagebig b{font-family:'Yuji Syuku',serif;font-size:26px;font-weight:400;letter-spacing:.1em;}
+.stagebig span{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:64px;letter-spacing:.06em;line-height:1;}
+.stagebig i{width:50px;height:3px;background:#00517e;align-self:center;}
+.stagebig small{flex-basis:100%;margin-top:4px;font-weight:700;font-size:13px;letter-spacing:.1em;color:#00517e;}
+/* 画面に出すものは白い面に濃紺の字 */
+.hud{top:70px;left:auto;right:18px;max-width:none;background:rgba(255,255,255,.92);border:none;border-radius:8px;padding:8px 14px;color:#00517e;box-shadow:0 2px 8px rgba(0,0,0,.12);backdrop-filter:none;}
+.hud p:first-child{display:none;}
+.hud-count{margin:0;font-weight:700;font-size:14px;color:#00517e;}
+.hud-keys{color:#555;font-size:11px;margin-top:4px;}
+.talk{left:30px;bottom:30px;transform:translateY(8px);width:min(58%,660px);padding:8px 14px;background:rgba(255,255,255,.94);border:none;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;gap:12px;}
+.talk.show{transform:none;}
+.talk b{flex:none;padding:6px 12px;border-radius:4px;background:#00517e;color:#fff;font-size:12px;letter-spacing:.08em;}
+.talk p{margin:0;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:13.5px;line-height:1.6;color:#222;}
+.narr{display:none !important;}
+.legend{left:50%;right:auto;transform:translateX(-50%);bottom:30px;background:rgba(255,255,255,.9);color:#00517e;font-weight:700;border-radius:20px;padding:6px 14px;}
+.legend i{box-shadow:none;border:1px solid rgba(0,0,0,.15);}
+.zone-name{top:90px;color:#fff;background:#00517e;border-radius:6px;padding:4px 26px;font-size:32px;letter-spacing:.3em;text-shadow:none;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;}
+/* 年表のような目盛り：右下 */
+html.immersive .scale{left:auto;right:30px;bottom:26px;transform:none;width:min(340px,40vw);}
+html.immersive .scale-bar{height:4px;background:rgba(0,81,126,.25);overflow:visible;position:relative;}
+html.immersive .scale-bar i{background:#00517e;}
+html.immersive .scale-bar b{background:#00517e;border:2px solid #fff;}
+html.immersive .scale-labels{margin-top:8px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;letter-spacing:.1em;color:rgba(0,81,126,.55);text-shadow:none;}
+html.immersive .scale-labels span.on{color:#00517e;}
+/* 暗い丸ボタン＋矢印の丸 */
+.endlink,.endlink.alt{padding:11px 18px 11px 26px;border:none;border-radius:34px;background:rgba(48,42,40,.92);color:#fff;font-weight:700;font-size:15px;letter-spacing:.06em;display:inline-flex;align-items:center;gap:14px;}
+.endlink.alt{background:rgba(0,81,126,.95);}
+.endlink span,.endlink.alt span{width:26px;height:26px;border-radius:50%;background:#dcd6c6;color:#222;display:inline-flex;align-items:center;justify-content:center;margin:0;font-size:14px;}
+.endlink:hover,.endlink.alt:hover{filter:brightness(1.15);background:rgba(48,42,40,.92);}
+.endlink.alt:hover{background:rgba(0,81,126,.95);}
+.endlink{bottom:96px;}.endlink.alt{bottom:148px;}
+/* 起動画面：真っ白に濃紺 */
+.boot{background:#fff !important;color:#00517e;}
+.boot p,.boot p small{color:#00517e;}
+.boot button{background:#00517e;color:#fff;border-radius:34px;border:none;padding:12px 36px;}
+.boot button:hover{background:#003857;color:#fff;}
+.legend{display:none !important;}

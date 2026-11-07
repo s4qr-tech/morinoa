@@ -9,9 +9,9 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Barlow:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20261107b">
-<link rel="stylesheet" href="css/world.css?v=20261108h">
+<link rel="stylesheet" href="css/world.css?v=20261109f">
 </head>
 <body class="world">
 
@@ -38,9 +38,9 @@
       <div class="monitor" id="monitor">
         <div class="screen" id="screen">
 
-          <!-- 3Dの城下町（絵は js/world3d.js が組む）。札は3Dの位置に合わせて #tags に置く -->
+          <!-- 2Dの城下町（絵は js/world2d.js が描く） -->
           <div class="emaki" id="emaki">
-            <canvas id="gl" aria-label="江戸の城下町を模した3Dの町"></canvas>
+            <canvas id="gl" aria-label="城下町を駆ける横スクロールの町"></canvas>
             <div class="tags" id="tags"></div>
           </div>
 
@@ -63,14 +63,21 @@
           </div>
 
           <!-- 自由に歩く：キャラクターを選び、それぞれの目で町を見る -->
-          <a class="backlink" id="backlink" href="service-ip.html">× 戻る</a>
+          <div class="kbar" id="kbar">
+            <a class="kbar-brand" href="index.html" aria-label="MORINOA トップへ"><img src="kamon-cream.png" alt="" aria-hidden="true"><span>MORINOA<small>めぐる城下町</small></span></a>
+            <span class="kbar-spacer"></span>
+            <a class="kbar-btn" href="service-ip.html">IP・デザインへ <i>→</i></a>
+            <a class="kbar-btn gold" href="https://forms.gle/eSTg1UBF56mVySoMA">軍議を申し込む</a>
+          </div>
+          <div class="stagebig" id="stagebig"><b id="sb-no">壱</b><span id="sb-name">再生</span><i></i><small id="sb-sub"></small></div>
           <button type="button" class="introskip" id="introskip" hidden>とばす →</button>
           <div class="hud" id="hud" hidden>
             <p><strong id="hud-name">将軍</strong><em id="hud-lens">町を歩いて確かめる</em></p>
             <p class="hud-desc" id="hud-desc"></p>
             <p class="hud-count" id="hud-count"></p>
-            <p class="hud-keys">W 進む　A D 向きを回す　S 下がる　Shift 走る　ドラッグで向き</p>
+            <p class="hud-keys">← → 歩く　Space ジャンプ　Shift 走る　立て札の前で話が聞ける</p>
           </div>
+          <div class="zone-name" id="zone-name"></div>
           <div class="talk" id="talk"><b id="talk-who"></b><p id="talk-text"></p></div>
 
           <!-- 結びのリンク：絵巻の最後に出る -->
@@ -103,7 +110,7 @@
         <div class="scale-bar"><i id="scale-fill"></i><b id="scale-pin"></b></div>
         <div class="scale-labels"><span>再生</span><span>維持</span><span>持続</span></div>
       </div>
-      <p class="hint" id="hint">城の中の町を、自由に歩く。どんな道を通っても、町は 再生 → 維持 → 持続 へ向かいます</p>
+      <p class="hint" id="hint">歩いて、城を目指す。屋根の上でも地面でも、どんな道を通っても、町は 再生 → 維持 → 持続 へ向かいます</p>
     </div>
   </section>
 
@@ -121,7 +128,6 @@
   </section>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/world3d.js?v=20261108h"></script>
+<script src="js/world2d.js?v=20261109h"></script>
 </body>
 </html>
