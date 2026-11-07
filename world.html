@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20261107b">
-<link rel="stylesheet" href="css/world.css?v=20261108d">
+<link rel="stylesheet" href="css/world.css?v=20261108e">
 </head>
 <body class="world">
 
@@ -64,19 +64,9 @@
 
           <!-- 自由に歩く：キャラクターを選び、それぞれの目で町を見る -->
           <a class="backlink" id="backlink" href="service-ip.html">× 戻る</a>
-          <button type="button" class="exitbtn" id="exitfree" hidden>目をえらびなおす</button>
           <button type="button" class="introskip" id="introskip" hidden>とばす →</button>
-          <div class="pick" id="pick" hidden>
-            <p class="pick-lead">だれの目で、町を歩く？<small>どの道を行っても、町は巡りはじめる</small></p>
-            <div class="pick-grid">
-              <button type="button" class="pick-card" data-who="将"><b>将</b><strong>将軍</strong><em>全体を見渡す目</em><span>区画・城・稼ぎの流れを、一枚の図として見る。</span></button>
-              <button type="button" class="pick-card" data-who="大"><b>大</b><strong>大老</strong><em>お金の流れを見る目</em><span>店の稼ぎと回収。金がどこへ落ち、どこへ戻るか。</span></button>
-              <button type="button" class="pick-card" data-who="老"><b>老</b><strong>老中</strong><em>現場の事実を見る目</em><span>傾きの正体を、人と帳簿の実情から足で確かめる。</span></button>
-              <button type="button" class="pick-card" data-who="絵"><b>絵</b><strong>奥絵師</strong><em>物語と魅力を見る目</em><span>絵になる景色を探し、画帖に描き留めていく。</span></button>
-            </div>
-          </div>
           <div class="hud" id="hud" hidden>
-            <p><strong id="hud-name"></strong><em id="hud-lens"></em></p>
+            <p><strong id="hud-name">将軍</strong><em id="hud-lens">町を歩いて確かめる</em></p>
             <p class="hud-desc" id="hud-desc"></p>
             <p class="hud-count" id="hud-count"></p>
             <p class="hud-keys">W 進む　A D 向きを回す　S 下がる　Shift 走る　ドラッグで向き</p>
@@ -113,7 +103,7 @@
         <div class="scale-bar"><i id="scale-fill"></i><b id="scale-pin"></b></div>
         <div class="scale-labels"><span>再生</span><span>維持</span><span>持続</span></div>
       </div>
-      <p class="hint" id="hint">だれの目で歩くか選び、町を自由に歩く。どんな道を通っても、町は 再生 → 維持 → 持続 へ向かいます</p>
+      <p class="hint" id="hint">城の中の町を、自由に歩く。どんな道を通っても、町は 再生 → 維持 → 持続 へ向かいます</p>
     </div>
   </section>
 
@@ -132,6 +122,6 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/world3d.js?v=20261108d"></script>
+<script src="js/world3d.js?v=20261108g"></script>
 </body>
 </html>
