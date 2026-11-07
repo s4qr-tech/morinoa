@@ -1,6 +1,6 @@
 // MORINOAの世界「めぐる城下町」3D版（PC専用）
 // 城の中（城郭の内）に城下町が広がる、コンパクトなミニチュア。主人公は将軍ひとり。
-// 区画の色分けは江戸の城下町図にならう：武家地=黄 / 町人地=赤 / 寺社地=茶 / 下級武士地=青。
+// 区画の色分けは江戸の城下町図にならう：武家地=黄 / 町人地=赤 / 寺社地=茶 / 長屋町=青。
 // 形はすべてここで組む仮のもの。奥絵師の絵・モデルが届いたら差し替える。
 function boot(){
   if (window.matchMedia('(max-width: 900px)').matches) return;   // PC専用
@@ -47,7 +47,7 @@ function boot(){
   flat(34, 30, '#e8d886', -29, .03, -22);                                                 // 武家地（黄）
   flat(30, 30, '#c09c76', 31, .03, -22);                                                  // 寺社地（茶）
   flat(92, 28, '#e79a8a', 0, .03, 12);                                                    // 町人地（赤）
-  flat(92, 9, '#9cc3e6', 0, .03, 33);                                                     // 下級武士地（青）
+  flat(92, 9, '#9cc3e6', 0, .03, 33);                                                     // 長屋町（青）
   flat(92, 8, '#f0e3c2', 0, .06, 10);                                                     // 本通り（東西）
   flat(8, 70, '#f0e3c2', 0, .06, 2);                                                      // 大手道（城門から城へ）
   for (var mi = 0; mi < 12; mi++) {
@@ -128,7 +128,7 @@ function boot(){
     box(88, .12, .12, '#111D0F', 0, 6.3, lz);
     for (var lx = -42; lx <= 42; lx += 3.6) { if (Math.abs(lx) < 4.4) continue; var lm = new T3.Mesh(new T3.SphereGeometry(.4, 8, 6), lanternMat); lm.position.set(lx, 5.7, lz); scene.add(lm); }
   });
-  // ---------- 下級武士地（青）：南の長屋 ----------
+  // ---------- 長屋町（青）：南の長屋 ----------
   for (var lx2 = -42; lx2 <= 42; lx2 += 6) { if (Math.abs(lx2) < 7) continue; lowhouse(lx2, 34.5); }
   // ---------- 武家地（黄）：城の西側 ----------
   [[-40, -32], [-30, -32], [-40, -22], [-30, -22], [-40, -12], [-30, -12], [-20, -12]].forEach(function(q){ samurai(q[0], q[1], 6.4, 5); if (rnd() > .4) tree(q[0] + 4, q[1] + 3, .8 + rnd() * .3, 'green'); });
@@ -205,7 +205,7 @@ function boot(){
     x.fillStyle = bg; x.fillRect(0, 0, 256, 96); x.fillStyle = fg; x.font = '700 40px "Yuji Syuku", serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(str, 128, 50);
     var sp = new T3.Sprite(new T3.SpriteMaterial({ map: new T3.CanvasTexture(c), transparent: true, depthTest: false })); sp.scale.set(w, h * 96 / 256, 1); sp.renderOrder = 10; scene.add(sp); return sp;
   }
-  [['武家地', '#7a6a1c', '#f3e7a0', -29, 14, -22], ['町人地', '#8a2a1a', '#f6c3b6', 0, 15, 22], ['寺社地', '#5a3a1c', '#e3c9a8', 31, 14, -14], ['下級武士地', '#1f4f7f', '#cfe3f6', 0, 10, 36], ['城', '#111D0F', '#f1e8d0', 0, 32, -27]].forEach(function(z){
+  [['武家地', '#7a6a1c', '#f3e7a0', -29, 14, -22], ['町人地', '#8a2a1a', '#f6c3b6', 0, 15, 22], ['寺社地', '#5a3a1c', '#e3c9a8', 31, 14, -14], ['長屋町', '#1f4f7f', '#cfe3f6', 0, 10, 36], ['城', '#111D0F', '#f1e8d0', 0, 32, -27]].forEach(function(z){
     var sp = spriteText(z[0], z[1], z[2], 6.5, 6.5); sp.position.set(z[3], z[4], z[5]);
   });
   // [x, z, 場所, 一言]
@@ -216,12 +216,12 @@ function boot(){
     [24, 10, '東の町並み', '語られる町は人を呼ぶ。物語は、いちばん安い兵糧だ。'],
     [-30, -22, '武家地', '黄の区画、武家地。城を支える人の住まい。ここが痩せれば城も痩せる。'],
     [30, -16, '寺社地', '茶の区画、寺社地。町の記憶と祈りがここにある。祭りは年に一度の総力戦だ。'],
-    [-24, 28, '長屋', '青の区画、下級武士地。町を支える手が、多く住んでいる。小さな仕事が町を回す。'],
+    [-24, 28, '長屋', '青の区画、長屋町。町を支える手が、多く住んでいる。小さな仕事が町を回す。'],
     [0, 33, '城門', '城門は町の入口。外から来る人と金を、ここで迎える。'],
     [-40, -34, '西北の櫓', '櫓から町を見渡せば、傾いた場所も、まだ生きている場所も見える。'],
     [40, 32, '東南の角', '城郭の隅にも、人は暮らしている。端まで目を配るのが将の務めだ。']
   ];
-  var flagList = [], flagData = [[-30, -14, '武家地', '武家地を押さえた。城のまわりの安定が、町の再生の土台になる。'], [-18, 11, '町人地', '町人地を押さえた。人と金が集まる場所に、手を入れる順を決める。'], [30, -12, '寺社地', '寺社地を押さえた。祈りと祭りは、町の求心力になる。'], [-24, 31, '下級武士地', '下級武士地を押さえた。小さな手が動けば、町全体が動く。'], [0, -11, '城', '城を押さえた。稼ぎが戻る場所を固めれば、町へ手を回せる。']];
+  var flagList = [], flagData = [[-30, -14, '武家地', '武家地を押さえた。城のまわりの安定が、町の再生の土台になる。'], [-18, 11, '町人地', '町人地を押さえた。人と金が集まる場所に、手を入れる順を決める。'], [30, -12, '寺社地', '寺社地を押さえた。祈りと祭りは、町の求心力になる。'], [-24, 31, '長屋町', '長屋町を押さえた。小さな手が動けば、町全体が動く。'], [0, -11, '城', '城を押さえた。稼ぎが戻る場所を固めれば、町へ手を回せる。']];
   flagData.forEach(function(q){
     var g = new T3.Group(); box(.25, 7, .25, '#6b5036', 0, 3.5, 0, g); var fl = box(2.6, 1.5, .12, '#8C4229', 1.4, 6.2, 0, g); box(2.6, .2, .14, C.gold, 1.4, 5.4, 0, g);
     g.position.set(q[0], 0, q[1]); g.userData = { got: false, text: q[3], where: q[2], flag: fl }; scene.add(g); flagList.push(g);
@@ -237,7 +237,7 @@ function boot(){
   var started = false, intro = false, introT = 0, playing = false, ending = false, ended = false, endT = 0, stageShown = -1;
   var apos = V(0, 0, -6), yaw = 0, faceYaw = 0, keys = {}, drag = null, poiShown = {}, poiDone = POI.map(function(){ return false; }), prog = 0, progS = 0, talkTimer = 0, lastT = 0;
   var curCam = V(0, 10, -18), curLook = V(0, 0, 0), tgtLook = V(0, 0, 0);
-  var ME = { name: '将軍', dist: 14, h: 10, look: 1.5, ahead: 26, speed: 9 };
+  var ME = { name: '将軍', dist: 18, h: 17, look: 1.5, ahead: 28, speed: 9 };
   var PICK = { dist: 11, h: 8, look: .6 }, INTRO_SEC = 7.5;
   var introCam = new T3.CatmullRomCurve3([V(0, 31, -18), V(0, 24, -12), V(2, 14, -14), V(0, PICK.h, apos.z - PICK.dist)]);
   var introLook = new T3.CatmullRomCurve3([V(0, 2, 30), V(0, 2, 24), V(0, 3, 14), V(0, PICK.look, apos.z + 4)]);
