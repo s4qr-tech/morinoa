@@ -96,3 +96,9 @@
 
 .nb{display:inline-block;}
 #service .bar-sep{display:inline-block;margin:0 .12em;opacity:.7;}
+
+/* ---------- 押しやすさ：ヘッダー・フッターのリンクは高さ44px以上 ---------- */
+.nav-links a,.foot-links a{display:inline-flex;align-items:center;min-height:44px;}
+header .cta-li a,header .nav-cta,header .btn{min-height:44px;display:inline-flex;align-items:center;}
+.nav-links a,.foot-links a{min-width:44px;justify-content:center;}
+.breadcrumb a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}

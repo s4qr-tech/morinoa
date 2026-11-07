@@ -275,3 +275,23 @@
   .org-card.fuda.reveal.show{animation:none;}
 }
 body.motion-off .org-card.fuda.reveal.show{animation:none !important;}
+
+/* ============================================================
+   点検の指摘を反映：色の系統を絞る／コントラスト／押しやすさ
+   ============================================================ */
+/* 章の色は「和紙」と「深緑」を軸に。朱は要所だけ */
+#contact{background:var(--cream) !important;border-top:1px solid var(--line) !important;}
+#contact .sec-label{color:var(--forest);}
+#contact .sec-label::before{background:var(--forest);}
+#contact .display{color:var(--ink);}
+#contact .contact-copy p{color:var(--sub);}
+.contact .card,.contact-grid .card,#contact .card{box-shadow:none;border:1.5px solid var(--forest);}
+.sec-head::after{-webkit-text-stroke:1.5px var(--line);opacity:1;}
+/* ラベルのコントラスト（青緑 2.7:1 → 深緑） */
+#service .sec-label,.sec-label{color:var(--forest);}
+#service .sec-label::before,.sec-label::before{background:var(--forest);}
+/* 事業の面：ボタンを塗りにして、押せることをはっきりと */
+.slash-card .svc-more{background:var(--forest);border:1.5px solid var(--forest);color:var(--cream);}
+.slash-card p{font-size:15.5px;}
+/* 一座の札：英字名を12pxに */
+.fuda-name small,.fuda-face.back small{font-size:12px !important;}

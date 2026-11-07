@@ -338,3 +338,14 @@ body.ip-brutal{
 .ip-brutal .detail-hero .hero-ink{position:absolute;left:0;top:0;z-index:0;pointer-events:none;}
 .ip-brutal .detail-hero .wrap{z-index:1;}
 html.ink-intro body{overflow:hidden;}
+
+/* ============================================================
+   点検の指摘を反映：コントラストと共通色
+   ============================================================ */
+body.ip-brutal{--hi:#C23219;--hanada:#3F5FA6;}
+.cho.c1{--c:var(--hi);}
+.ip-brutal .detail-hero .lead-role{background:#C23219;}
+.ip-brutal .world-link .svc-more{background:var(--avocado);color:var(--ink);border:2px solid var(--ink);}
+/* トップと共通の深緑を、進め方の面に */
+.ip-brutal section.detail-block.ip-flow{background:var(--forest) !important;}
+.ip-brutal .bar:not(.sora){background:var(--forest);}
