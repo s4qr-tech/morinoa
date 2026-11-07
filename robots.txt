@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /lab/
+Disallow: /motion-lab.html
+
+Sitemap: https://morinoa.com/sitemap.xml
