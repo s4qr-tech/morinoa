@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var hero = document.querySelector('.hero'); if (!hero) return;
+  var hero = document.querySelector('.hero'); if (!hero || window.innerWidth <= 820) return;
   var root = document.documentElement, kids = Array.prototype.slice.call(hero.children);
   var timer = 0, anim = 0, busy = false, touching = false;
 
@@ -16,12 +16,12 @@
   function springBack(){
     var start = window.scrollY; if (start < 2 || start >= limit()) { pull(0); return; }
     busy = true; root.style.scrollBehavior = 'auto';
-    var t0 = performance.now(), dur = 950;
+    var t0 = performance.now(), total = 1.4;
     cancelAnimationFrame(anim);
     (function step(now){
-      var t = Math.min(1, (now - t0) / dur), s = Math.exp(-5.2 * t * 2.2) * Math.cos(11 * t * 1.6), pos = start * s;
-      window.scrollTo(0, Math.max(0, pos)); pull(pos < 0 ? pos * .5 : stretch(Math.max(0, pos)));
-      if (t < 1) anim = requestAnimationFrame(step); else { window.scrollTo(0, 0); pull(0); root.style.scrollBehavior = ''; busy = false; }
+      var t = Math.min(total, (now - t0) / 1000), s = Math.exp(-5 * t) * Math.cos(5.2 * t), pos = start * s;   // 1回だけ小さく行き過ぎて、静かに止まる
+      window.scrollTo(0, Math.max(0, pos)); pull(pos < 0 ? pos * 1.6 : stretch(Math.max(0, pos)));
+      if (t < total) anim = requestAnimationFrame(step); else { window.scrollTo(0, 0); pull(0); root.style.scrollBehavior = ''; busy = false; }
     })(t0);
   }
 
