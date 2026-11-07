@@ -896,3 +896,6 @@ html,body{overflow-x:clip;}
   80%{opacity:1}80.6%{opacity:.75}81.4%{opacity:1}100%{opacity:1}}
 body.motion-off .neon-sign.on,body.motion-off .neon-sign.on .neon-word{animation:none;}
 @media(max-width:600px){.neon-word{font-size:17px;}}
+
+/* 画像に width/height 属性（読み込み時のずれ防止）を付けたので、CSSで幅だけ決めている画像は高さを自動に戻す */
+.hero-logo .logo-img,.why-kamon,img[src^="logo-mark"]{height:auto;}
