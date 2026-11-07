@@ -279,7 +279,7 @@ html.immersive .backlink{display:block;}
 .screen,.hud,.talk,.kbar,.stagebig,.scale,.endlink,.zone-name,.legend,.boot{font-family:'Zen Kaku Gothic New','Noto Sans JP',sans-serif;}
 .screen{background:#f4f1e8;}
 /* 上の帯：濃紺 */
-.kbar{position:absolute;top:0;left:0;right:0;height:56px;z-index:12;display:flex;align-items:center;gap:10px;padding:0 18px;background:#00517e;color:#fff;}
+.kbar{position:absolute;top:0;left:0;right:0;height:56px;z-index:12;display:flex;align-items:center;gap:10px;padding:0 18px;background:#1D4F75;color:#fff;}
 .kbar-brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;}
 .kbar-brand img{width:30px;height:30px;object-fit:contain;}
 .kbar-brand span{display:flex;flex-direction:column;font-family:'Barlow','Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:18px;letter-spacing:.14em;line-height:1.1;}
@@ -287,46 +287,71 @@ html.immersive .backlink{display:block;}
 .kbar-spacer{flex:1;}
 .kbar-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:4px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:12px;letter-spacing:.06em;text-decoration:none;}
 .kbar-btn i{font-style:normal;}
-.kbar-btn.gold{background:#b6b666;color:#26280e;}
+.kbar-btn.gold{background:#D3381C;color:#fff;}
 .kbar-btn:hover{filter:brightness(1.12);}
 .kbar{display:none;} html.immersive .kbar{display:flex;}
 /* 大きな年号の代わり：段階（壱 再生 —） */
-.stagebig{position:absolute;top:70px;left:30px;z-index:6;display:none;align-items:baseline;gap:12px;color:#00517e;pointer-events:none;}
+.stagebig{position:absolute;top:70px;left:30px;z-index:6;display:none;align-items:baseline;gap:12px;color:#1D4F75;pointer-events:none;}
 html.immersive .stagebig{display:flex;flex-wrap:wrap;}
 .stagebig b{font-family:'Yuji Syuku',serif;font-size:26px;font-weight:400;letter-spacing:.1em;}
 .stagebig span{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:64px;letter-spacing:.06em;line-height:1;}
-.stagebig i{width:50px;height:3px;background:#00517e;align-self:center;}
-.stagebig small{flex-basis:100%;margin-top:4px;font-weight:700;font-size:13px;letter-spacing:.1em;color:#00517e;}
+.stagebig i{width:50px;height:3px;background:#1D4F75;align-self:center;}
+.stagebig small{flex-basis:100%;margin-top:4px;font-weight:700;font-size:13px;letter-spacing:.1em;color:#1D4F75;}
 /* 画面に出すものは白い面に濃紺の字 */
-.hud{top:70px;left:auto;right:18px;max-width:none;background:rgba(255,255,255,.92);border:none;border-radius:8px;padding:8px 14px;color:#00517e;box-shadow:0 2px 8px rgba(0,0,0,.12);backdrop-filter:none;}
+.hud{top:70px;left:auto;right:18px;max-width:none;background:rgba(255,255,255,.92);border:none;border-radius:8px;padding:8px 14px;color:#1D4F75;box-shadow:0 2px 8px rgba(0,0,0,.12);backdrop-filter:none;}
 .hud p:first-child{display:none;}
-.hud-count{margin:0;font-weight:700;font-size:14px;color:#00517e;}
+.hud-count{margin:0;font-weight:700;font-size:14px;color:#1D4F75;}
 .hud-keys{color:#555;font-size:11px;margin-top:4px;}
 .talk{left:30px;bottom:30px;transform:translateY(8px);width:min(58%,660px);padding:8px 14px;background:rgba(255,255,255,.94);border:none;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;gap:12px;}
 .talk.show{transform:none;}
-.talk b{flex:none;padding:6px 12px;border-radius:4px;background:#00517e;color:#fff;font-size:12px;letter-spacing:.08em;}
+.talk b{flex:none;padding:6px 12px;border-radius:4px;background:#1D4F75;color:#fff;font-size:12px;letter-spacing:.08em;}
 .talk p{margin:0;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:13.5px;line-height:1.6;color:#222;}
 .narr{display:none !important;}
-.legend{left:50%;right:auto;transform:translateX(-50%);bottom:30px;background:rgba(255,255,255,.9);color:#00517e;font-weight:700;border-radius:20px;padding:6px 14px;}
+.legend{left:50%;right:auto;transform:translateX(-50%);bottom:30px;background:rgba(255,255,255,.9);color:#1D4F75;font-weight:700;border-radius:20px;padding:6px 14px;}
 .legend i{box-shadow:none;border:1px solid rgba(0,0,0,.15);}
-.zone-name{top:90px;color:#fff;background:#00517e;border-radius:6px;padding:4px 26px;font-size:32px;letter-spacing:.3em;text-shadow:none;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;}
+.zone-name{top:90px;color:#fff;background:#1D4F75;border-radius:6px;padding:4px 26px;font-size:32px;letter-spacing:.3em;text-shadow:none;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;}
 /* 年表のような目盛り：右下 */
 html.immersive .scale{left:auto;right:30px;bottom:26px;transform:none;width:min(340px,40vw);}
-html.immersive .scale-bar{height:4px;background:rgba(0,81,126,.25);overflow:visible;position:relative;}
-html.immersive .scale-bar i{background:#00517e;}
-html.immersive .scale-bar b{background:#00517e;border:2px solid #fff;}
-html.immersive .scale-labels{margin-top:8px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;letter-spacing:.1em;color:rgba(0,81,126,.55);text-shadow:none;}
-html.immersive .scale-labels span.on{color:#00517e;}
+html.immersive .scale-bar{height:4px;background:rgba(29,79,117,.25);overflow:visible;position:relative;}
+html.immersive .scale-bar i{background:#1D4F75;}
+html.immersive .scale-bar b{background:#1D4F75;border:2px solid #fff;}
+html.immersive .scale-labels{margin-top:8px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;letter-spacing:.1em;color:rgba(29,79,117,.55);text-shadow:none;}
+html.immersive .scale-labels span.on{color:#1D4F75;}
 /* 暗い丸ボタン＋矢印の丸 */
 .endlink,.endlink.alt{padding:11px 18px 11px 26px;border:none;border-radius:34px;background:rgba(48,42,40,.92);color:#fff;font-weight:700;font-size:15px;letter-spacing:.06em;display:inline-flex;align-items:center;gap:14px;}
-.endlink.alt{background:rgba(0,81,126,.95);}
+.endlink.alt{background:rgba(29,79,117,.95);}
 .endlink span,.endlink.alt span{width:26px;height:26px;border-radius:50%;background:#dcd6c6;color:#222;display:inline-flex;align-items:center;justify-content:center;margin:0;font-size:14px;}
 .endlink:hover,.endlink.alt:hover{filter:brightness(1.15);background:rgba(48,42,40,.92);}
-.endlink.alt:hover{background:rgba(0,81,126,.95);}
+.endlink.alt:hover{background:rgba(29,79,117,.95);}
 .endlink{bottom:96px;}.endlink.alt{bottom:148px;}
 /* 起動画面：真っ白に濃紺 */
-.boot{background:#fff !important;color:#00517e;}
-.boot p,.boot p small{color:#00517e;}
-.boot button{background:#00517e;color:#fff;border-radius:34px;border:none;padding:12px 36px;}
+.boot{background:#fff !important;color:#1D4F75;}
+.boot p,.boot p small{color:#1D4F75;}
+.boot button{background:#1D4F75;color:#fff;border-radius:34px;border:none;padding:12px 36px;}
 .boot button:hover{background:#003857;color:#fff;}
 .legend{display:none !important;}
+
+
+/* ===== 和ポップ：鬱金・緋・藍・萌黄、ぶ厚い丸ゴシック、市松 ===== */
+:root{--ukon:#EFBB24;--hi:#D3381C;--ai2:#1D4F75;--moegi:#AACF53;--asagi:#00A3AF;--hanada:#4C6CB3;--akane:#B7282E;--pop:'Dela Gothic One','Zen Maru Gothic',sans-serif;}
+.kbar{background-color:var(--ukon) !important;background-image:conic-gradient(#F7D24E 25%,transparent 0 50%,#F7D24E 0 75%,transparent 0);background-size:28px 28px;color:#2a2012 !important;border-bottom:3px solid #2a2012;}
+.kbar-brand,.kbar-brand span,.kbar-brand small{color:#2a2012 !important;}
+.kbar-btn{background:#fff !important;color:#2a2012 !important;border:2px solid #2a2012;border-radius:999px !important;box-shadow:3px 3px 0 #2a2012;}
+.kbar-btn.gold{background:var(--hi) !important;color:#fff !important;}
+.kbar-brand img{background:#2a2012;border-radius:8px;padding:2px;}
+.stagebig span,.zone-name,.hud-count,.talk b,.endlink,.boot button,.scale-labels{font-family:var(--pop) !important;font-weight:400 !important;}
+.stagebig span{color:var(--ai2);text-shadow:3px 3px 0 #fff,5px 5px 0 var(--ukon);}
+.stagebig i{background:var(--hi);height:6px;}
+.stagebig b{color:var(--hi);}
+.hud{border:3px solid #2a2012 !important;border-radius:14px !important;box-shadow:4px 4px 0 #2a2012 !important;background:#fff !important;}
+.talk{border:3px solid #2a2012 !important;border-radius:18px !important;box-shadow:5px 5px 0 #2a2012 !important;background:#fff !important;}
+.talk b{background:var(--hi) !important;border-radius:999px !important;}
+.zone-name{background:var(--hi) !important;border:3px solid #2a2012;box-shadow:5px 5px 0 #2a2012;border-radius:999px !important;letter-spacing:.2em !important;}
+.endlink,.endlink.alt{border:3px solid #2a2012 !important;box-shadow:4px 4px 0 #2a2012;}
+.endlink{background:var(--hi) !important;}.endlink.alt{background:var(--ai2) !important;}
+.endlink span,.endlink.alt span{background:#fff !important;}
+.boot{background-color:var(--ukon) !important;background-image:conic-gradient(#F7D24E 25%,transparent 0 50%,#F7D24E 0 75%,transparent 0) !important;background-size:60px 60px !important;color:#2a2012 !important;}
+.boot p,.boot p small{color:#2a2012 !important;}
+.boot button{background:var(--hi) !important;border:3px solid #2a2012 !important;box-shadow:5px 5px 0 #2a2012;font-size:18px;}
+html.immersive .scale-bar i,html.immersive .scale-bar b{background:var(--hi) !important;}
+html.immersive .scale-labels span.on{color:var(--hi) !important;}

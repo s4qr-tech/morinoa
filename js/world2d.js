@@ -44,12 +44,12 @@ function boot(){
   function nagaya(x, w){                                       // 長屋：小ぶりの家。軒先に跳び乗れる
     w = w || 180; var h = 128, kind = shopN++ % 6;
     decor.push({ t: 'house', x: x, w: w, h: h, kind: kind, th: .04 + shopN * .012, small: true });
-    oneways.push({ x: x - 8, y: GY - 96, w: w + 16 });
+    
   }
   function machiya(x){                                         // 町家：庇（低い足場）と屋根（高い足場）の二段
     var w = 236, h = 198, kind = shopN++ % 6;
     decor.push({ t: 'house', x: x, w: w, h: h, kind: kind, th: .08 + shopN * .02 });
-    oneways.push({ x: x - 10, y: GY - 104, w: w + 20 }); oneways.push({ x: x + 34, y: GY - 202, w: w - 68 });
+     
   }
   function crate(){}                                           // 障害物はなし
   var spots = [], SIGNCH = ['長', '屋', '辻', '茶', '瓦', '通', '宿', '灯', '寺', '塔'];
@@ -81,11 +81,11 @@ function boot(){
   decor.push({ t: 'torii', x: 4330 });
   crate(4470, 1); crate(4520, 2);
   decor.push({ t: 'dais', x: 4570, w: 470 });
-  decor.push({ t: 'hall', x: 4640, w: 330 }); oneways.push({ x: 4620, y: GY - 252, w: 370 });
+  decor.push({ t: 'hall', x: 4640, w: 330 }); 
   qblock(4790, GY - 250 + 20, 8);
   coinRow(4660, GY - 300, 6); coinRow(4600, GY - 130, 5);
   nagaya(5090, 170); nagaya(5620, 150); decor.push({ t: 'toro', x: 4300 }); decor.push({ t: 'toro', x: 4540 }); decor.push({ t: 'toro', x: 5300 });
-  decor.push({ t: 'pagoda', x: 5350 }); oneways.push({ x: 5330, y: GY - 120, w: 150 }); oneways.push({ x: 5345, y: GY - 230, w: 120 });
+  decor.push({ t: 'pagoda', x: 5350 });  
   qblock(5395, GY - 330, 9); coinRow(5360, GY - 260, 3);
   tree(4250, 'momiji'); tree(5120, 'momiji'); tree(5520, 'momiji'); tree(5700, 'pine');
   moya(4400, 60); moya(5260, 60); moya(5650, 60);
@@ -93,8 +93,8 @@ function boot(){
   flag(5790, '武家地', '武家地に入った。城のまわりの安定が、町の再生の土台になる。', true);
   // 武家地（黄）
   decor.push({ t: 'wall', x: 5950, w: 220 });
-  decor.push({ t: 'sam', x: 6200, w: 300 }); oneways.push({ x: 6190, y: GY - 150, w: 320 });
-  decor.push({ t: 'sam', x: 6540, w: 330 }); oneways.push({ x: 6530, y: GY - 150, w: 350 });
+  decor.push({ t: 'sam', x: 6200, w: 300 }); 
+  decor.push({ t: 'sam', x: 6540, w: 330 }); 
   decor.push({ t: 'wall', x: 6950, w: 200 });
   coinArc(6280, 6480, GY - 90, 100); coinRow(6540, GY - 190, 6); coinRow(5980, GY - 140, 5);
   tree(6180, 'green'); tree(6880, 'sakura'); tree(7240, 'sakura');
@@ -115,6 +115,7 @@ function boot(){
     ['寺社地', '茶の区画、寺社地。町の記憶と祈りがここにある。祭りは年に一度の総力戦だ。'],
     ['五重塔', '高い所から見れば、傾いた場所も、まだ生きている場所も見える。']
   ];
+
   var MOYA_TEXT = ['傾きの正体が見えた。ひとつずつ、晴らしていこう。', '埃をかぶっていただけだ。品は死んでいない。', 'もやが晴れて、店の暖簾が見えてきた。'];
 
   // ---------- 主人公：将軍 ----------
@@ -149,12 +150,13 @@ function boot(){
     document.documentElement.classList.add('immersive'); window.scrollTo(0, 0);
     sizeUp(); requestAnimationFrame(sizeUp); setTimeout(sizeUp, 120); setTimeout(sizeUp, 500);
     refreshHud(); hud.classList.remove('quiet'); setTimeout(function(){ hud.classList.add('quiet'); }, 9000);
-    say('将軍', '城を目指して、右へ歩こう。屋根の上を行く道もある。立て札の前で足を止めると、話が聞ける。どの道を行っても、町は巡りはじめる。', 7000);
+    say('将軍', '城を目指して、右へ歩こう。立て札の前で足を止めると、話が聞ける。どの道を行っても、町は巡りはじめる。', 7000);
   }
   function resumeWalk(){ ending = false; peek.style.opacity = 0; emakiBox.style.transform = 'scale(1)'; endlink.classList.remove('show'); endFree.classList.remove('show'); narr.style.visibility = ''; P.x = GOAL - 160; P.y = GY - P.h; P.vx = P.vy = 0; playing = true; }
   document.getElementById('play').addEventListener('click', start);
   endFree.addEventListener('click', resumeWalk);
   window.addEventListener('resize', sizeUp);
+
   var GAMEKEYS = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'w', 'a', 's', 'd', 'shift', 'z', 'x'];
   document.addEventListener('keydown', function(e){
     if (!playing) return; var k = e.key.toLowerCase();
@@ -226,25 +228,31 @@ function boot(){
 
   // ---------- 描画 ----------
   function sky(prog2){
-    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#dfe5e6'); g.addColorStop(.55, '#ebebe2'); g.addColorStop(.9, '#f4efe0'); g.addColorStop(1, '#f1e8d0');
+    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#9fd8e6'); g.addColorStop(.55, '#d9efe6'); g.addColorStop(.9, '#fbf0c8'); g.addColorStop(1, '#f6e2a0');
     ctx.fillStyle = g; ctx.fillRect(0, 0, vw, H);
-    ctx.fillStyle = '#efe0b4'; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(vw * .84, 110, 46, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = '#D3381C'; ctx.globalAlpha = .92; ctx.beginPath(); ctx.arc(vw * .84, 120, 50, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
   }
   function mountains(par, base, amp, cols, seed, treeCols){
-    var off = camX * par, w = 260, u = (camX + viewW / 2) / L;
-    ctx.fillStyle = seasonCol(cols[0], cols[1], cols[2], u); ctx.beginPath(); ctx.moveTo(0, H);
-    var pts = [];
-    for (var x = -((off % w) + w); x < vw + w; x += w / 2) {
-      var k = Math.floor((x + off) / (w / 2)), h = amp * (.55 + ((Math.sin(k * 12.9898 + seed) * 43758.5453) % 1 + 1) % 1 * .6), yy = base - (k % 2 ? 0 : h);
-      ctx.lineTo(x, yy); pts.push([x, yy, k]);
+    var off = camX * par, u = (camX + viewW / 2) / L, w = wts(u), step = 24;
+    function ry(wx){ return base - amp * (.62 + .26 * Math.sin(wx * .0042 + seed) + .16 * Math.sin(wx * .011 + seed * 2.3) + .06 * Math.sin(wx * .029 + seed)); }
+    var body = seasonCol(cols[0], cols[1], cols[2], u), x;
+    var g = ctx.createLinearGradient(0, base - amp, 0, base + 40); g.addColorStop(0, body); g.addColorStop(1, seasonCol('#efe6d8', '#ecdcc2', '#eef2f6', u));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-step, H);
+    for (x = -step; x <= vw + step; x += step) ctx.lineTo(x, ry(x + off));
+    ctx.lineTo(vw + step, H); ctx.closePath(); ctx.fill();
+    if (w.wi > .02) {                                                  // 冬：稜線に雪
+      ctx.fillStyle = 'rgba(255,255,255,' + Math.min(.95, w.wi * 1.1) + ')'; ctx.beginPath(); ctx.moveTo(-step, ry(-step + off) + 6);
+      for (x = -step; x <= vw + step; x += step) ctx.lineTo(x, ry(x + off));
+      for (x = vw + step; x >= -step; x -= step) ctx.lineTo(x, ry(x + off) + 12 + 14 * (.5 + .5 * Math.sin((x + off) * .03 + seed)));
+      ctx.closePath(); ctx.fill();
     }
-    ctx.lineTo(vw + w, H); ctx.closePath(); ctx.fill();
-    // 稜線の木々：春は桜、秋は紅葉、冬は雪
-    var tc = seasonCol(treeCols[0], treeCols[1], treeCols[2], u);
-    for (var i = 1; i < pts.length; i++) {
-      var a2 = pts[i - 1], b2 = pts[i];
-      for (var j = 0; j < 7; j++) { var t = (j + .5) / 7, px = a2[0] + (b2[0] - a2[0]) * t, py = a2[1] + (b2[1] - a2[1]) * t + 8 + ((Math.sin((a2[2] * 7 + j) * 91.7) * 1e4) % 1 + 1) % 1 * 36;
-        ctx.fillStyle = tc; ctx.beginPath(); ctx.arc(px, py, 7 + ((j * 13 + a2[2]) % 5), 0, 7); ctx.fill(); }
+    // 山腹の木：春＝桜と若葉、秋＝紅と黄、冬＝雪をかぶった針葉樹（間引いて軽く）
+    var i0 = Math.floor((off - step) / 40) - 1, n = Math.ceil((vw + 2 * step) / 40) + 2;
+    for (var i = i0; i < i0 + n; i++) {
+      var h = ((Math.sin(i * 12.9898 + seed * 7.1) * 43758.5453) % 1 + 1) % 1; if (h < .3) continue;
+      var tx = i * 40 + 10 * h - off, ty = ry(i * 40) + 10 + h * 26, r = 6 + h * 5;
+      if (w.wi > .5) { ctx.fillStyle = h > .6 ? '#5f6f68' : '#76867c'; ctx.beginPath(); ctx.moveTo(tx - r, ty + r); ctx.lineTo(tx, ty - r * 1.9); ctx.lineTo(tx + r, ty + r); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.beginPath(); ctx.moveTo(tx - r * .55, ty - r * .1); ctx.lineTo(tx, ty - r * 1.9); ctx.lineTo(tx + r * .55, ty - r * .1); ctx.fill(); }
+      else { ctx.fillStyle = seasonCol(h > .62 ? '#f4b6c6' : '#9cc47a', h > .62 ? '#c4452a' : '#e0a03a', h > .62 ? '#7a8a82' : '#8a9a90', u); ctx.beginPath(); ctx.arc(tx, ty, r, 0, 7); ctx.arc(tx + r * .7, ty + r * .4, r * .8, 0, 7); ctx.fill(); }
     }
   }
   function farTown(par, su){
@@ -280,7 +288,7 @@ function boot(){
     ctx.fillStyle = 'rgba(40,30,15,.2)'; ctx.beginPath(); ctx.ellipse(d.x + d.w / 2, GY + 4, d.w * .6, 8, 0, 0, 7); ctx.fill();
     ctx.fillStyle = open ? '#e6dcc0' : '#d6cdb4'; ctx.fillRect(d.x, y, d.w, d.h); ctx.strokeStyle = 'rgba(30,24,20,.5)'; ctx.lineWidth = 2; ctx.strokeRect(d.x, y, d.w, d.h);
     ctx.drawImage(img, d.x + 2, y + d.h * .1, d.w - 4, d.h * .9);
-    roofShape(d.x - 8, y - d.h * .2, d.w + 16, d.h * .26, d.small ? '#8a7a4a' : '#3a3a35');
+    roofShape(d.x - 8, y - d.h * .2, d.w + 16, d.h * .26, d.small ? '#4C6CB3' : (d.kind % 2 ? '#D3381C' : '#1D4F75'));
     ctx.fillStyle = d.small ? '#7a6a3a' : '#4b4a42'; ctx.fillRect(d.x - 12, GY - (d.small ? 100 : 108), d.w + 24, 8);       // 庇（足場）
     if (d.x / L > .7) { ctx.fillStyle = 'rgba(255,255,255,' + Math.min(.95, (d.x / L - .7) * 5) + ')'; ctx.fillRect(d.x - 4, y - d.h * .2 - 3, d.w + 8, 8); }
     if (!d.small) { ctx.fillStyle = '#2a2a26'; ctx.fillRect(d.x + 30, y - d.h * .2 - 8, 12, 12); ctx.fillRect(d.x + d.w - 42, y - d.h * .2 - 8, 12, 12); }
@@ -382,6 +390,7 @@ function boot(){
     drawShogun(t);
     ctx.restore();
   }
+
   function frame(){
     requestAnimationFrame(frame);
     var now = performance.now() / 1000, dt = Math.min(.05, now - lastT); lastT = now; T = now;
@@ -408,7 +417,7 @@ function boot(){
     else { target = Math.max(0, Math.min(L - vw, P.x - vw * .32 + P.face * 40)); camX += (target - camX) * Math.min(1, dt * 5); }
     // 区画名
     var z = zoneAt(P.x + 10); if (z.name !== zoneShown) { zoneShown = z.name; zoneT = 2.6; var zl = document.getElementById('zone-name'); if (zl) { zl.textContent = z.name; zl.classList.remove('show'); void zl.offsetWidth; zl.classList.add('show'); } }
-    var q = Math.min(1, Math.max(0, (effP - .03) / .9)); canvas.style.filter = 'sepia(' + (.6 * (1 - q)).toFixed(3) + ') saturate(' + (.38 + .8 * q).toFixed(3) + ') contrast(' + (1.04 + .02 * q).toFixed(3) + ')';
+    var q = Math.min(1, Math.max(0, (effP - .03) / .9)); canvas.style.filter = 'sepia(' + (.55 * (1 - q)).toFixed(3) + ') saturate(' + (.45 + .95 * q).toFixed(3) + ') contrast(' + (1.04 + .02 * q).toFixed(3) + ')';
     // 描く
     ctx.setTransform(sc, 0, 0, sc, 0, 0); ctx.clearRect(0, 0, vw, H);
     sky(effP);

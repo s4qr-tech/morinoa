@@ -1,0 +1,90 @@
+/* ============================================================
+   一座の名札（木札）の作り込み
+   ・文字・名前・めくる仕組みはそのまま。見た目の細部だけを重ねる
+   ・木目と節、墨の二重枠、鋲、紐を通す穴、撚った縄と房、判子、役ごとの色帯
+   ============================================================ */
+.org-card.fuda{--band:#D3381C;--bandd:#a82a14;--seal:#B7282E;}
+.org-card.fuda:nth-child(2){--band:#1D4F75;--bandd:#143a57;--seal:#1D4F75;}
+.org-card.fuda:nth-child(3){--band:#7da83a;--bandd:#5d8226;--seal:#B7282E;}
+.org-card.fuda:nth-child(4){--band:#00A3AF;--bandd:#007882;--seal:#B7282E;}
+
+/* 札の面：木目（年輪の波と節）、使い込んだ縁 */
+.fuda-face{
+  background:
+    radial-gradient(ellipse 14px 22px at 78% 62%,rgba(96,62,28,.42) 0 30%,rgba(96,62,28,.16) 31% 60%,transparent 62%),
+    linear-gradient(to top,var(--band) 0 15px,var(--bandd) 15px 18px,transparent 18px),
+    repeating-linear-gradient(94deg,rgba(110,78,40,.13) 0 1px,transparent 1px 7px,rgba(255,255,255,.18) 7px 8px,transparent 8px 15px),
+    repeating-linear-gradient(88deg,rgba(120,90,50,.07) 0 3px,transparent 3px 22px),
+    linear-gradient(180deg,#f1e3bf,#e2cf9f 60%,#d6c08a) !important;
+  border:1px solid #a78a52 !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4),inset 0 -10px 18px rgba(120,80,30,.16),0 10px 18px rgba(40,24,8,.22) !important;
+}
+/* 墨の二重枠と四隅の鋲 */
+.fuda-face::before{
+  content:"";position:absolute;inset:9px 9px 20px;pointer-events:none;border:2px solid rgba(40,28,16,.6);border-radius:2px;
+  box-shadow:inset 0 0 0 3px rgba(241,227,191,.9),inset 0 0 0 4.5px rgba(40,28,16,.28);
+  background:
+    radial-gradient(circle at 7px 7px,#8a6a2a 0 2.2px,#e8c764 2.8px 3.6px,transparent 4px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#8a6a2a 0 2.2px,#e8c764 2.8px 3.6px,transparent 4px),
+    radial-gradient(circle at 7px calc(100% - 7px),#8a6a2a 0 2.2px,#e8c764 2.8px 3.6px,transparent 4px),
+    radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#8a6a2a 0 2.2px,#e8c764 2.8px 3.6px,transparent 4px);
+}
+/* 紐を通す穴 */
+.fuda-face::after{
+  content:"";position:absolute;left:50%;top:13px;width:16px;height:16px;margin-left:-8px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#150e06 0 4.5px,#5a3d1d 5.5px 6.5px,#e9d9a8 7.5px 8px);box-shadow:0 1px 0 rgba(255,255,255,.55);
+}
+.fuda-face > *{position:relative;z-index:1;}
+.fuda-face.back::before{inset:7px 7px 7px;border-color:rgba(251,243,223,.85);box-shadow:none;z-index:2;}
+.fuda-face.back::after{z-index:3;}
+
+/* 吊るし縄：撚り縄、結び目、房 */
+.org-card.fuda .fuda-himo{
+  top:-34px !important;width:9px !important;height:48px !important;margin-left:-4.5px !important;border-radius:4px;
+  background:repeating-linear-gradient(135deg,#9b3a1e 0 3px,#6a2512 3px 5px) !important;
+  box-shadow:1px 0 0 rgba(255,255,255,.18) inset,0 2px 3px rgba(0,0,0,.25);
+}
+.org-card.fuda .fuda-himo::before{
+  content:"";position:absolute;left:50%;bottom:-6px;width:20px;height:16px;margin-left:-10px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#d8573a,#8c2e16 70%);box-shadow:0 2px 3px rgba(0,0,0,.3);
+}
+.org-card.fuda .fuda-himo::after{
+  content:"";position:absolute;left:50%;top:-14px;width:18px;height:14px;margin-left:-9px;
+  background:repeating-linear-gradient(90deg,#8c2e16 0 2px,#c4553a 2px 4px);border-radius:3px 3px 0 0;clip-path:polygon(0 0,100% 0,85% 100%,15% 100%);
+}
+
+/* 文字：墨のにじみ、縦罫、役職は二本の筆線ではさむ */
+.org-card.fuda .org-title{text-shadow:0 0 1px rgba(17,29,15,.6),1px 1px 0 rgba(255,255,255,.35);margin-top:6px;position:relative;}
+.org-card.fuda .org-title::after{content:"";position:absolute;right:-.45em;top:.2em;bottom:.2em;width:0;border-right:2px dotted rgba(40,28,16,.35);}
+.org-card.fuda .org-role{border-top:2px solid #3a2a18 !important;border-bottom:1px solid #3a2a18;padding:8px 0 7px !important;color:var(--ink) !important;position:relative;}
+.org-card.fuda .org-item{color:#5a4630 !important;}
+.org-card.fuda .org-item::before{content:"象 ";display:inline-block;margin-right:.3em;padding:0 .3em;background:var(--seal);color:#fff;font-size:10px;letter-spacing:0;border-radius:2px;}
+.org-card.fuda .kamon{filter:drop-shadow(0 1px 0 rgba(255,255,255,.5));}
+
+/* 判子：表の右下に朱の落款 */
+.fuda-face.front .org-item{position:relative;}
+.fuda-face.front .org-item::after{
+  content:"";position:absolute;right:-30px;top:44px;width:26px;height:26px;transform:rotate(7deg);opacity:.9;
+  background:
+    linear-gradient(var(--seal),var(--seal)) center/10px 10px no-repeat,
+    transparent;
+  border:3px solid var(--seal);border-radius:3px;mix-blend-mode:multiply;box-shadow:inset 0 0 0 2px rgba(251,243,223,.5);
+}
+
+/* 裏：写真の額と金の名札 */
+.fuda-face.back{background:#3a2a18 !important;}
+.fuda-face.back img{border:7px solid #3a2a18;border-radius:2px;box-sizing:border-box;}
+.fuda-face.back .fuda-name{background:linear-gradient(180deg,transparent,rgba(17,12,6,.88) 40%);border-top:0;}
+.fuda-name b{text-shadow:0 1px 0 rgba(0,0,0,.5);}
+.fuda-name small{color:#e8c764;}
+
+/* 触れると札が揺れる */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .org-card.fuda{transform-origin:50% -26px;}
+  .org-card.fuda:hover{animation:fuda-swing 1.4s ease-out;}
+  @keyframes fuda-swing{0%{transform:rotate(0)}20%{transform:rotate(2.2deg)}45%{transform:rotate(-1.6deg)}70%{transform:rotate(.8deg)}100%{transform:rotate(0)}}
+}
+.fuda-face.front{padding-bottom:44px !important;}
+.fuda-face.front .org-item{margin-top:10px;}
+.org-card.fuda .fuda-inner{min-height:376px !important;}
+.fuda-face.front .org-item{margin-top:auto;margin-bottom:6px;}

@@ -1,0 +1,39 @@
+/* ============================================================
+   横断幕：江戸の祭りや芝居小屋に張られた「張り幕」
+   藍染めの布に白抜きの筆文字、上は縄と乳（ち）、下は青海波。区切りは小判・家紋・扇。
+   ============================================================ */
+.tape.maku{position:relative;margin:-22px 0 8px;padding:0;background:none;border:0;overflow:visible;transform-origin:50% 0;animation:maku-sway 7s ease-in-out infinite;}
+@keyframes maku-sway{0%,100%{transform:rotate(-.12deg) skewX(.0deg);}50%{transform:rotate(.12deg) skewX(.25deg);}}
+.maku-rope{position:relative;z-index:2;height:10px;margin:0 -4px;background:repeating-linear-gradient(115deg,#c9a96b 0 6px,#8a6a3a 6px 9px);border-top:2px solid #3a2a18;border-bottom:2px solid #3a2a18;box-shadow:0 2px 0 rgba(0,0,0,.12);}
+.maku-cloth{position:relative;overflow:hidden;padding:clamp(12px,1.6vw,20px) 0;margin:0;
+  background-color:#1D4F75;
+  background-image:
+    repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.06) 46px 48px),
+    linear-gradient(180deg,rgba(255,255,255,.1),transparent 30%,rgba(0,0,0,.18));
+  border-left:3px solid #3a2a18;border-right:3px solid #3a2a18;}
+/* 乳（ち）：布の上辺に並ぶ縄の輪 */
+.maku-cloth::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:radial-gradient(circle at 50% 0,#0f2f47 0 5px,transparent 6px) 0 0/44px 12px;}
+.maku .tape-track{animation-duration:60s;}
+.maku .tape-track span{display:inline-flex;align-items:center;padding-right:0;}
+.maku .tape-track b{font-family:'Yuji Syuku',var(--mincho),serif;font-weight:400;font-size:clamp(26px,3.6vw,50px);letter-spacing:.22em;color:#fbf3df;text-shadow:2px 2px 0 #0f2f47;padding:0 .35em 0 .55em;white-space:nowrap;}
+.maku .tape-track i{display:inline-block;flex:none;margin:0 clamp(16px,2.4vw,34px);}
+/* 小判 */
+.maku .kin{width:34px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1a8,#e8b923 55%,#b8860b);border:2px solid #3a2a18;box-shadow:inset 0 0 0 3px rgba(255,255,255,.25);transform:rotate(-8deg);}
+/* 家紋（丸に三つ引）風の丸 */
+.maku .kamon{width:40px;height:40px;border-radius:50%;background:#fbf3df;border:3px solid #fbf3df;box-shadow:0 0 0 2px #0f2f47;background-image:linear-gradient(180deg,transparent 0 22%,#1D4F75 22% 36%,transparent 36% 46%,#1D4F75 46% 60%,transparent 60% 70%,#1D4F75 70% 84%,transparent 84%);}
+/* 扇 */
+.maku .ougi{width:50px;height:34px;background:conic-gradient(from 270deg at 50% 100%,#D3381C 0 22.5deg,#fbf3df 0 45deg,#D3381C 0 67.5deg,#fbf3df 0 90deg,#D3381C 0 112.5deg,#fbf3df 0 135deg,#D3381C 0 157.5deg,#fbf3df 0 180deg);clip-path:polygon(50% 100%,0 12%,10% 0,50% 8%,90% 0,100% 12%);filter:drop-shadow(2px 2px 0 #0f2f47);}
+/* 下の縁：青海波 */
+.maku-hem{height:20px;margin:0;border-left:3px solid #3a2a18;border-right:3px solid #3a2a18;border-bottom:3px solid #3a2a18;
+  background:
+    radial-gradient(circle at 50% 100%,transparent 0 8px,#fbf3df 8px 10px,transparent 10px 14px,#fbf3df 14px 16px,transparent 16px) 0 0/32px 16px,
+    #1D4F75;}
+.maku:hover{animation-play-state:paused;}
+@media (prefers-reduced-motion:reduce){.tape.maku{animation:none;}}
+
+/* 単体で動くための基本 */
+.tape{overflow:hidden;position:relative;z-index:2;}
+.tape-track{display:flex;width:max-content;animation:tape 60s linear infinite;}
+@keyframes tape{to{transform:translateX(-50%)}}
+.tape:hover .tape-track{animation-play-state:paused;}
+@media (prefers-reduced-motion:reduce){.tape-track{animation:none;}}
