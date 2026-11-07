@@ -25,10 +25,11 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Dela+Gothic+One&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Dela+Gothic+One&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.css?v=20261029b">
 <link rel="stylesheet" href="css/motion.css?v=20261029b">
-<link rel="stylesheet" href="css/poster.css?v=20261109d">
+<link rel="stylesheet" href="css/poster.css?v=20261109e">
 <link rel="stylesheet" href="css/novel.css?v=20261109c">
 <link rel="stylesheet" href="css/maku.css?v=20261109a">
 <link rel="stylesheet" href="css/fuda.css?v=20261109c"><link rel="stylesheet" href="css/wapop.css?v=20261109z">
@@ -40,7 +41,8 @@
       "@type": "Organization",
       "@id": "https://morinoa.com/#organization",
       "name": "MORINOA",
-      "alternateName": ["合同会社モリノア", "MORINOA LLC", "モリノア"],
+      "legalName": "合同会社モリノア",
+      "alternateName": ["MORINOA LLC", "モリノア"],
       "url": "https://morinoa.com/",
       "logo": "https://morinoa.com/morinoa_logo.png",
       "image": "https://morinoa.com/ogp.png",
@@ -133,22 +135,11 @@
       </div>
     </div>
     <div class="hero-logo reveal">
-      <!-- ▼▼ ロゴ差し替え箇所 ▼▼
-           同じフォルダに「morinoa_logo.png」（.svg / .jpg でも可。その場合は下のsrcを変更）を
-           置くと、自動でロゴ画像が表示されます。 -->
-      <img class="logo-img" src="morinoa_logo.png" alt="MORINOA ロゴ"
-           onerror="this.style.display='none';document.getElementById('logo-ph').style.display='flex';">
-      <div id="logo-ph" class="logo-ph" style="display:none;">
-        <span>ロゴ画像をここに配置<br><small>morinoa_logo.png を同じフォルダへ</small></span>
-      </div>
-      <!-- ▲▲ ロゴ差し替え箇所 ▲▲ -->
+      <img class="logo-img" src="morinoa_logo.png" alt="MORINOA ロゴ" width="681" height="573" decoding="async" fetchpriority="high">
       <p class="hero-name-jp">建て直す。盛り直す。</p>
     </div>
   </div>
 </section>
-<!-- ▼ AIチャットボット設置予定（無料診断の代わりに質問に答える窓口） -->
-
-
 <!-- ============ ABOUT ============ -->
 <section id="about">
   <div class="wrap">
@@ -187,7 +178,7 @@
             カウンターの中にも、商談の席にも立ちます。自ら店を営む現場知と、深く学ぶ専門知。その両輪が私たちの強みです。
           </p>
         </div>
-        <img class="why-kamon" src="kamon-cream.png" alt="MORINOAの家紋">
+        <img class="why-kamon" src="kamon-cream.png" alt="MORINOAの家紋" width="480" height="468" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -209,14 +200,13 @@
         <span class="fuda-himo" aria-hidden="true"></span>
         <div class="fuda-inner">
           <div class="fuda-face front">
-            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true">
+            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true" width="100" height="100" loading="lazy" decoding="async">
             <div class="org-title">将軍</div>
             <div class="org-role">代表</div>
             <div class="org-item">兜</div>
           </div>
           <div class="fuda-face back">
-            <!-- ▼ 本人の写真（宣材写真）：member-shogun.jpg を差し替え -->
-            <img src="member-shogun.jpg" alt="将軍 西出 航一">
+            <img src="member-shogun.jpg" alt="将軍 西出 航一" width="400" height="482" loading="lazy" decoding="async">
             <div class="fuda-name"><b>西出 航一</b><small>KOICHI NISHIDE</small></div>
           </div>
         </div>
@@ -227,14 +217,13 @@
         <span class="fuda-himo" aria-hidden="true"></span>
         <div class="fuda-inner">
           <div class="fuda-face front">
-            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true">
+            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true" width="100" height="100" loading="lazy" decoding="async">
             <div class="org-title">大老</div>
             <div class="org-role">戦略</div>
             <div class="org-item">軍配</div>
           </div>
           <div class="fuda-face back">
-            <!-- ▼ 本人の写真（宣材写真）：member-tairo.jpg を差し替え -->
-            <img src="member-tairo.jpg" alt="大老 大家 颯">
+            <img src="member-tairo.jpg" alt="大老 大家 颯" width="400" height="483" loading="lazy" decoding="async">
             <div class="fuda-name"><b>大家 颯</b><small>SOU DAIKE</small></div>
           </div>
         </div>
@@ -245,7 +234,7 @@
         <span class="fuda-himo" aria-hidden="true"></span>
         <div class="fuda-inner">
           <div class="fuda-face front">
-            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true">
+            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true" width="100" height="100" loading="lazy" decoding="async">
             <div class="org-title">老中</div>
             <div class="org-role">分析</div>
             <div class="org-item">印籠</div>
@@ -258,7 +247,7 @@
         <span class="fuda-himo" aria-hidden="true"></span>
         <div class="fuda-inner">
           <div class="fuda-face front">
-            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true">
+            <img class="kamon" src="kamon.svg" alt="" aria-hidden="true" width="100" height="100" loading="lazy" decoding="async">
             <div class="org-title">奥絵師</div>
             <div class="org-role">デザイン</div>
             <div class="org-item">筆と扇子</div>
@@ -357,7 +346,6 @@
     <div class="form-card reveal">
       <p class="h3">軍議のお申し込み</p>
       <p style="color:var(--sub);font-size:15px;margin-bottom:24px;">お名前・ご連絡先・ご相談内容を、専用フォームからお送りください。</p>
-      <!-- ▼ GoogleフォームのURLに差し替え -->
       <a class="btn btn-primary" id="gunji-form" href="https://forms.gle/eSTg1UBF56mVySoMA">軍議を申し込む →</a>
       <p class="form-note">1〜3営業日以内にご返信いたします。</p>
     </div>
@@ -372,7 +360,7 @@
     <div class="foot-grid">
       <div>
         <div class="foot-brand">
-          <img src="logo-mark-light.png" alt="" aria-hidden="true">
+          <img src="logo-mark-light.png" alt="" aria-hidden="true" width="160" height="102" loading="lazy" decoding="async">
           <span>MORINOA</span>
         </div>
         <p class="foot-copy">合同会社モリノア｜建て直す。盛り直す。事業の再生・維持・持続を通じて、国内外の地域とともに価値をつくり、CSV経営を目指す会社。</p>

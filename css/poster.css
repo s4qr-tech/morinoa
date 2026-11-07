@@ -102,3 +102,6 @@
 header .cta-li a,header .nav-cta,header .btn{min-height:44px;display:inline-flex;align-items:center;}
 .nav-links a,.foot-links a{min-width:44px;justify-content:center;}
 .breadcrumb a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}
+
+/* 画像に width/height 属性（表示のずれ防止）を付けたので、CSS 側で縦横比を保つ */
+:where(img[height]){height:auto;}
