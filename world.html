@@ -1,133 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
 <title>めぐる城下町｜MORINOAの世界</title>
-<meta name="description" content="MORINOAの世界観。一座が城下町を訪ね、使い、良さを伝え、その稼ぎがまた城へ巡る。再生・維持・持続の物語を絵巻で紹介します。">
-<meta name="robots" content="noindex, follow"><!-- ▼ 本番の絵が入ったらこの行を消す -->
-<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="description" content="一座が町を訪ね、使い、伝え、また城へ巡る。再生・維持・持続の物語を、小さな城下町で。">
+<link rel="icon" href="kamon-original.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Dela+Gothic+One&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Barlow:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261107b">
-<link rel="stylesheet" href="css/world.css?v=20261109j">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800;900&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9cf7e;--brown:#3b2a1e;--gold:#e8a02e;--ink:#4a3a2a;--cardW:min(620px,86vw);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN',sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent;}
+#gl,#trail{position:fixed;inset:0;width:100%;height:100%;display:block;}
+#trail{pointer-events:none;}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;}
+
+/* 画面左上ロゴ・右上MENU */
+.logo{position:fixed;left:clamp(16px,3vw,40px);top:clamp(14px,3vw,34px);z-index:5;display:flex;align-items:center;gap:12px;}
+.logo img{width:clamp(40px,4.2vw,54px);height:auto;border-radius:12px;background:#3b2a1e;padding:4px;}
+.logo b{display:block;font:800 clamp(17px,1.6vw,22px)/1 'Montserrat',sans-serif;letter-spacing:.06em;color:#fff;text-shadow:0 2px 0 rgba(120,80,20,.25);}
+.logo small{display:block;margin-top:4px;font-weight:800;font-size:11px;letter-spacing:.12em;color:#fff;opacity:.9;}
+.menubtn{position:fixed;right:clamp(14px,3vw,40px);top:clamp(12px,2.6vw,32px);z-index:6;display:flex;align-items:center;gap:12px;padding:0 clamp(22px,2.4vw,34px);height:clamp(52px,5vw,66px);border-radius:999px;background:#fff;font:900 clamp(15px,1.5vw,20px)/1 'Montserrat',sans-serif;letter-spacing:.05em;color:var(--brown);box-shadow:0 4px 0 rgba(150,100,20,.18);}
+.menubtn i{display:block;width:22px;height:12px;border-top:3px solid var(--brown);border-bottom:3px solid var(--brown);}
+.menubtn i::after{content:"";display:block;width:14px;border-top:3px solid var(--brown);margin:3px 0 0;}
+
+/* 左下のバナー */
+.banner{position:fixed;left:clamp(16px,3vw,40px);bottom:24px;z-index:5;display:block;padding:clamp(14px,1.6vw,20px) clamp(22px,2.4vw,32px);border-radius:20px;background:var(--brown);color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.12);transition:transform .2s;}
+.banner:hover{transform:translateY(-3px);}
+.banner b{display:block;font-weight:900;font-size:clamp(17px,1.8vw,24px);letter-spacing:.04em;}
+.banner b::after{content:"▶";margin-left:10px;font-size:.8em;}
+.banner small{display:block;margin-top:6px;font-weight:800;font-size:clamp(10px,.9vw,12px);letter-spacing:.2em;opacity:.9;}
+
+/* 下のカード */
+.pin{position:fixed;left:0;top:0;z-index:4;pointer-events:none;will-change:transform;transition:opacity .3s;}
+.pin.open{z-index:6;}
+.pin-btn{position:absolute;left:-20px;top:-20px;width:40px;height:40px;border-radius:50%;pointer-events:auto;background:var(--brown);color:#fff;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.18);font:900 17px/1 'M PLUS Rounded 1c',sans-serif;transition:transform .2s,background .2s;}
+.pin-btn::before{content:"";position:absolute;inset:-9px;border-radius:50%;border:3px solid rgba(255,255,255,.8);animation:ring 2.2s ease-out infinite;pointer-events:none;}
+@keyframes ring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.pin-btn:hover,.pin.open .pin-btn{transform:scale(1.12);background:var(--gold);}
+.pin.open .pin-btn::before{animation:none;opacity:0;}
+.pin-card{display:none;position:absolute;left:0;bottom:30px;transform:translateX(calc(-50% + var(--dx,0px)));width:min(236px,74vw);padding:12px 16px 14px;border-radius:18px;background:#fff;box-shadow:0 5px 0 rgba(150,100,20,.18);pointer-events:auto;}
+.pin.open .pin-card{display:block;animation:pop .22s ease-out;}
+@keyframes pop{from{opacity:0;margin-bottom:-8px}to{opacity:1;margin-bottom:0}}
+.pin.below .pin-card{bottom:auto;top:30px;}
+.pin-card::after{content:"";position:absolute;left:calc(50% - var(--dx,0px));bottom:-10px;width:3px;height:10px;margin-left:-1.5px;background:var(--brown);}
+.pin.below .pin-card::after{bottom:auto;top:-10px;}
+.pin-card h2{font-weight:900;font-size:17px;line-height:1.2;color:var(--gold);letter-spacing:.03em;}
+.pin-card .en{display:block;margin-top:3px;font:800 10px/1 'Montserrat',sans-serif;letter-spacing:.06em;color:#9a8f82;}
+.pin-card p{margin-top:8px;font-weight:800;font-size:12px;line-height:1.7;color:var(--ink);}
+.pin-card .more{display:inline-flex;align-items:center;gap:8px;margin-top:10px;height:34px;padding:0 15px;border-radius:999px;background:var(--gold);color:#fff;font:800 13px/1 'Montserrat',sans-serif;}
+.pin-card .more::after{content:"";width:7px;height:7px;border-top:2.5px solid #fff;border-right:2.5px solid #fff;transform:rotate(45deg);}
+@media (prefers-reduced-motion:reduce){.pin-btn::before{animation:none;}}
+/* 操作の案内 */
+.hintdrag{position:fixed;right:clamp(16px,3vw,40px);bottom:24px;z-index:5;padding:9px 18px;border-radius:999px;background:rgba(255,255,255,.88);font-weight:800;font-size:13px;letter-spacing:.08em;color:var(--brown);transition:opacity .6s;pointer-events:none;}
+.hintdrag.off{opacity:0;}
+@media (max-width:700px){.hintdrag{bottom:auto;top:92px;right:auto;left:16px;}}
+/* MENU */
+.menu{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(28px,8vw,140px);background:var(--bg);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;}
+.menu.open{opacity:1;visibility:visible;}
+.menu a{display:block;padding:14px 0;font-weight:900;font-size:clamp(26px,4vw,54px);color:#fff;text-shadow:0 3px 0 rgba(150,100,20,.25);}
+.menu a small{margin-left:14px;font:800 clamp(11px,1.1vw,15px)/1 'Montserrat',sans-serif;letter-spacing:.1em;color:var(--brown);text-shadow:none;}
+.menu a:hover{color:var(--brown);text-shadow:none;}
+.close{position:absolute;right:clamp(14px,3vw,40px);top:clamp(12px,2.6vw,32px);width:clamp(52px,5vw,66px);height:clamp(52px,5vw,66px);border-radius:50%;background:#fff;font:900 26px/1 'Montserrat',sans-serif;color:var(--brown);}
+
+/* 詳細 */
+.sheet{position:fixed;inset:0;z-index:18;display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px);background:rgba(59,42,30,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;}
+.sheet.open{opacity:1;visibility:visible;}
+.sheet .in{position:relative;width:min(880px,100%);max-height:100%;overflow:auto;padding:clamp(28px,4vw,52px);border-radius:32px;background:#fff;box-shadow:0 10px 0 rgba(150,100,20,.2);transform:translateY(16px);transition:transform .35s;}
+.sheet.open .in{transform:none;}
+.sheet h3{font-weight:900;font-size:clamp(28px,3.6vw,46px);color:var(--gold);}
+.sheet .en{display:block;margin:6px 0 18px;font:800 14px/1 'Montserrat',sans-serif;letter-spacing:.08em;color:#9a8f82;}
+.sheet .lead{font-weight:800;font-size:clamp(15px,1.5vw,18px);line-height:1.9;}
+.sheet ol{list-style:none;margin-top:20px;display:grid;gap:12px;}
+.sheet li{padding:16px 20px;border-radius:18px;background:#fbf3df;}
+.sheet li b{display:block;font-weight:900;font-size:clamp(16px,1.6vw,20px);color:var(--brown);}
+.sheet li b i{margin-right:10px;font:800 14px/1 'Montserrat',sans-serif;color:var(--gold);font-style:normal;}
+.sheet li span{display:block;margin-top:6px;font-weight:500;font-size:clamp(13px,1.3vw,16px);line-height:1.8;}
+.sheet .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:0 26px;height:54px;border-radius:999px;background:var(--gold);color:#fff;font-weight:900;font-size:16px;}
+.pill.dark{background:var(--brown);}
+.sheet .close{width:48px;height:48px;font-size:20px;background:#fbf3df;top:18px;right:18px;}
+
+/* 読み込み */
+.load{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:var(--bg);color:#fff;font:900 18px/1 'Montserrat',sans-serif;letter-spacing:.2em;transition:opacity .6s,visibility .6s;}
+.load.off{opacity:0;visibility:hidden;}
+.load img{width:72px;border-radius:16px;background:#3b2a1e;padding:6px;animation:bob 1.2s ease-in-out infinite;}
+@keyframes bob{50%{transform:translateY(-8px);}}
+@media (max-width:700px){
+  
+}
+</style>
 </head>
-<body class="world">
+<body>
+<canvas id="gl"></canvas>
 
-<header>
-  <div class="wrap nav">
-    <a class="brand" href="index.html" aria-label="MORINOA トップへ"><span class="brand-name">MORINOA</span></a>
-    <a class="nav-cta" href="service-ip.html">IP・デザインへ戻る</a>
-  </div>
-</header>
+<a class="logo" href="index.html" aria-label="MORINOA トップへ"><img src="kamon-cream.png" alt=""><span><b>MORINOA</b><small>MEGURU JOKAMACHI</small></span></a>
+<button class="menubtn" id="menuBtn" type="button"><i></i>MENU</button>
+<a class="banner" id="banner" href="index.html"><b>MORINOAのサイトへ</b><small>建て直す。盛り直す。</small></a>
 
-<main>
-  <div class="wrap breadcrumb">
-    <a href="index.html">TOP</a><span>／</span><a href="service-ip.html">IP・デザイン</a><span>／</span><span>MORINOAの世界</span>
-  </div>
+<div class="hintdrag" id="hintdrag">ドラッグで町を回せます</div>
 
-  <!-- PC専用。幅の狭い画面では案内だけを出す -->
-  <p class="pc-only-note">この絵巻はパソコンでご覧ください。</p>
+<nav class="menu" id="menu">
+  <button class="close" id="menuClose" type="button" aria-label="閉じる">✕</button>
+  <a href="index.html">TOP<small>MORINOAとは</small></a>
+  <a href="service-ip-diorama.html">IP・デザイン<small>MEGURU JOKAMACHI</small></a>
+  <a href="service-support.html">経営・事業開発<small>MANAGEMENT</small></a>
+  <a href="world.html">めぐる城下町<small>WORLD</small></a>
+  <a href="https://forms.gle/eSTg1UBF56mVySoMA" target="_blank" rel="noopener">軍議を申し込む<small>CONTACT</small></a>
+</nav>
 
-  <!-- この区間をスクロールすると、画面の中の絵巻が横へ流れる -->
-  <section class="emaki-track" id="track">
-    <div class="desk">
-      <p class="desk-lead">めぐる城下町<small>MORINOA の世界を歩く</small></p>
+<div class="sheet" id="sheet"><div class="in" id="sheetIn"></div></div>
+<div class="load" id="load"><img src="kamon-cream.png" alt="">LOADING</div>
 
-      <div class="monitor" id="monitor">
-        <div class="screen" id="screen">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+var FORM = 'https://forms.gle/eSTg1UBF56mVySoMA';
 
-          <!-- 2Dの城下町（絵は js/world2d.js が描く） -->
-          <div class="emaki" id="emaki">
-            <canvas id="gl" aria-label="城下町を駆ける横スクロールの町"></canvas>
-            <div class="tags" id="tags"></div>
-          </div>
+/* ---------- カードの中身 ---------- */
+var CARDS = [
+  { t: '長屋町', en: 'Nagaya-machi', p: '壱 再生｜町を支える手が、多く住んでいる区画。小さな仕事が町を回し、腕と品は、まだ町に残っている。',
+    lead: '壱 再生。長屋町は、町を支える手が多く住む区画です。九尺二間の暮らしの中に、腕と品が残っています。小さな仕事が、町を回しています。',
+    list: [['一', '長屋', '路地の奥にも暮らしがある。腕と品は、まだ町に残っている。'], ['二', '辻', '城の外にも、人は暮らしている。端まで目を配るのが将の務め。'], ['三', '茶屋', '客を呼べる店は町の旗。一軒が立てば、まわりも立つ。']],
+    pin: { x: 16, y: 13, z: 33 } },
+  { t: '町人地', en: 'Chonin-chi', p: '壱 再生｜人と金が集まる区画。ここから手を入れる。客になって使うことが、再生の最初の一歩。',
+    lead: '壱 再生。町人地は、人と金が集まる区画です。ここから手を入れます。',
+    list: [['一', '瓦版', '語られる町は人を呼ぶ。物語は、いちばん安い兵糧だ。'], ['二', '通り', '客になって使う。一杯の茶代が、再生の最初の一歩になる。'], ['三', '宿・灯り', '泊まる人が来れば、お金の行き先が増える。夜にも灯りがともれば、町の時間が長くなる。']],
+    pin: { x: 50, y: 15, z: 33 } },
+  { t: '寺社地', en: 'Jisha-chi', p: '弐 維持｜祈りと祭りが、町の求心力になる。町の記憶がここにある。',
+    lead: '弐 維持。寺社地は、町の記憶と祈りがある区画です。祭りは、年に一度の総力戦。高い所から見れば、町のすべてが見えます。',
+    list: [['一', '寺社地', '祈りと祭りは、町の求心力になる。'], ['二', '五重塔', '高い所から見れば、傾いた場所も、まだ生きている場所も見える。']],
+    pin: { x: 11, y: 36, z: 12 } },
+  { t: '武家地', en: 'Buke-chi', p: '参 持続｜城のまわりの安定が、町の再生の土台になる。',
+    lead: '参 持続。武家地は、城を支える家が並ぶ区画です。城のまわりの安定が、町の再生の土台になります。',
+    pin: { x: 52, y: 13, z: 13 } },
+  { t: '城', en: 'Castle', p: '稼ぎが戻る場所を固めれば、町へ手を回せる。稼ぎが城へ、城がまた町へ。巡りが町を支える。',
+    lead: '稼ぎが戻る場所を固めれば、町へ手を回せます。稼ぎが城へ、城がまた町へ。この巡りが、再生→維持→持続をつくります。どの道を通っても、最後はここに着きます。',
+    pin: { x: 31, y: 33, z: 16 } },
+  { t: 'もどる', en: 'Back to MORINOA', p: '町を見たあとは、MORINOAのサイトへ。事業の再生・維持・持続について、詳しくご覧いただけます。',
+    lead: '町を一巡りしました。事業の再生・維持・持続について、サイトでさらに詳しくご覧いただけます。',
+    btns: [['MORINOAのサイトへ →', 'index.html', 0], ['IP・デザインを見る', 'service-ip.html', 1], ['軍議を申し込む', FORM, 1]],
+    pin: { x: 32, y: 14, z: 54 } }
+];
 
-          <!-- 図の色分け（武家地・町人地・寺社地・長屋町） -->
-          <ul class="legend" aria-label="区画の色分け">
-            <li><i style="background:#e8d886"></i>武家地</li>
-            <li><i style="background:#e79a8a"></i>町人地</li>
-            <li><i style="background:#c09c76"></i>寺社地</li>
-            <li><i style="background:#9cc3e6"></i>長屋町</li>
-          </ul>
+/* ---------- ボクセルの町づくり ---------- */
+var vm = new Map();
+function key(x, y, z){ return x + ',' + y + ',' + z; }
+function set(x, y, z, c){ vm.set(key(x, y, z), [x, y, z, c]); }
+function box(x, y, z, w, h, d, c){ for (var i = 0; i < w; i++) for (var j = 0; j < h; j++) for (var k = 0; k < d; k++) set(x + i, y + j, z + k, c); }
+function blob(cx, cy, cz, r, c, c2){ for (var i = -r; i <= r; i++) for (var j = -r; j <= r; j++) for (var k = -r; k <= r; k++) if (i * i + j * j + k * k <= r * r + 1) set(cx + i, cy + j, cz + k, (c2 && R(cx * 7 + i * 3 + j * 5 + k * 11) > .72) ? c2 : c); }
+function R(s){ s = Math.sin(s * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+var CREAM = 0xf6ecd2, WOOD = 0x8a5a3a, DARK = 0x4a3426, GLASS = 0x9fd3e6, PINK = 0xf29bb0, BLUE = 0x4a90b8, YEL = 0xe8b03c, RED = 0xd8453a, GREEN = 0x7cc04b;
 
-          <!-- 結び：丸窓のある白い壁（最後に窓へ寄っていく） -->
-          <div class="peek" id="peek" aria-hidden="true"></div>
+function ground(){
+  var x, z;
+  for (x = 0; x < 64; x++) for (z = 0; z < 64; z++) {
+    var c = ((x + z) % 2) ? 0x92c85a : 0x8cc152;
+    var road = (z >= 38 && z <= 41 && x >= 2 && x <= 61) || (x >= 30 && x <= 33 && z >= 25 && z <= 61);
+    if (road) c = ((x + z) % 3 === 0) ? 0xe9cc98 : 0xf0d6a6;
+    if (z >= 25 && z <= 28 && x >= 24 && x <= 39) c = 0xd9d3c4;                       // 城前の広場
+    if (x <= 1 || x >= 62 || z <= 1 || z >= 62) c = (x === 0 || x === 63 || z === 0 || z === 63) ? 0xe29b4a : 0x7fb44e;
+    if (x >= 5 && x <= 14 && z >= 46 && z <= 56 && !road) c = ((x + z) % 4 === 0) ? 0x7cc6e0 : 0x66b9d8;   // 池
+    set(x, 0, z, c);
+    for (var y = -1; y >= -4; y--) set(x, y, z, y === -1 ? 0xe9c58c : y === -4 ? 0xcfa06a : 0xdcb279);
+  }
+}
+function tree(x, z, kind){
+  var h = 4 + Math.floor(R(x * 3 + z) * 2); box(x, 1, z, 1, h, 1, WOOD);
+  var col = kind === 'sakura' ? PINK : kind === 'maple' ? 0xe8803a : GREEN, c2 = kind === 'sakura' ? 0xf8c4d2 : kind === 'maple' ? 0xd2542c : 0x9ad468;
+  blob(x, h + 2, z, 3, col, c2);
+}
+function nagaya(x, z, w, wall, roof){
+  var d = 6, h = 5, i, k;
+  box(x, 1, z, w, h, d, wall);
+  for (i = 0; i < w; i += 3) box(x + i, 1, z + d - 1, 1, h, 1, WOOD);
+  box(x + Math.floor(w / 2) - 1, 1, z + d - 1, 2, 3, 1, 0x6b4429);
+  for (var wx = x + 1; wx < x + w - 2; wx += 3) if (Math.abs(wx - (x + w / 2)) > 2) box(wx, 3, z + d - 1, 2, 2, 1, GLASS);
+  for (k = 0; d + 2 - 2 * k >= 1; k++) box(x - 1, 1 + h + k, z - 1 + k, w + 2, 1, d + 2 - 2 * k, k === 0 ? DARK : roof);
+  box(x + w - 1, 1, z + d, 1, 5, 1, WOOD); box(x + w - 1, 5, z + d, 1, 2, 1, RED);                      // 提灯
+}
+function shop(x, z, w, awn, roof){
+  var d = 6, h = 8, i, k;
+  box(x, 1, z, w, h, d, CREAM);
+  box(x + 1, 1, z + d - 1, w - 2, 3, 1, DARK);
+  for (i = 1; i < w - 1; i++) if (R(x + i * 5) > .35) set(x + i, 2, z + d - 1, [0xf29bb0, 0xe8b03c, 0x7cc04b, 0x4a90b8][Math.floor(R(x + i) * 4)]);
+  for (i = -1; i < w + 1; i++) box(x + i, 4, z + d, 1, 1, 2, (i % 2) ? 0xffffff : awn);
+  for (i = 1; i < w - 2; i += 3) { box(x + i, 6, z + d - 1, 2, 2, 1, GLASS); }
+  for (k = 0; d + 2 - 2 * k >= 1; k++) box(x - 1, 1 + h + k, z - 1 + k, w + 2, 1, d + 2 - 2 * k, k === 0 ? DARK : roof);
+  box(x + Math.floor(w / 2), 1 + h + 3, z + 2, 1, 1, 2, awn);
+}
+function castle(cx, cz){
+  var x, y, z, i;
+  for (x = -8; x <= 8; x++) for (z = -8; z <= 8; z++) for (y = 1; y <= 5; y++) set(cx + x, y, cz + z, ((x + y + z) % 7 === 0) ? 0xa9a496 : 0xbdb8aa);
+  box(cx - 1, 1, cz + 8, 3, 3, 1, 0x4a3a2c);
+  box(cx - 8, 6, cz - 8, 17, 1, 1, 0xd4cfc0); box(cx - 8, 6, cz + 8, 17, 1, 1, 0xd4cfc0); box(cx - 8, 6, cz - 8, 1, 1, 17, 0xd4cfc0); box(cx + 8, 6, cz - 8, 1, 1, 17, 0xd4cfc0);
+  var yb = 6, sizes = [13, 9, 5];
+  sizes.forEach(function(s, t){
+    var hf = (s - 1) / 2;
+    box(cx - hf, yb, cz - hf, s, 4, s, 0xf6f0e0);
+    for (i = -hf + 1; i < hf; i += 3) { box(cx + i, yb + 1, cz + hf, 1, 2, 1, 0x3a4650); box(cx + i, yb + 1, cz - hf, 1, 2, 1, 0x3a4650); box(cx + hf, yb + 1, cz + i, 1, 2, 1, 0x3a4650); box(cx - hf, yb + 1, cz + i, 1, 2, 1, 0x3a4650); }
+    box(cx - hf - 2, yb + 4, cz - hf - 2, s + 4, 1, s + 4, 0x3d4a55);
+    box(cx - hf - 1, yb + 5, cz - hf - 1, s + 2, 1, s + 2, 0x4c5b68);
+    box(cx - hf - 2, yb + 4, cz + hf + 2, s + 4, 1, 1, 0x2f3a44);
+    yb += 6;
+  });
+  for (i = 0; i < 4; i++) { var s2 = 5 - 2 * i; if (s2 < 1) break; box(cx - (s2 - 1) / 2, yb - 1 + i, cz - (s2 - 1) / 2, s2, 1, s2, 0x3d4a55); }
+  box(cx - 1, yb + 3, cz, 1, 2, 1, 0xf0b429); box(cx + 1, yb + 3, cz, 1, 2, 1, 0xf0b429);          // 鯱
+                           // 旗
+}
+function pagoda(cx, cz){
+  var i, y = 1, sizes = [9, 7, 7, 5, 5];
+  box(cx - 6, 1, cz - 6, 13, 1, 13, 0xb9b3a4); y = 2;
+  sizes.forEach(function(s){
+    var hf = (s - 1) / 2;
+    box(cx - hf, y, cz - hf, s, 3, s, 0xc9473c);
+    for (i = -hf; i <= hf; i += 2) { box(cx + i, y, cz + hf, 1, 3, 1, 0xf3e3c0); box(cx + i, y, cz - hf, 1, 3, 1, 0xf3e3c0); }
+    box(cx - 1, y, cz + hf, 3, 2, 1, 0x4a3426);
+    box(cx - hf - 2, y + 3, cz - hf - 2, s + 4, 1, s + 4, 0x5f7f78); box(cx - hf - 1, y + 4, cz - hf - 1, s + 2, 1, s + 2, 0x7a9a90);
+    y += 5;
+  });
+  box(cx, y, cz, 1, 7, 1, 0xf0b429); box(cx - 1, y + 2, cz, 3, 1, 1, 0xf0b429); box(cx, y + 4, cz - 1, 1, 1, 3, 0xf0b429);
+}
+function studio(cx, cz){
+  var i, j, k, x0 = cx - 6, z0 = cz - 4;
+  box(x0, 1, z0, 13, 7, 9, 0xf7d9b6);
+  box(cx - 1, 1, z0 + 8, 3, 3, 1, 0x6b4429);
+  for (k = 0; 11 - 2 * k >= 1; k++) box(x0 - 1, 8 + k, z0 - 1 + k, 15, 1, 11 - 2 * k, k === 0 ? DARK : BLUE);
+  for (i = 0; i < 7; i++) for (j = 0; j < 4; j++) set(x0 + 3 + i, 4 + j, z0 + 9, [PINK, YEL, GREEN, BLUE, 0xf6ecd2, RED][Math.floor(R(i * 13 + j * 7 + 3) * 6)]);   // 大きな絵
+  box(x0 + 2, 3, z0 + 9, 9, 1, 1, WOOD); box(x0 + 2, 8, z0 + 9, 9, 1, 1, WOOD); box(x0 + 2, 3, z0 + 9, 1, 6, 1, WOOD); box(x0 + 10, 3, z0 + 9, 1, 6, 1, WOOD);
+  box(cx + 9, 1, cz + 2, 1, 16, 1, WOOD); box(cx + 9, 17, cz + 2, 1, 3, 1, 0xf6ecd2); box(cx + 9, 20, cz + 2, 1, 3, 1, PINK);   // 大きな筆
+  for (i = 0; i < 6; i++) box(cx - 12 + i % 3 * 2, 1, cz + 7 + Math.floor(i / 3) * 2, 2, 1, 2, [RED, YEL, BLUE, GREEN, PINK, 0xf6ecd2][i]);       // 絵の具
+  box(cx - 11, 1, cz + 1, 1, 6, 1, WOOD); box(cx - 11, 6, cz + 1, 1, 2, 1, RED);
+}
+function samurai(cx, cz){
+  var i, k, x0 = cx - 8;
+  for (i = 0; i < 17; i++) for (k = 1; k <= 3; k++) set(x0 + i, k, cz, 0x3d4a55);
+  for (i = 0; i < 17; i++) for (k = 1; k <= 3; k++) for (var z = 0; z < 6; z++) set(x0 + i, k, cz + z, ((i + z) % 3 === 0 || k === 2) ? 0xf4ebd6 : 0x3d4a55);
+  box(x0, 4, cz, 17, 3, 6, 0xf4ebd6);
+  box(cx - 2, 1, cz + 5, 4, 5, 1, 0x3a2a1e);                                      // 門
+  for (k = 0; 8 - 2 * k >= 1; k++) box(x0 - 1, 7 + k, cz - 1 + k, 19, 1, 8 - 2 * k, k === 0 ? 0x2f3a44 : 0x4c5b68);
+  box(cx - 3, 6, cz + 6, 6, 1, 1, 0x2f3a44);
+  box(x0 - 6, 1, cz + 5, 6, 3, 1, 0xf4ebd6); box(x0 - 6, 4, cz + 5, 6, 1, 1, 0x4c5b68);       // 土塀
+  box(x0 + 17, 1, cz + 5, 6, 3, 1, 0xf4ebd6); box(x0 + 17, 4, cz + 5, 6, 1, 1, 0x4c5b68);
+  box(cx + 11, 1, cz + 8, 1, 6, 1, WOOD); blob(cx + 11, 8, cz + 8, 2, 0x4f8f3a, 0x6fb04a);   // 松
+}
+function torii(cx, cz){
+  box(cx - 5, 1, cz, 2, 10, 2, RED); box(cx + 4, 1, cz, 2, 10, 2, RED);
+  box(cx - 7, 11, cz - 1, 15, 1, 4, 0x2f2f33); box(cx - 6, 10, cz, 13, 1, 2, RED); box(cx - 4, 8, cz, 9, 1, 2, RED);
+  [-10, 11].forEach(function(dx){ box(cx + dx, 1, cz, 1, 12, 1, WOOD); box(cx + dx - (dx < 0 ? 0 : 1), 4, cz, 2, 7, 1, PINK); });
+  box(cx, 6, cz, 1, 2, 1, 0xf0b429);
+}
+function lantern(x, z){ box(x, 1, z, 1, 3, 1, 0x9a927c); box(x, 4, z, 1, 1, 1, 0xf3dc9a); box(x - 1, 5, z - 1, 3, 1, 3, 0x6f6a5a); }
+function town(){
+  ground();
+  castle(31, 16); pagoda(11, 12); samurai(52, 13); torii(32, 54);
+  [5, 15, 25].forEach(function(x, i){ nagaya(x, 30, 9, [0xf6dfc0, 0xf7d3cf, 0xdcebf0][i], [BLUE, PINK, YEL][i]); });
+  [37, 46, 55].forEach(function(x, i){ shop(x, 30, 8, [BLUE, PINK, GREEN][i], [0x6b5240, 0x6b5240, 0x6b5240][i]); });
+  [[3, 24, 'sakura'], [20, 26, 'sakura'], [60, 24, 'sakura'], [44, 26, 'maple'], [4, 44, 'green'], [18, 50, 'sakura'], [22, 58, 'green'], [44, 48, 'sakura'], [52, 44, 'maple'], [58, 56, 'sakura'], [44, 58, 'green'], [3, 5, 'green'], [22, 6, 'maple'], [61, 4, 'sakura'], [38, 8, 'green'], [60, 40, 'green']].forEach(function(t){ tree(t[0], t[1], t[2]); });
+  [[28, 24], [35, 24], [28, 44], [35, 44], [28, 58], [35, 58]].forEach(function(l){ lantern(l[0], l[1]); });
+}
 
-          <!-- 場面の題と語り -->
-          <div class="narr" id="narr" aria-live="polite">
-            <p class="narr-no" id="narr-no"></p>
-            <h3 class="narr-title" id="narr-title"></h3>
-            <p class="narr-body" id="narr-body"></p>
-          </div>
+/* ---------- 描画 ---------- */
+var canvas = document.getElementById('gl');
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); renderer.setClearColor(0xe9cf7e);
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(34, 1, 1, 400);
+scene.add(new THREE.HemisphereLight(0xfff4de, 0xcfa86a, .95));
+var sun = new THREE.DirectionalLight(0xffffff, .75); sun.position.set(-30, 60, 40); scene.add(sun);
 
-          <!-- 自由に歩く：キャラクターを選び、それぞれの目で町を見る -->
-          <div class="kbar" id="kbar">
-            <a class="kbar-brand" href="index.html" aria-label="MORINOA トップへ"><img src="kamon-cream.png" alt="" aria-hidden="true"><span>MORINOA<small>めぐる城下町</small></span></a>
-            <span class="kbar-spacer"></span>
-            <a class="kbar-btn" href="service-ip.html">IP・デザインへ <i>→</i></a>
-            <a class="kbar-btn gold" href="https://forms.gle/eSTg1UBF56mVySoMA">軍議を申し込む</a>
-          </div>
-          <div class="stagebig" id="stagebig"><b id="sb-no">壱</b><span id="sb-name">再生</span><i></i><small id="sb-sub"></small></div>
-          <button type="button" class="introskip" id="introskip" hidden>とばす →</button>
-          <div class="hud" id="hud" hidden>
-            <p><strong id="hud-name">将軍</strong><em id="hud-lens">町を歩いて確かめる</em></p>
-            <p class="hud-desc" id="hud-desc"></p>
-            <p class="hud-count" id="hud-count"></p>
-            <p class="hud-keys">← → 歩く　Space ジャンプ　Shift 走る　立て札の前で話が聞ける</p>
-          </div>
-          <div class="zone-name" id="zone-name"></div>
-          <div class="talk" id="talk"><b id="talk-who"></b><p id="talk-text"></p></div>
+town();
+var cells = Array.from(vm.values()).filter(function(v){
+  var x = v[0], y = v[1], z = v[2];
+  return !(vm.has(key(x + 1, y, z)) && vm.has(key(x - 1, y, z)) && vm.has(key(x, y + 1, z)) && vm.has(key(x, y - 1, z)) && vm.has(key(x, y, z + 1)) && vm.has(key(x, y, z - 1)));
+});
+var geo = new THREE.BoxGeometry(1, 1, 1), mat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+var mesh = new THREE.InstancedMesh(geo, mat, cells.length), m4 = new THREE.Matrix4(), col = new THREE.Color();
+cells.forEach(function(v, i){
+  m4.setPosition(v[0] - 32, v[1], v[2] - 32); mesh.setMatrixAt(i, m4);
+  col.setHex(v[3]); col.multiplyScalar(.95 + R(i * .37) * .1); mesh.setColorAt(i, col);
+});
+mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; scene.add(mesh);
 
-          <!-- 結びのリンク：絵巻の最後に出る -->
-          <button type="button" class="endlink alt" id="endfree">もう少し歩く <span>→</span></button>
-          <a class="endlink" id="endlink" href="index.html">MORINOAのサイトへ <span>→</span></a>
+/* 歩く人（3つのボクセルで一人） */
+var PEOPLE = [], PN = 14, pm = new THREE.InstancedMesh(geo, mat, PN * 3);
+var SHIRT = [0xf29bb0, 0x4a90b8, 0xe8b03c, 0x7cc04b, 0xd8453a, 0xffffff];
+for (var pi = 0; pi < PN; pi++) {
+  var hz = pi % 2 === 0;
+  PEOPLE.push({ h: hz, t: R(pi * 3.3) * 50, v: (.6 + R(pi) * .8) * (R(pi * 9) > .5 ? 1 : -1), lane: hz ? 38.6 + R(pi * 5) * 2.8 : 30.6 + R(pi * 5) * 2.8 });
+  [0, 1, 2].forEach(function(k){ col.setHex(k === 0 ? 0x4a3426 : k === 1 ? SHIRT[pi % 6] : 0xf1c9a0); pm.setColorAt(pi * 3 + k, col); });
+}
+scene.add(pm);
+function placePeople(dt){
+  var o = new THREE.Matrix4(), s = new THREE.Matrix4().makeScale(.8, .8, .8);
+  PEOPLE.forEach(function(p, i){
+    p.t += p.v * dt; var span = p.h ? 56 : 34, u = ((p.t % (span * 2)) + span * 2) % (span * 2); u = u > span ? span * 2 - u : u;
+    var x = p.h ? 3 + u : p.lane, z = p.h ? p.lane : 28 + u, bob = Math.abs(Math.sin(p.t * 6)) * .15;
+    [[0, 1.0], [1, 1.8], [2, 2.55]].forEach(function(a){ o.makeTranslation(x - 32, a[1] * .8 + .5 + bob * (a[0] ? 1 : 0), z - 32); o.multiply(s); pm.setMatrixAt(i * 3 + a[0], o); });
+  });
+  pm.instanceMatrix.needsUpdate = true; pm.instanceColor.needsUpdate = true;
+}
 
-          <!-- 起動画面 -->
-          <div class="boot" id="boot">
-            <img src="kamon-original.png" alt="" aria-hidden="true">
-            <p>MORINOA<br><small>町を歩いてみますか？</small></p>
-            <button type="button" id="play">はじめる</button>
-          </div>
+/* 桜の花びら */
+var PN2 = 160, pg = new THREE.BufferGeometry(), pp = new Float32Array(PN2 * 3), pv = [];
+for (var q = 0; q < PN2; q++) { pp[q * 3] = (R(q) - .5) * 90; pp[q * 3 + 1] = R(q * 3) * 50; pp[q * 3 + 2] = (R(q * 7) - .5) * 90; pv.push(2 + R(q * 5) * 3); }
+pg.setAttribute('position', new THREE.BufferAttribute(pp, 3));
+var petals = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xf8b6c8, size: .9, sizeAttenuation: true })); scene.add(petals);
+function fall(dt, t){ for (var i = 0; i < PN2; i++) { pp[i * 3 + 1] -= pv[i] * dt; pp[i * 3] += Math.sin(t + i) * dt * 1.2; if (pp[i * 3 + 1] < 0) pp[i * 3 + 1] = 50; } pg.attributes.position.needsUpdate = true; }
 
-          <!-- 札を押すと開く小窓 -->
-          <div class="popup" id="popup" hidden>
-            <div class="popup-card" role="dialog" aria-modal="true" aria-labelledby="popup-title">
-              <button type="button" class="popup-close" aria-label="閉じる">×</button>
-              <p class="popup-kind" id="popup-kind"></p>
-              <h4 id="popup-title"></h4>
-              <p id="popup-body"></p>
-            </div>
-          </div>
-        </div>
-        <div class="bezel" aria-hidden="true"><i class="led"></i></div>
-      </div>
-      <div class="stand" aria-hidden="true"></div>
+/* ---------- カメラ移動とカード ---------- */
+setTimeout(function(){ var h = document.getElementById('hintdrag'); if (h) h.classList.add('off'); }, 7000);
+var cur = { x: 32, y: 6, z: 30, az: -.3, d: 120 }, goal = { x: 32, y: 6, z: 30, az: -.3, d: 100 }, active = 0, mouseX = 0, pinEls = [];
+CARDS.forEach(function(c, i){
+  var pin = document.createElement('div'); pin.className = 'pin'; pin.style.opacity = 0;
+  pin.innerHTML = '<button class="pin-btn" type="button" aria-label="' + c.t + '">' + c.t.charAt(0) + '</button><div class="pin-card"><h2>' + c.t + '</h2><span class="en">' + c.en + '</span><p>' + c.p + '</p><button class="more" type="button">More</button></div>';
+  [pin.querySelector('.pin-btn'), pin.querySelector('.pin-card')].forEach(function(node){ node.addEventListener('click', function(e){
+    e.stopPropagation(); if (e.target.closest('.more')) { openSheet(i); return; }
+    var was = pin.classList.contains('open'); closeCards(); if (!was) { pin.classList.add('open'); active = i; }
+  }); });
+  document.body.appendChild(pin); pinEls.push(pin);
+});
+function closeCards(){ pinEls.forEach(function(p){ p.classList.remove('open'); }); }
 
-      <!-- 目盛り：再生 → 維持 → 持続 -->
-      <div class="scale">
-        <div class="scale-bar"><i id="scale-fill"></i><b id="scale-pin"></b></div>
-        <div class="scale-labels"><span>再生</span><span>維持</span><span>持続</span></div>
-      </div>
-      <p class="hint" id="hint">歩いて、城を目指す。どんな歩き方をしても、町は 再生 → 維持 → 持続 へ向かいます</p>
-    </div>
-  </section>
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeAll(); });
+window.addEventListener('mousemove', function(e){ mouseX = e.clientX / window.innerWidth - .5; });
+/* 指・カーソルで町を回す（ドラッグで回転、上下で角度、ホイールとピンチで寄り引き） */
+var uAz = 0, uEl = 0, uZ = 1, drag = null, pts = {}, pinch = 0, glc = document.getElementById('gl');
+glc.style.cursor = 'grab'; glc.style.touchAction = 'none';
+glc.addEventListener('pointerdown', function(e){ glc.setPointerCapture(e.pointerId); pts[e.pointerId] = [e.clientX, e.clientY]; drag = [e.clientX, e.clientY]; glc.style.cursor = 'grabbing'; pinch = 0; });
+glc.addEventListener('pointermove', function(e){
+  if (!pts[e.pointerId]) return; pts[e.pointerId] = [e.clientX, e.clientY]; var ids = Object.keys(pts);
+  if (ids.length >= 2) { var a = pts[ids[0]], b = pts[ids[1]], dd = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) uZ = Math.max(.55, Math.min(1.5, uZ * pinch / dd)); pinch = dd; return; }
+  if (drag) { uAz -= (e.clientX - drag[0]) * .006;  drag = [e.clientX, e.clientY]; }
+});
+var downAt = null;
+glc.addEventListener('pointerdown', function(e){ downAt = [e.clientX, e.clientY]; });
+glc.addEventListener('pointerup', function(e){ if (downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 5) closeCards(); });
+function endDrag(e){ delete pts[e.pointerId]; if (!Object.keys(pts).length) { drag = null; glc.style.cursor = 'grab'; } pinch = 0; }
+glc.addEventListener('pointerup', endDrag); glc.addEventListener('pointercancel', endDrag);
+glc.addEventListener('wheel', function(e){ e.preventDefault(); uZ = Math.max(.55, Math.min(1.5, uZ * (1 + e.deltaY * .001))); }, { passive: false });
 
-  <section class="detail-block world-after">
-    <div class="wrap">
-      <div class="detail-cta cta-shu">
-        <h2>この物語を、あなたの町でも。</h2>
-        <p>一座が現場に入り、使い、伝え、巡る仕組みをつくります。</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="https://forms.gle/eSTg1UBF56mVySoMA">軍議を申し込む →</a>
-          <a class="btn btn-secondary" href="service-ip.html">IP・デザインへ戻る</a>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+/* MENU・詳細 */
+var menu = document.getElementById('menu'), sheet = document.getElementById('sheet'), sheetIn = document.getElementById('sheetIn');
+document.getElementById('menuBtn').addEventListener('click', function(){ menu.classList.add('open'); });
+document.getElementById('menuClose').addEventListener('click', closeAll);
+sheet.addEventListener('click', function(e){ if (e.target === sheet) closeAll(); });
+function closeAll(){ menu.classList.remove('open'); sheet.classList.remove('open'); }
+function openSheet(i){
+  var c = CARDS[i], h = '<button class="close" type="button" aria-label="閉じる">✕</button><h3>' + c.t + '</h3><span class="en">' + c.en + '</span><p class="lead">' + c.lead + '</p>';
+  if (c.list) h += '<ol>' + c.list.map(function(l){ return '<li><b><i>' + l[0] + '</i>' + l[1] + '</b><span>' + l[2] + '</span></li>'; }).join('') + '</ol>';
+  var btns = c.btns || [['軍議を申し込む →', FORM, 0]];
+  h += '<div class="btns">' + btns.map(function(b){ return '<a class="pill' + (b[2] ? ' dark' : '') + '" href="' + b[1] + '"' + (b[1].indexOf('http') === 0 ? ' target="_blank" rel="noopener"' : '') + '>' + b[0] + '</a>'; }).join('') + '</div>';
+  sheetIn.innerHTML = h; sheetIn.querySelector('.close').addEventListener('click', closeAll); sheet.classList.add('open');
+}
 
-<script src="js/world2d.js?v=20261109o"></script>
+function size(){
+  var W = window.innerWidth, H = window.innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', size); size();
+
+var last = performance.now() / 1000, T0 = last, shown = false;
+function frame(){
+  requestAnimationFrame(frame);
+  var now = performance.now() / 1000, dt = Math.min(.05, now - last), t = now - T0; last = now;
+  var k = 1 - Math.exp(-dt * 2.6);
+  cur.x += (goal.x - cur.x) * k; cur.y += (goal.y - cur.y) * k; cur.z += (goal.z - cur.z) * k; cur.az += (goal.az - cur.az) * k; cur.d += (goal.d - cur.d) * k;
+  var az = cur.az + uAz + mouseX * .12 + Math.sin(t * .2) * .03, el = .4, d = cur.d * uZ, hcos = Math.cos(el) * d;
+  var aspectBoost = Math.max(1, 1.25 / camera.aspect);                       // 縦長の画面では引く
+  d *= aspectBoost; hcos = Math.cos(el) * d;
+  var tx = cur.x - 32, ty = cur.y - d * .08, tz = cur.z - 32;
+  camera.position.set(tx + Math.sin(az) * hcos, ty + Math.sin(el) * d + d * .08, tz + Math.cos(az) * hcos);
+  camera.lookAt(tx, ty, tz);
+  placePeople(dt); fall(dt, t);
+  renderer.render(scene, camera);
+  var W = window.innerWidth, Hh = window.innerHeight, pv3 = new THREE.Vector3();
+  pinEls.forEach(function(pe, i){
+    var pn = CARDS[i].pin; pv3.set(pn.x - 32, pn.y, pn.z - 32).project(camera);
+    var px = (pv3.x * .5 + .5) * W, py = (-pv3.y * .5 + .5) * Hh, card = pe.querySelector('.pin-card'), w = card.offsetWidth, h = card.offsetHeight, dx = 0;
+    if (pv3.z > 1) { pe.style.opacity = 0; pe.style.pointerEvents = 'none'; return; }
+    pe.classList.toggle('below', py - 30 - h < 76); dx = Math.max(12, Math.min(W - w - 12, px - w / 2)) - (px - w / 2);
+    pe.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,0)'; card.style.setProperty('--dx', dx.toFixed(1) + 'px'); pe.style.opacity = 1; pe.style.pointerEvents = '';
+  });
+  if (!shown && t > .4) { shown = true; document.getElementById('load').classList.add('off'); setTimeout(size, 50); }
+}
+setTimeout(function(){ document.getElementById('load').classList.add('off'); }, 2500);
+frame();
+})();
+</script>
 </body>
 </html>
