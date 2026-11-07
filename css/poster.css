@@ -1,0 +1,98 @@
+/* ============================================================
+   浮世絵ポスターの言葉づかい
+   ・丸い角・薄い枠・やさしい影（＝どこかで見たカード）をやめる
+   ・一色ベタの面、太い墨、版木のかすれ、大きな文字、幅の違う割り付け
+   ・色は墨・生成り・アボカド・朱に、藍摺りの「ai」を一面だけ足す
+   ・余白は 8 の倍数（8 / 16 / 24 / 32 / 48 / 64）
+   ============================================================ */
+:root{
+  --ai:#2B9CD6;          /* 藍摺り：ポスターの水色。大きな面にだけ使う */
+  --u:8px;
+  --ink-line:3px solid var(--ink);
+}
+
+/* 版木のかすれ：輪郭がゆれ、墨のなかに白い粒が抜ける。大きな文字にだけ使う */
+.print{filter:url(#print);}
+
+/* 紙の粒（面の上に薄く重ねる） */
+.grain{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- カードを四角く、枠を太く、影を消す ---------- */
+.card{border:2px solid var(--ink);border-radius:0;box-shadow:none;padding:calc(var(--u) * 4);}
+.card-accent{border-left:8px solid var(--avocado);}
+
+/* ---------- 二つの事業：水色の面に、幅の違う二枚の札 ---------- */
+#service{
+  position:relative;overflow:hidden;padding:calc(var(--u) * 13) 0 calc(var(--u) * 14);
+  background-color:var(--ai);border-top:var(--ink-line);border-bottom:var(--ink-line);
+}
+#service .sec-label,#service .sec-lead{color:var(--ink);}
+#service .sec-label::before{background:var(--ink);}
+#service .sec-title{
+  font-size:clamp(36px,6.2vw,92px);font-weight:800;line-height:1.14;letter-spacing:.01em;color:var(--ink);
+  filter:url(#print);
+}
+#service .sec-lead{max-width:34em;font-weight:500;font-size:clamp(15px,1.5vw,18px);}
+#service .sec-head::after{-webkit-text-stroke:1.5px rgba(17,29,15,.45);}
+.service-grid{grid-template-columns:7fr 5fr;gap:0;max-width:1080px;align-items:stretch;}
+.svc{
+  position:relative;overflow:hidden;border:var(--ink-line);border-radius:0;padding:calc(var(--u) * 6) calc(var(--u) * 5) calc(var(--u) * 5);
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+.svc:nth-child(1){background:var(--ink);color:var(--cream);margin-right:-3px;}
+.svc:nth-child(2){background:var(--cream);color:var(--ink);margin-top:calc(var(--u) * 6);}
+.svc:hover{transform:translate(-4px,-4px);box-shadow:8px 8px 0 var(--ink);border-color:var(--ink);z-index:2;}
+.svc:nth-child(1):hover{box-shadow:8px 8px 0 var(--avocado);}
+.svc .svc-num{
+  position:absolute !important;right:-.04em;top:-.2em;margin:0 !important;width:auto;height:auto;padding:0;border-radius:0;background:none;box-shadow:none;
+  font-family:var(--mincho);font-weight:800;font-size:clamp(200px,26vw,320px);line-height:1;color:transparent;-webkit-text-stroke:3px currentColor;opacity:.22;pointer-events:none;
+}
+.svc:nth-child(1) .svc-num{-webkit-text-stroke-color:var(--ai);opacity:.7;}
+.svc > *{position:relative;z-index:1;}
+.svc h3{font-size:clamp(30px,3.8vw,50px);font-weight:800;line-height:1.15;margin:0 0 calc(var(--u) * 2);letter-spacing:.02em;}
+.svc .en{font-size:12px;letter-spacing:.24em;color:inherit;opacity:.75;margin-bottom:calc(var(--u) * 2);}
+.svc .lead-role{
+  border-radius:0;border:2px solid var(--ink);background:var(--avocado);color:var(--ink);padding:4px 14px;font-weight:900;margin-bottom:calc(var(--u) * 3);
+}
+.svc p{color:inherit;font-size:15.5px;line-height:1.85;max-width:30em;}
+.svc ul{margin-top:calc(var(--u) * 3);border-top:2px solid currentColor;}
+.svc li{padding:12px 0 12px 28px;margin:0;font-size:15px;font-weight:700;color:inherit;border-bottom:1px solid currentColor;}
+.svc li::before{top:19px;left:2px;width:12px;height:12px;border-radius:0;background:var(--avocado);}
+.svc:nth-child(even) li::before{background:var(--ai);}
+.svc-more{
+  display:inline-flex;align-items:center;gap:12px;margin-top:calc(var(--u) * 4);padding:12px 20px;background:var(--ai);color:var(--ink);
+  border:2px solid var(--ink);font-weight:900;letter-spacing:.08em;
+}
+.svc:nth-child(1) .svc-more{background:var(--avocado);}
+.svc:hover .svc-more{gap:20px;color:var(--ink);}
+@media(max-width:920px){
+  .service-grid{grid-template-columns:1fr;}
+  .svc:nth-child(1){margin-right:0;margin-bottom:-3px;}
+  .svc:nth-child(2){margin-top:0;}
+}
+
+/* ---------- WHY MORINOA：一枚の墨ベタ。家紋は大きく、縁からはみ出す ---------- */
+.why-card{
+  position:relative;overflow:hidden;border:var(--ink-line);border-radius:0;background:var(--ink);padding:calc(var(--u) * 8) calc(var(--u) * 6);
+}
+.why-card .why-text{position:relative;z-index:1;max-width:36em;}
+.why-card h3{font-size:clamp(30px,4.6vw,60px) !important;font-weight:800;line-height:1.18;margin:calc(var(--u) * 2) 0 calc(var(--u) * 3);}
+.why-card .why-kamon{position:absolute;right:-6%;top:50%;width:clamp(240px,32vw,420px) !important;transform:translateY(-50%) rotate(-8deg);opacity:.16 !important;}
+@media(max-width:820px){.why-card{padding:calc(var(--u) * 6) calc(var(--u) * 3);}.why-card .why-kamon{right:-18%;}}
+
+/* ---------- 五手：札を四角く、枠を墨に ---------- */
+#flow .step{border:2px solid var(--ink) !important;border-radius:0;}
+#flow .step .step-kanji{border-radius:0;}
+.motion #flow .step.here{box-shadow:6px 6px 0 var(--ink);}
+.motion #flow .step.lit{border-color:var(--ink) !important;}
+
+/* ---------- 検証用ボタン・バッジ ---------- */
+.btn{border-radius:0;}
+
+/* 事業ページの特徴カードも四角く（IPページは brutal.css がさらに強くする） */
+.feature-card{border:2px solid var(--ink);border-radius:0;box-shadow:none;}
+
+.nb{display:inline-block;}
+#service .bar-sep{display:inline-block;margin:0 .12em;opacity:.7;}

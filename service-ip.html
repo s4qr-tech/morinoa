@@ -23,17 +23,30 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches))document.documentElement.classList.add("ink-intro");</script>
+<style>html.ink-intro::before{content:"";position:fixed;inset:0;background:#EFE9D6;z-index:99998}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Dela+Gothic+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/world.css?v=20261107a">
 <link rel="stylesheet" href="css/style.css?v=20261029b">
 <link rel="stylesheet" href="css/motion.css?v=20261029b">
+<link rel="stylesheet" href="css/poster.css?v=20261109b"><link rel="stylesheet" href="css/flow.css?v=20261109f">
+<link rel="stylesheet" href="css/brutal.css?v=20261109u">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"IP・デザイン","description":"IPの企画・開発、ブランド設計、デザイン、文化・地域資源の再解釈を通じて、新たな価値を創出する。","url":"https://morinoa.com/service-ip.html","provider":{"@type":"Organization","@id":"https://morinoa.com/#organization","name":"MORINOA","url":"https://morinoa.com/"},"areaServed":"JP"}
 </script>
 </head>
-<body>
+<body class="ip-brutal">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="print" x="-4%" y="-6%" width="108%" height="112%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="warp"/>
+<feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="8" result="spk"/>
+<feColorMatrix in="spk" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  14 0 0 0 -4.6" result="holes"/>
+<feComposite in="rough" in2="holes" operator="in"/>
+</filter></defs></svg>
+
 
 <!-- ============ HEADER ============ -->
 <header>
@@ -57,7 +70,7 @@
         <a href="index.html">TOP</a>
         <a href="index.html#about">MORINOAとは</a>
         <a href="index.html#org">一座</a>
-        <a href="index.html#flow">再生までの五手</a>
+        <a href="index.html#flow">再生までの三手</a>
         <a href="index.html#contact">ご相談・お問い合わせ</a>
       </div>
       <div class="menu-col">
@@ -81,8 +94,9 @@
 </div>
 
 <!-- ============ DETAIL HERO ============ -->
-<section class="detail-hero">
+<section class="detail-hero grain">
   <div class="wrap">
+    <div class="chochin-set" aria-hidden="true"><span class="cho c1"><i>奥絵師</i></span><span class="cho c2"><i>IP</i></span><span class="cho c3"><i>意匠</i></span></div>
     <span class="hero-mark" aria-hidden="true">壱</span>
     <span class="svc-num" aria-label="01">壱</span>
     <h1>IP・デザイン</h1>
@@ -95,6 +109,7 @@
   </div>
 </section>
 
+<div class="bar" aria-hidden="true"><div class="bar-track"><span>IP &amp; DESIGN<em>✦</em>意匠<em>✦</em>物語<em>✦</em>暖簾<em>✦</em>旗<em>✦</em>家紋<em>✦</em></span><span>IP &amp; DESIGN<em>✦</em>意匠<em>✦</em>物語<em>✦</em>暖簾<em>✦</em>旗<em>✦</em>家紋<em>✦</em></span></div></div>
 <!-- ============ 課題 ============ -->
 <section class="detail-block" style="background:var(--cream);border-top:1px solid var(--line);">
   <div class="wrap">
@@ -121,7 +136,7 @@
 </section>
 
 <!-- ============ 提供内容 ============ -->
-<section class="detail-block">
+<section class="detail-block ip-sol grain">
   <div class="wrap">
     <p class="sec-label">SOLUTION</p>
     <h2 class="sec-title">提供内容</h2>
@@ -146,40 +161,30 @@
 </section>
 
 <!-- ============ 進め方 ============ -->
-<section class="detail-block" style="background:var(--cream);border-top:1px solid var(--line);">
+<section class="detail-block ip-flow">
   <div class="wrap">
     <p class="sec-label">FLOW</p>
-    <h2 class="sec-title">進め方</h2>
-    <div class="detail-flow" style="margin-top:24px;">
-      <div class="detail-flow-item">
-        <div class="detail-flow-num" aria-label="1">一</div>
-        <div class="detail-flow-body">
-          <h3>ヒアリング</h3>
-          <p>事業の歴史・強み・お客様との関係性を伺い、まだ言葉になっていない魅力を掘り起こします。</p>
-        </div>
-      </div>
-      <div class="detail-flow-item">
-        <div class="detail-flow-num" aria-label="2">二</div>
-        <div class="detail-flow-body">
-          <h3>世界観・キャラクター設計</h3>
-          <p>ブランドの軸となる物語とキャラクターを設計。奥絵師が実際に手を動かして形にします。</p>
-        </div>
-      </div>
-      <div class="detail-flow-item">
-        <div class="detail-flow-num" aria-label="3">三</div>
-        <div class="detail-flow-body">
-          <h3>デザイン展開</h3>
-          <p>ロゴ・販促物・SNSアイコンなど、決めた世界観を各接点に一貫して展開します。</p>
-        </div>
-      </div>
-      <div class="detail-flow-item">
-        <div class="detail-flow-num" aria-label="4">四</div>
-        <div class="detail-flow-body">
-          <h3>運用・磨き込み</h3>
-          <p>公開して終わりにせず、反応を見ながらコンテンツと展開を継続的に磨き込みます。</p>
-        </div>
-      </div>
-    </div>
+    <h2 class="sec-title">進め方は三手</h2>
+    <ol class="flow-rows">
+      <li class="frow">
+        <span class="frow-no">一</span>
+        <h3 class="frow-t">掘る</h3>
+        <p class="frow-d">事業の歴史・強み・お客様との関係性を伺い、まだ言葉になっていない魅力を掘り起こします。</p>
+        <span class="frow-s">ヒアリング</span>
+      </li>
+      <li class="frow">
+        <span class="frow-no">二</span>
+        <h3 class="frow-t">描く</h3>
+        <p class="frow-d">軸となる物語とキャラクターを奥絵師が形にし、ロゴ・販促物・SNSなど各接点へ一貫して展開します。</p>
+        <span class="frow-s">世界観・デザイン</span>
+      </li>
+      <li class="frow">
+        <span class="frow-no">三</span>
+        <h3 class="frow-t">磨く</h3>
+        <p class="frow-d">公開して終わりにせず、反応を見ながらコンテンツと展開を継続的に磨き込みます。</p>
+        <span class="frow-s">運用・磨き込み</span>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -206,6 +211,7 @@
 </section>
 
 <!-- ============ 世界観ページへの入口 ============ -->
+<div class="bar sora" aria-hidden="true"><div class="bar-track"><span>デザインは装飾ではない<em>✦</em>事業の物語そのもの<em>✦</em></span><span>デザインは装飾ではない<em>✦</em>事業の物語そのもの<em>✦</em></span></div></div>
 <section class="detail-block world-link-block">
   <div class="wrap">
     <a class="world-link reveal" href="world.html">
@@ -259,6 +265,7 @@
   </div>
 </footer>
 
+<script src="js/ink.js?v=20261109f"></script>
 <script src="js/main.js?v=20261029b"></script>
 <script src="js/motion.js?v=20261029b"></script>
 </body>

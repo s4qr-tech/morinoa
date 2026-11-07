@@ -1,0 +1,199 @@
+/* ============================================================
+   和ポップ（TOP）：鬱金・緋・藍・萌黄・浅葱、ぶ厚い丸ゴシック、市松
+   ============================================================ */
+:root{
+  --ukon:#EFBB24;--hi:#D3381C;--ai-iro:#1D4F75;--hanada:#4C6CB3;--asagi:#00A3AF;--moegi:#AACF53;--akane:#B7282E;
+  --pop:'Dela Gothic One','Zen Maru Gothic',sans-serif;
+}
+
+/* ---------- TOP 全体：和ポップ ---------- */
+.sec-title,.display,.hero h1,.why-card h3{font-family:var(--pop);font-weight:400;letter-spacing:.01em;}
+.sec-title{font-size:clamp(28px,4.2vw,56px);line-height:1.2;}
+.sec-head::after{-webkit-text-stroke:2px var(--hi);opacity:.55;}
+/* ヒーロー：市松 */
+.hero{background-color:var(--base);
+  background-image:conic-gradient(rgba(239,187,36,.22) 25%,transparent 0 50%,rgba(239,187,36,.22) 0 75%,transparent 0);background-size:96px 96px;}
+.hero h1{font-size:clamp(30px,4.6vw,64px);line-height:1.25;color:var(--ink);}
+.hero h1 .em{color:var(--hi);}
+.hero-tag{background:var(--ukon);color:var(--ink);border:2px solid var(--ink);border-radius:0;font-weight:900;}
+.hero-logo{border:3px solid var(--ink);border-radius:0;box-shadow:8px 8px 0 var(--ink);background:var(--cream);}
+.hero-actions .btn-primary{background:var(--hi);color:var(--cream);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);}
+.hero-actions .btn-secondary{background:var(--cream);border:3px solid var(--ink);color:var(--ink);box-shadow:5px 5px 0 var(--ink);}
+/* 和紙テープ：藍に */
+/* WHY：藍の面 */
+.why-card{background:var(--ai-iro);}
+.why-card h3{color:var(--cream);}
+/* 一座：萌黄の面 */
+#org{background:var(--moegi);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);}
+#org .sec-title{color:var(--ink);}
+/* 再生までの五手：藍の面、札は生成り */
+#flow{background:var(--ai-iro);border-top:3px solid var(--ink);}
+#flow .sec-label,#flow .sec-title{color:var(--cream);}
+#flow .sec-label::before{background:var(--cream);}
+#flow .sec-lead{color:rgba(242,238,224,.85);}
+#flow .sec-head::after{-webkit-text-stroke:2px var(--ukon);}
+#flow .step{background:var(--cream);border:3px solid var(--ink) !important;box-shadow:5px 5px 0 var(--ink);}
+#flow .step .step-kanji{background:var(--hi) !important;color:var(--cream);}
+#flow .step:nth-child(2) .step-kanji{background:var(--ukon) !important;color:var(--ink);}
+#flow .step:nth-child(3) .step-kanji{background:var(--asagi) !important;color:var(--ink);}
+#flow .step:nth-child(4) .step-kanji{background:var(--moegi) !important;color:var(--ink);}
+#flow .step:nth-child(5) .step-kanji{background:var(--akane) !important;color:var(--cream);}
+/* お問い合わせ：緋の面 */
+#contact{background:var(--akane) !important;border-top:3px solid var(--ink) !important;}
+#contact .sec-label,#contact .display,#contact .contact-copy p{color:var(--cream);}
+#contact .sec-label::before{background:var(--cream);}
+#org{background:var(--moegi) !important;}
+#org .sec-label{color:var(--ink);}
+.contact .card,.contact-grid .card,#contact .card{border:3px solid var(--ink);border-radius:0;box-shadow:6px 6px 0 var(--ink);}
+.about-card,.why-card{border-radius:0;}
+
+/* ---------- TOP をMORINOAの色に ---------- */
+.sec-head::after{-webkit-text-stroke:2px var(--shu);}
+.hero{background-image:conic-gradient(rgba(138,182,87,.2) 25%,transparent 0 50%,rgba(138,182,87,.2) 0 75%,transparent 0);}
+.hero-tag{background:var(--avocado);}
+.hero h1 .em{color:var(--shu);}
+.hero-actions .btn-primary{background:var(--forest);}
+.why-card{background:var(--forest);}
+#org{background:var(--avocado) !important;}
+#flow{background:var(--forest);}
+#flow .sec-head::after{-webkit-text-stroke:2px var(--avocado);}
+#flow .step .step-kanji{background:var(--sora) !important;color:var(--ink);}
+#flow .step:nth-child(2) .step-kanji{background:var(--avocado) !important;}
+#flow .step:nth-child(3) .step-kanji{background:var(--teal) !important;color:var(--cream);}
+#flow .step:nth-child(4) .step-kanji{background:var(--sora) !important;}
+#flow .step:nth-child(5) .step-kanji{background:var(--shu) !important;color:var(--cream);}
+#contact{background:var(--shu) !important;}
+
+/* ---------- ヒーロー：深緑に青海波、威厳のある背景 ---------- */
+.hero{
+  background-color:var(--forest);
+  background-image:
+    radial-gradient(ellipse at 50% 40%,rgba(0,0,0,0) 40%,rgba(10,24,10,.55) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Cg fill='%23254723' stroke='%238AB657' stroke-opacity='.32' stroke-width='1.3'%3E%3Ccircle cx='32' cy='16' r='32'/%3E%3Ccircle cx='32' cy='16' r='24'/%3E%3Ccircle cx='32' cy='16' r='16'/%3E%3Ccircle cx='32' cy='16' r='8'/%3E%3Ccircle cx='0' cy='32' r='32'/%3E%3Ccircle cx='0' cy='32' r='24'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='0' cy='32' r='8'/%3E%3Ccircle cx='64' cy='32' r='32'/%3E%3Ccircle cx='64' cy='32' r='24'/%3E%3Ccircle cx='64' cy='32' r='16'/%3E%3Ccircle cx='64' cy='32' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:100% 100%,64px 32px;
+  border-bottom:3px solid var(--ink);
+}
+.hero h1{color:var(--cream);}
+.hero h1 .em{color:var(--avocado);}
+.hero-tag{background:var(--avocado);color:var(--ink);}
+.hero-motto{color:var(--cream);}
+.hero-sub{color:rgba(242,238,224,.88);}
+.hero-actions .btn-primary{background:var(--shu);color:var(--cream);border-color:var(--cream);box-shadow:5px 5px 0 var(--ink);}
+.hero-actions .btn-secondary{background:transparent;color:var(--cream);border:3px solid var(--cream);box-shadow:5px 5px 0 var(--ink);}
+.hero-logo{border-color:var(--cream);box-shadow:8px 8px 0 var(--ink);}
+.rail{color:var(--cream);}
+
+/* ヒーロー：もう少し静かに（波の線を薄く、地をやや深く） */
+.hero{
+  background-color:#1F3B1E;
+  background-image:
+    radial-gradient(ellipse at 50% 42%,rgba(0,0,0,0) 35%,rgba(8,20,8,.5) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Cg fill='%231F3B1E' stroke='%238AB657' stroke-opacity='.11' stroke-width='1'%3E%3Ccircle cx='32' cy='16' r='32'/%3E%3Ccircle cx='32' cy='16' r='24'/%3E%3Ccircle cx='32' cy='16' r='16'/%3E%3Ccircle cx='32' cy='16' r='8'/%3E%3Ccircle cx='0' cy='32' r='32'/%3E%3Ccircle cx='0' cy='32' r='24'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='0' cy='32' r='8'/%3E%3Ccircle cx='64' cy='32' r='32'/%3E%3Ccircle cx='64' cy='32' r='24'/%3E%3Ccircle cx='64' cy='32' r='16'/%3E%3Ccircle cx='64' cy='32' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:100% 100%,80px 40px;
+}
+.hero h1 .em{color:#B9D58E;}
+.hero-tag{background:transparent;color:var(--avocado);border:1.5px solid var(--avocado);}
+.hero-actions .btn-primary,.hero-actions .btn-secondary{box-shadow:none;border-width:2px;}
+.hero-logo{box-shadow:none;border:2px solid rgba(242,238,224,.6);}
+
+/* ============================================================
+   ヒーロー：和紙色の地に、うっすらと青海波。静かで、格のある背景
+   ============================================================ */
+.hero{
+  background-color:#E9E3D0;
+  background-image:
+    radial-gradient(ellipse at 50% 40%,rgba(255,255,255,0) 50%,rgba(120,100,60,.10) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Cg fill='%23E9E3D0' stroke='%235B5344' stroke-opacity='.13' stroke-width='1'%3E%3Ccircle cx='32' cy='16' r='32'/%3E%3Ccircle cx='32' cy='16' r='24'/%3E%3Ccircle cx='32' cy='16' r='16'/%3E%3Ccircle cx='32' cy='16' r='8'/%3E%3Ccircle cx='0' cy='32' r='32'/%3E%3Ccircle cx='0' cy='32' r='24'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='0' cy='32' r='8'/%3E%3Ccircle cx='64' cy='32' r='32'/%3E%3Ccircle cx='64' cy='32' r='24'/%3E%3Ccircle cx='64' cy='32' r='16'/%3E%3Ccircle cx='64' cy='32' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:100% 100%,80px 40px;
+  border-bottom:1px solid var(--line);
+}
+.hero h1{color:var(--ink);}
+.hero h1 .em{color:var(--forest);}
+.hero-tag{background:transparent;color:var(--forest);border:1.5px solid var(--forest);}
+.hero-motto{color:var(--ink);}
+.hero-sub{color:var(--sub);}
+.hero-sub strong{color:var(--ink);}
+.hero-actions .btn-primary{background:var(--forest);color:var(--cream);border:2px solid var(--forest);box-shadow:none;}
+.hero-actions .btn-secondary{background:transparent;color:var(--forest);border:2px solid var(--forest);box-shadow:none;}
+.hero-logo{background:var(--cream);border:1.5px solid var(--line);box-shadow:none;}
+.rail{color:var(--sub);}
+
+/* ============================================================
+   SERVICE：一閃。画面を斬り、二つの事業が同じ大きさに分かれる
+   ============================================================ */
+#service{background-color:var(--sora);
+  background-image:conic-gradient(rgba(242,238,224,.18) 25%,transparent 0 50%,rgba(242,238,224,.18) 0 75%,transparent 0);background-size:96px 96px;
+  border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);}
+#service .sec-title{font-family:var(--pop);font-weight:400;filter:none;color:var(--ink);}
+#service .sec-label,#service .sec-lead{color:var(--ink);}
+.slash{position:relative;max-width:1080px;height:clamp(300px,31vw,350px);margin:56px auto 0;}
+.slash-card{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;color:var(--ink);text-decoration:none;
+  transition:transform 1.2s cubic-bezier(.16,.8,.2,1);
+}
+.slash-card.a{background:var(--cream);clip-path:polygon(0 0,55% 0,45% 100%,0 100%);padding:0 56% 0 44px;}
+.slash-card.b{background:var(--sand);clip-path:polygon(55% 0,100% 0,100% 100%,45% 100%);padding:0 44px 0 59%;}
+.slash-card .svc-num{position:static;display:inline-block;align-self:flex-start;margin:0 0 14px;padding:3px 12px;background:var(--ink);color:var(--cream);
+  font-family:var(--pop);font-size:14px;letter-spacing:.12em;border-radius:0;width:auto;height:auto;-webkit-text-stroke:0;opacity:1;}
+.slash-card h3{font-family:var(--pop);font-weight:400;font-size:clamp(24px,2.8vw,36px);line-height:1.25;margin:0 0 10px;}
+.slash-card p{font-size:15px;line-height:1.8;margin:0;color:var(--ink);max-width:22em;}
+.slash-card .svc-more{align-self:flex-start;margin-top:20px;padding:10px 18px;background:var(--avocado);border:2px solid var(--ink);color:var(--ink);font-weight:900;letter-spacing:.06em;}
+.slash-card .en,.slash-card ul,.slash-card .lead-role{display:none;}
+/* 一閃の筆跡 */
+.slash-cut{position:absolute;inset:-14px 0;width:100%;height:calc(100% + 28px);pointer-events:none;overflow:visible;z-index:3;}
+.slash-cut path{fill:none;stroke:var(--ink);stroke-width:14px;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;}
+.slash .drop{position:absolute;border-radius:50%;background:var(--ink);z-index:3;opacity:0;transform:scale(0);}
+.slash .d1{left:51%;top:-6%;width:12px;height:12px;}.slash .d2{left:48%;top:30%;width:8px;height:8px;}
+.slash .d3{left:56%;top:44%;width:16px;height:16px;}.slash .d4{left:43%;top:60%;width:9px;height:9px;}
+.slash .d5{left:50%;top:82%;width:14px;height:14px;}.slash .d6{left:60%;top:70%;width:7px;height:7px;}.slash .d7{left:41%;top:100%;width:11px;height:11px;}
+/* 斬った後：二つの面が、切り口にそってずれる（同じ量ずつ） */
+.slash.arrived .slash-cut path{stroke-dashoffset:0;transition:stroke-dashoffset .45s cubic-bezier(.5,0,.2,1);}
+.slash.arrived .slash-card.a{transform:translate(-12px,-9px);transition-delay:.4s;}
+.slash.arrived .slash-card.b{transform:translate(12px,9px);transition-delay:.4s;}
+.slash.arrived .drop{opacity:1;transform:scale(1);transition:transform .35s cubic-bezier(.2,1.6,.4,1) .35s,opacity .2s .35s;}
+.slash.arrived .slash-card:hover.a{transform:translate(-18px,-12px);}
+.slash.arrived .slash-card:hover.b{transform:translate(18px,12px);}
+.slash.still .slash-cut path,.slash.still .slash-card,.slash.still .drop{transition:none !important;}
+@media(max-width:820px){
+  .slash{height:auto;display:flex;flex-direction:column;gap:18px;}
+  .slash-card,.slash-card.a,.slash-card.b{position:static;clip-path:none;padding:26px 24px;border:2px solid var(--ink);}
+  .slash-cut,.slash .drop{display:none;}
+  .slash.arrived .slash-card.a,.slash.arrived .slash-card.b{transform:none;}
+}
+@media(prefers-reduced-motion:reduce){.slash-cut path{stroke-dashoffset:0 !important;transition:none !important;}.slash-card{transition:none !important;}}
+/* 番号の札：丸い枠をやめて四角い札に */
+.slash-card .svc-num{width:auto;height:auto;border-radius:0;box-shadow:none;display:inline-block;padding:4px 14px;margin:0 0 14px;
+  font-family:var(--pop);font-size:14px;line-height:1.4;background:var(--ink);color:var(--cream);}
+/* 一閃：点線にならないよう、上から下へ描く */
+.slash-cut path{stroke-dasharray:none;stroke-dashoffset:0;}
+.slash-cut{clip-path:inset(0 0 100% 0);}
+.slash.arrived .slash-cut{clip-path:inset(0 0 0 0);transition:clip-path .45s cubic-bezier(.5,0,.2,1);}
+.slash.still .slash-cut{transition:none;}
+
+/* ヒーローの見出し：文字の周りは無地に近づけ、色は墨と朱の二色で読みやすく */
+.hero{
+  background-image:
+    linear-gradient(90deg,#E9E3D0 0%,rgba(233,227,208,.96) 48%,rgba(233,227,208,0) 78%),
+    radial-gradient(ellipse at 50% 40%,rgba(255,255,255,0) 50%,rgba(120,100,60,.10) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Cg fill='%23E9E3D0' stroke='%235B5344' stroke-opacity='.13' stroke-width='1'%3E%3Ccircle cx='32' cy='16' r='32'/%3E%3Ccircle cx='32' cy='16' r='24'/%3E%3Ccircle cx='32' cy='16' r='16'/%3E%3Ccircle cx='32' cy='16' r='8'/%3E%3Ccircle cx='0' cy='32' r='32'/%3E%3Ccircle cx='0' cy='32' r='24'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='0' cy='32' r='8'/%3E%3Ccircle cx='64' cy='32' r='32'/%3E%3Ccircle cx='64' cy='32' r='24'/%3E%3Ccircle cx='64' cy='32' r='16'/%3E%3Ccircle cx='64' cy='32' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:100% 100%,100% 100%,80px 40px;
+}
+.hero h1{color:var(--ink);}
+.hero h1 .em{color:var(--shu);}
+@media(max-width:820px){
+  .hero{background-image:
+    linear-gradient(180deg,rgba(233,227,208,.97) 0%,rgba(233,227,208,.97) 70%,rgba(233,227,208,.6) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Cg fill='%23E9E3D0' stroke='%235B5344' stroke-opacity='.13' stroke-width='1'%3E%3Ccircle cx='32' cy='16' r='32'/%3E%3Ccircle cx='32' cy='16' r='24'/%3E%3Ccircle cx='32' cy='16' r='16'/%3E%3Ccircle cx='32' cy='16' r='8'/%3E%3Ccircle cx='0' cy='32' r='32'/%3E%3Ccircle cx='0' cy='32' r='24'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='0' cy='32' r='8'/%3E%3Ccircle cx='64' cy='32' r='32'/%3E%3Ccircle cx='64' cy='32' r='24'/%3E%3Ccircle cx='64' cy='32' r='16'/%3E%3Ccircle cx='64' cy='32' r='8'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:100% 100%,80px 40px;}
+}
+
+/* ---------- 一座：琉球畳（うっすらと。和紙色に畳の気配だけ） ---------- */
+#org{
+  background-color:#E4E3C8 !important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cpattern id='h' width='8' height='3' patternUnits='userSpaceOnUse'%3E%3Crect width='8' height='3' fill='%23E6E5CB'/%3E%3Cline x1='0' y1='1.5' x2='8' y2='1.5' stroke='%23D6D5B6' stroke-width='.8'/%3E%3C/pattern%3E%3Cpattern id='v' width='3' height='8' patternUnits='userSpaceOnUse'%3E%3Crect width='3' height='8' fill='%23E2E1C5'/%3E%3Cline x1='1.5' y1='0' x2='1.5' y2='8' stroke='%23D2D1B2' stroke-width='.8'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' width='100' height='100' fill='url(%23h)'/%3E%3Crect x='100' y='0' width='100' height='100' fill='url(%23v)'/%3E%3Crect x='0' y='100' width='100' height='100' fill='url(%23v)'/%3E%3Crect x='100' y='100' width='100' height='100' fill='url(%23h)'/%3E%3Cg fill='none' stroke='%23B9B894' stroke-opacity='.45' stroke-width='1'%3E%3Crect x='.5' y='.5' width='99' height='99'/%3E%3Crect x='100.5' y='.5' width='99' height='99'/%3E%3Crect x='.5' y='100.5' width='99' height='99'/%3E%3Crect x='100.5' y='100.5' width='99' height='99'/%3E%3C/g%3E%3C/svg%3E") !important;
+  background-size:200px 200px !important;
+  border-top:1px solid #CFCDAE;border-bottom:1px solid #CFCDAE;
+}
+#org .sec-title,#org .sec-label,#org .sec-lead{color:var(--ink);}
+#org .sec-label::before{background:var(--ink);}
+#org .sec-head::after{-webkit-text-stroke:1.5px rgba(37,71,35,.18);}

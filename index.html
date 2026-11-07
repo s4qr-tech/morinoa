@@ -25,11 +25,13 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&family=Dela+Gothic+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20261029b">
 <link rel="stylesheet" href="css/motion.css?v=20261029b">
+<link rel="stylesheet" href="css/poster.css?v=20261109b">
+<link rel="stylesheet" href="css/novel.css?v=20261109c">
 <link rel="stylesheet" href="css/maku.css?v=20261109a">
-<link rel="stylesheet" href="css/fuda.css?v=20261109c">
+<link rel="stylesheet" href="css/fuda.css?v=20261109c"><link rel="stylesheet" href="css/wapop.css?v=20261109r">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -61,6 +63,16 @@
 </script>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="print" x="-4%" y="-6%" width="108%" height="112%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="warp"/>
+<feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="8" result="spk"/>
+<feColorMatrix in="spk" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  14 0 0 0 -4.6" result="holes"/>
+<feComposite in="rough" in2="holes" operator="in"/>
+</filter></defs></svg>
+
+<div class="rail" aria-hidden="true">建て直す。盛り直す。　MORINOA</div>
 
 <!-- ============ HEADER ============ -->
 <header>
@@ -133,7 +145,6 @@
     </div>
   </div>
 </section>
-<div class="tape maku" aria-hidden="true"><div class="maku-rope"></div><div class="maku-cloth"><div class="tape-track"><span><b>再生</b><i class="kin"></i><b>維持</b><i class="kamon"></i><b>持続</b><i class="ougi"></i><b>事業再生</b><i class="kin"></i><b>IP・デザイン</b><i class="kamon"></i><b>CSV経営</b><i class="ougi"></i></span><span><b>再生</b><i class="kin"></i><b>維持</b><i class="kamon"></i><b>持続</b><i class="ougi"></i><b>事業再生</b><i class="kin"></i><b>IP・デザイン</b><i class="kamon"></i><b>CSV経営</b><i class="ougi"></i></span></div></div><div class="maku-hem"></div></div>
 <!-- ▼ AIチャットボット設置予定（無料診断の代わりに質問に答える窓口） -->
 
 
@@ -259,41 +270,28 @@
 </section>
 
 <!-- ============ SERVICE ============ -->
-<section id="service">
+<section id="service" class="grain">
   <div class="wrap">
     <div class="sec-head">
       <p class="sec-label">SERVICE</p>
-      <h2 class="sec-title">二つの事業｜経営・事業開発とIP・デザイン</h2>
+      <h2 class="sec-title">二つの事業<span class="bar-sep">｜</span><span class="nb">経営・事業開発と</span><span class="nb">IP・デザイン</span></h2>
       <p class="sec-lead">再生を軸に、店を営んで磨いた現場知とIP・デザインの物語で、事業に「もう一度、人が集まる理由」をつくります。</p>
     </div>
-    <div class="service-grid">
-      <a class="card svc reveal" href="service-ip.html">
+    <div class="slash">
+      <a class="slash-card a" href="service-ip.html">
         <span class="svc-num" aria-label="01">壱</span>
         <h3>IP・デザイン</h3>
-        <p class="en">IP &amp; DESIGN</p>
-        <span class="lead-role">奥絵師が統括</span>
-        <p>IPの企画・開発、ブランド設計、デザイン、文化・地域資源の再解釈を通じて、新たな価値を創出する事業。</p>
-        <ul>
-          <li>IPの企画・開発</li>
-          <li>ブランド設計・デザイン</li>
-          <li>文化・地域資源の再解釈</li>
-        </ul>
+        <p>IPの企画・ブランド設計・デザインで、事業の物語を形にします。</p>
         <span class="svc-more">詳しく見る →</span>
       </a>
-      <a class="card svc reveal" href="service-support.html">
+      <a class="slash-card b" href="service-support.html">
         <span class="svc-num" aria-label="02">弐</span>
         <h3>経営・事業開発</h3>
-        <p class="en">MANAGEMENT &amp; BUSINESS DEVELOPMENT</p>
-        <span class="lead-role">将軍・大老が陣頭</span>
-        <p>経営戦略、事業再生、新規事業開発、事業構造の再設計、市場開拓など、企業・事業の再生と成長を支援する事業。</p>
-        <ul>
-          <li>経営戦略・事業再生</li>
-          <li>新規事業開発</li>
-          <li>事業構造の再設計</li>
-          <li>市場開拓</li>
-        </ul>
+        <p>経営戦略から事業再生・新規事業まで、再生と成長を支援します。</p>
         <span class="svc-more">詳しく見る →</span>
       </a>
+      <svg class="slash-cut" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M55 -3 L45 103" pathLength="100"/></svg>
+      <i class="drop d1"></i><i class="drop d2"></i><i class="drop d3"></i><i class="drop d4"></i><i class="drop d5"></i><i class="drop d6"></i><i class="drop d7"></i>
     </div>
   </div>
 </section>
@@ -393,6 +391,7 @@
   </div>
 </footer>
 
+<script src="js/train.js?v=20261109a"></script>
 <script src="js/main.js?v=20261029b"></script>
 <script src="js/motion.js?v=20261029b"></script>
 </body>

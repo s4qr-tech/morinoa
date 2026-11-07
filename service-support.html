@@ -28,11 +28,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20261029b">
 <link rel="stylesheet" href="css/motion.css?v=20261029b">
+<link rel="stylesheet" href="css/poster.css?v=20261109b">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"経営・事業開発","description":"経営戦略、事業再生、新規事業開発、事業構造の再設計、市場開拓など、企業・事業の再生と成長を支援する。","url":"https://morinoa.com/service-support.html","provider":{"@type":"Organization","@id":"https://morinoa.com/#organization","name":"MORINOA","url":"https://morinoa.com/"},"areaServed":"JP"}
 </script>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="print" x="-4%" y="-6%" width="108%" height="112%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="warp"/>
+<feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="8" result="spk"/>
+<feColorMatrix in="spk" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  14 0 0 0 -4.6" result="holes"/>
+<feComposite in="rough" in2="holes" operator="in"/>
+</filter></defs></svg>
+
 
 <!-- ============ HEADER ============ -->
 <header>

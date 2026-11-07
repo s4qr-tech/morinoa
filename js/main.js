@@ -51,3 +51,14 @@ document.querySelectorAll('.org-card.has-back').forEach(function(card){
   var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }); }, { threshold: .6 });
   [].forEach.call(signs, function(el){ io.observe(el); });
 })();
+
+// 家紋カード：ポインタに合わせてわずかに傾く（PCのみ・動きを減らす設定では無効）
+(function(){
+  var card = document.querySelector('.hero-logo');
+  if (!card || !window.matchMedia('(hover:hover) and (pointer:fine)').matches || window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  card.addEventListener('pointermove', function(e){
+    var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = 'perspective(900px) rotateY(' + (x * 9).toFixed(2) + 'deg) rotateX(' + (-y * 9).toFixed(2) + 'deg)';
+  });
+  card.addEventListener('pointerleave', function(){ card.style.transform = ''; });
+})();
