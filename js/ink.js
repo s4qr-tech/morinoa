@@ -4,7 +4,8 @@
   'use strict';
   var root = document.documentElement;
   var INKB = '17,29,15', INK = INKB, PAPER = '#EFE9D6';
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 端末の「動きを減らす」設定がオンでも演出は出す（スマホは既定でオンのことが多いため。サイト全体の方針と同じ）
+  var reduce = false;
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function ease(t) { return 1 - Math.pow(1 - t, 2.2); }
