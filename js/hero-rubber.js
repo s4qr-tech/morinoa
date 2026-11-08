@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var hero = document.querySelector('.hero'); if (!hero || window.innerWidth <= 820) return;
+  var hero = document.querySelector('.hero'); if (!hero) return;
   var root = document.documentElement, kids = Array.prototype.slice.call(hero.children);
   var timer = 0, anim = 0, busy = false, touching = false;
 
