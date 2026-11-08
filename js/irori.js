@@ -159,83 +159,13 @@
     var bp = new T.Group(); bp.position.set(2.5 + bi * .78, 0, -RW + 1.3 - (bi % 2) * .18); bp.rotation.y = (bi % 2 ? -.35 : .35); room.add(bp);
     var pm = new T.Mesh(new T.BoxGeometry(.78, 1.6, .04), [woodDark, woodDark, woodDark, woodDark, byobuM, byobuM]); pm.position.y = .8; pm.castShadow = true; bp.add(pm);
   }
-  // 席（囲炉裏のまわりに6つ）：大老・老中・奥絵師が座り、将軍は外出中、残り二席は空席
+  // 席（囲炉裏のまわりに6つ）：人は座らせず、役ごとのモチーフだけを置く（将軍＝兜、大老＝軍配、老中＝印籠、奥絵師＝筆と扇子）。残り二席は空席
   function plateTex(txt, sub) {
     var c = document.createElement('canvas'); c.width = 256; c.height = 128; var g = c.getContext('2d');
     g.fillStyle = '#e8d3a0'; g.fillRect(0, 0, 256, 128); g.strokeStyle = '#3a2514'; g.lineWidth = 6; g.strokeRect(4, 4, 248, 120);
     g.fillStyle = '#111D0F'; g.textAlign = 'center'; g.font = '800 54px "Shippori Mincho", serif'; g.fillText(txt, 128, sub ? 66 : 82);
     if (sub) { g.fillStyle = '#8C4229'; g.font = '800 30px "Shippori Mincho", serif'; g.fillText(sub, 128, 108); }
     var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4; return t;
-  }
-  function person(g, kimono, accent, brush) {
-    var sk = M('#f2d6b0', { r: .8 });
-    B(g, .46, .16, .4, 0, .1, .02, M('#1b1d22', { r: .9 }));                   // 袴（座った脚）
-    B(g, .4, .38, .24, 0, .26, -.02, M(kimono, { r: .85 }));                    // 胴
-    B(g, .2, .06, .26, 0, .52, -.02, M(accent, { r: .8 }), false, false);       // 帯・襟
-    B(g, .12, .34, .1, -.27, .3, .06, M(kimono, { r: .85 })); B(g, .12, .34, .1, .27, .3, .06, M(kimono, { r: .85 }));   // 腕
-    B(g, .22, .22, .22, 0, .64, -.02, sk);                                       // 頭
-    B(g, .24, .1, .24, 0, .8, -.04, M('#16110d', { r: .9 }), false, false);     // 髪
-    B(g, .04, .04, .02, -.05, .72, .1, M('#111'), false, false); B(g, .04, .04, .02, .05, .72, .1, M('#111'), false, false);
-    if (brush) { var br = B(g, .02, .3, .02, .3, .3, .2, M('#8a6038')); br.rotation.x = -.5; B(g, .04, .08, .04, .3, .52, .14, M('#111D0F')); }
-  }
-  // 大老（ボクセル）：原案の立体を、小さな立方体の積み上げで再現する。
-  //   深緑の大きな官服（金茶のかすれ）、金茶の縁、濃茶の下襲、生成りの襟、角冠と翡翠の下げ飾り、手には翡翠の笏。顔は「大家 颯」の肖像をそのまま立方体の粒にする。
-  function tairo(g) {
-    var V = .024, vox = {}, col = function (h) { return new T.Color(h); };
-    function put(x, y, z, c) { vox[x + ',' + y + ',' + z] = [x, y, z, c]; }
-    function noise(x, y, z) { var n = Math.sin(x * .55 + z * .35) * Math.cos(y * .5 + x * .2) + Math.sin((x + y) * .27) * .6; return n; }
-    var GREEN = ['#2c4d34', '#284930', '#31553a'], GREEN_D = '#223d29', GOLD = '#cfa458', GOLD_D = '#b88a3e', BROWN = '#3b2a22', CREAM = '#e9dfc6', SKIN = '#d9cf9f', JADE = '#a8d1b1', CAP = '#17120f', BELT = '#3a2a22';
-    function cloth(x, y, z) { var n = noise(x, y, z); if (n > 1.0) return GOLD_D; if (n > .8) return '#6f6a3c'; return GREEN[(Math.abs(x * 3 + y * 5 + z * 7) | 0) % 3]; }
-    var X, Y, Z, rx, rz, t;
-    // 裾（座った脚を覆う鐘形）
-    for (Y = 0; Y <= 13; Y++) { rx = 15 - Y * .46; rz = rx * .85;
-      for (X = -16; X <= 16; X++) for (Z = -14; Z <= 14; Z++) if (X * X / (rx * rx) + Z * Z / (rz * rz) <= 1) put(X, Y, Z, Y <= 1 ? GOLD : cloth(X, Y, Z)); }
-    // 帯と翡翠の留め具
-    for (Y = 13; Y <= 14; Y++) for (X = -10; X <= 10; X++) for (Z = -8; Z <= 8; Z++) if (X * X / 72 + Z * Z / 52 <= 1) put(X, Y, Z, BELT);
-    [[0, 14], [-1, 14], [1, 14], [0, 13], [0, 15]].forEach(function (q) { put(q[0], q[1], 8, GOLD); }); put(0, 14, 9, JADE);
-    // 胴と肩
-    for (Y = 15; Y <= 24; Y++) { rx = 8 - (Y - 15) * .1; rz = rx * .72;
-      for (X = -9; X <= 9; X++) for (Z = -7; Z <= 7; Z++) if (X * X / (rx * rx) + Z * Z / (rz * rz) <= 1) put(X, Y, Z, cloth(X, Y, Z)); }
-    for (Y = 24; Y <= 26; Y++) for (X = -11; X <= 11; X++) for (Z = -5; Z <= 5; Z++) if (X * X / 120 + Z * Z / 30 <= 1) put(X, Y, Z, (Y === 26 && Math.abs(X) > 5) ? GOLD : cloth(X, Y, Z));
-    // 生成りの内襟（V字）と濃茶の縁
-    for (t = 0; t <= 8; t++) { [-1, 1].forEach(function (sd) { put(sd * (5 - t * .5 | 0), 25 - t, 6, CREAM); put(sd * (5 - t * .5 | 0), 25 - t, 7, CREAM); put(sd * ((5 - t * .5 | 0) + 1), 25 - t, 6, BROWN); put(sd * ((5 - t * .5 | 0) + 2), 25 - t, 6, GOLD); }); }
-    // 大きな外衣の袖（左右）：外側へ広がり、縁は金茶、内側に濃茶の下襲
-    [-1, 1].forEach(function (sd) {
-      for (Y = 3; Y <= 25; Y++) { t = 25 - Y; var xin = 7, xout = Math.round(10.5 + t * .42), zw = Math.max(2, Math.round(5 - t * .08));
-        for (X = xin; X <= xout; X++) for (Z = -zw; Z <= zw; Z++) { var edge = (X >= xout - 1) || Y <= 4 || (Y <= 6 && X >= xout - 3); put(sd * X, Y, Z, edge ? GOLD : (X === xin ? BROWN : cloth(sd * X, Y, Z))); } }
-    });
-    // 手と翡翠の笏
-    [-1, 1].forEach(function (sd) { put(sd * 2, 21, 8, SKIN); put(sd * 2, 22, 8, SKIN); put(sd * 3, 21, 8, SKIN); });
-    for (Y = 19; Y <= 28; Y++) { put(0, Y, 9, JADE); put(-1, Y, 9, JADE); }
-    // 首と、濃茶の襟
-    for (Y = 25; Y <= 27; Y++) for (X = -2; X <= 2; X++) for (Z = -2; Z <= 3; Z++) if (X * X + Z * Z * .6 <= 5) put(X, Y, Z, Y === 25 ? BROWN : SKIN);
-    var grp = new T.Group(); g.add(grp);
-    function build() {
-      var cells = Object.keys(vox).map(function (k) { return vox[k]; });
-      var geo = new T.BoxGeometry(V * .98, V * .98, V * .98), mat = new T.MeshStandardMaterial({ color: '#ffffff', roughness: .85 });
-      var im = new T.InstancedMesh(geo, mat, cells.length), m4 = new T.Matrix4();
-      cells.forEach(function (c, i) { m4.makeTranslation(c[0] * V, c[1] * V + V / 2, c[2] * V); im.setMatrixAt(i, m4); var cc = col(c[3]); cc.convertSRGBToLinear(); var j = .9 + Math.abs((Math.sin(i * 12.9898) * 43758.5453) % 1) * .1; cc.multiplyScalar(j); im.setColorAt(i, cc); });
-      im.instanceMatrix.needsUpdate = true; if (im.instanceColor) im.instanceColor.needsUpdate = true; im.castShadow = true; im.receiveShadow = false; grp.add(im);
-    }
-    // 顔：「大家 颯」の肖像を、11×15 の粒にして頭の前面に貼り、奥へ押し出す
-    var img = new Image();
-    img.onload = function () {
-      var W = 15, Hh = 22, cv = document.createElement('canvas'); cv.width = W; cv.height = Hh; var cx = cv.getContext('2d'); cx.imageSmoothingEnabled = true; cx.drawImage(img, 0, 0, W, Hh);
-      var d = cx.getImageData(0, 0, W, Hh).data;
-      for (var j = 0; j < Hh; j++) for (var i = 0; i < W; i++) { var o = (j * W + i) * 4, al = d[o + 3]; if (al < 110) continue;
-        var hex = '#' + [d[o], d[o + 1], d[o + 2]].map(function (v) { v = Math.max(0, Math.min(255, (v - 135) * 1.45 + 130)); return ('0' + Math.round(v).toString(16)).slice(-2); }).join('');
-        for (var zz = 2; zz <= 6; zz++) put(i - 7, 48 - j, zz, hex); }
-      // 角冠：黒い角帽、金の帯、翡翠の下げ飾り
-      for (var cy = 49; cy <= 52; cy++) for (var cxx = -7; cxx <= 7; cxx++) for (var czz = 0; czz <= 8; czz++) put(cxx, cy, czz, cy === 49 ? GOLD : CAP);
-      for (var ty = 43; ty <= 48; ty++) put(-8, ty, 5, ty === 48 ? GOLD : JADE);
-      build();
-    };
-    img.onerror = function () { build(); };
-    img.src = 'tairo-face.png';
-    // 手前の名札：大家 颯 / Daike Sou
-    var pc = document.createElement('canvas'); pc.width = 256; pc.height = 96; var pg = pc.getContext('2d'); pg.fillStyle = '#efe6cf'; pg.fillRect(0, 0, 256, 96); pg.strokeStyle = '#254723'; pg.lineWidth = 5; pg.strokeRect(3, 3, 250, 90);
-    pg.fillStyle = '#111D0F'; pg.textAlign = 'center'; pg.font = '800 44px "Shippori Mincho", serif'; pg.fillText('大家　颯', 128, 50); pg.font = '700 24px "Barlow", sans-serif'; pg.fillStyle = '#254723'; pg.fillText('Daike Sou', 128, 82);
-    var pt = new T.CanvasTexture(pc); pt.encoding = T.sRGBEncoding; var plate = new T.Mesh(new T.PlaneGeometry(.34, .128), new T.MeshStandardMaterial({ map: pt, roughness: 1 })); plate.position.set(0, .012, .62); plate.rotation.x = -Math.PI / 2 + .02; g.add(plate);
   }
   // 将軍の兜（席に置く）
   function kabuto(g) {
@@ -247,6 +177,37 @@
     [-1, 1].forEach(function (sd) { var h = B(g, .018, .24, .018, sd * .06, .2, .13, gold); h.rotation.z = sd * -.5; });
   }
   // 席は等間隔に並べず、ばらけた位置・距離・向きに散らす（人物ごとに a=角度, R=囲炉裏からの距離, j=向きのずれ）
+  // 大老：軍配（黒漆の団扇に金の縁と朱の日輪）
+  function gunbai(g) {
+    var lacq = M('#1b1d22', { r: .35, m: .2 }), gold = M('#d6a94a', { r: .4, m: .5 }), shu = M('#C23219', { r: .6 }), wood = M('#8a6038', { r: .75 });
+    var grp = new T.Group(); grp.position.set(0, .03, 0); grp.rotation.y = .5; g.add(grp);
+    var pad = new T.Mesh(new T.CylinderGeometry(.19, .19, .03, 32), lacq); pad.scale.set(1, 1, 1.22); pad.position.set(0, .015, -.08); pad.castShadow = true; grp.add(pad);
+    var rim = new T.Mesh(new T.TorusGeometry(.19, .012, 6, 40), gold); rim.rotation.x = Math.PI / 2; rim.scale.set(1, 1.22, 1); rim.position.set(0, .03, -.08); grp.add(rim);
+    var sun = new T.Mesh(new T.CylinderGeometry(.07, .07, .006, 24), shu); sun.position.set(0, .034, -.1); grp.add(sun);
+    B(grp, .035, .035, .22, 0, 0, .2, wood); B(grp, .05, .03, .03, 0, 0, .3, gold, false, false);
+  }
+  // 老中：印籠（朱塗りの三段重ねと、紐・根付）
+  function inro(g) {
+    var red = M('#9e2a16', { r: .35, m: .15 }), gold = M('#d6a94a', { r: .4, m: .5 }), cord = M('#254723', { r: .8 });
+    var grp = new T.Group(); grp.position.set(0, .03, 0); grp.rotation.y = -.4; g.add(grp);
+    for (var i = 0; i < 3; i++) { B(grp, .13, .05, .06, 0, i * .056, 0, red); B(grp, .136, .008, .066, 0, i * .056 + .02, 0, gold, false, false); }
+    var loop = new T.Mesh(new T.TorusGeometry(.12, .008, 6, 28, Math.PI * 1.5), cord); loop.rotation.x = Math.PI / 2; loop.position.set(.16, .01, .02); grp.add(loop);
+    var net = new T.Mesh(new T.SphereGeometry(.035, 12, 10), M('#e9dfc6', { r: .6 })); net.position.set(.26, .035, .02); grp.add(net);
+  }
+  // 奥絵師：筆と扇子（筆置きに筆、開いた扇）
+  function fude(g) {
+    var wood = M('#8a6038', { r: .7 }), tip = M('#17120f', { r: .8 }), paper = M('#efe6cf', { r: .9 }), rib = M('#5a3a22', { r: .8 }), shu = M('#C23219', { r: .6 });
+    var grp = new T.Group(); grp.position.set(0, .03, 0); g.add(grp);
+    B(grp, .22, .03, .05, -.12, 0, .12, M('#3a2514', { r: .8 }));                                    // 筆置き
+    var br = new T.Group(); br.position.set(-.12, .06, .12); br.rotation.y = .25; grp.add(br);
+    var shaft = new T.Mesh(new T.CylinderGeometry(.012, .016, .34, 10), wood); shaft.rotation.z = Math.PI / 2; br.add(shaft);
+    var head = new T.Mesh(new T.ConeGeometry(.024, .09, 10), tip); head.rotation.z = Math.PI / 2; head.position.x = .21; br.add(head);
+    for (var k = 0; k < 7; k++) {                                                                   // 扇：骨と紙
+      var a = (k - 3) * .21; var r = B(grp, .26, .004, .02, .15 + Math.cos(a) * .0, 0, -.1, rib, false, false); r.position.set(.12 + Math.sin(a) * .13, .005, -.1 - Math.cos(a) * .13 + .02); r.rotation.y = -a + Math.PI / 2 + 0; r.scale.set(1, 1, 1);
+    }
+    var fan = new T.Mesh(new T.CircleGeometry(.27, 24, Math.PI * .22, Math.PI * .56), new T.MeshStandardMaterial({ color: '#efe6cf', roughness: 1, side: T.DoubleSide })); fan.rotation.x = -Math.PI / 2; fan.position.set(.12, .006, .02); grp.add(fan);
+    var seal = new T.Mesh(new T.CircleGeometry(.03, 16), new T.MeshBasicMaterial({ color: '#C23219', side: T.DoubleSide })); seal.rotation.x = -Math.PI / 2; seal.position.set(.12, .008, -.14); grp.add(seal);
+  }
   var SEATS = [
     { a: 3.55, R: 2.55, j: .22, who: null, label: '将軍', sub: '外出中', cush: '#8C4229' },
     { a: 1.15, R: 1.85, j: -.3, who: 'tairo', label: '大老', cush: '#254723' },
@@ -259,7 +220,7 @@
     var a = st.a, R = st.R, g = new T.Group(); g.position.set(Math.sin(a) * R, 0, Math.cos(a) * R); g.rotation.y = a + Math.PI + st.j; room.add(g);
     B(g, .85, .1, .85, 0, 0, 0, M(st.cush, { r: .9 })); B(g, .56, .02, .56, 0, .1, 0, M('#f2eee0', { r: .9 }), false, false);
     var seat = new T.Group(); seat.position.y = .1; g.add(seat);
-    if (st.who === 'tairo') tairo(seat); else if (st.who) person(seat, st.who[0], st.who[1], st.who[2]);
+    if (st.label === '大老') gunbai(seat); else if (st.label === '老中') inro(seat); else if (st.label === '奥絵師') fude(seat);
     if (st.who === null) {                                   // 将軍は不在：脱いだ羽織と、外出中の札
       B(seat, .5, .05, .36, 0, 0, -.06, M('#C23219', { r: .85 })); var kb = new T.Group(); kb.position.set(0, .05, .05); seat.add(kb); kabuto(kb);
     }
