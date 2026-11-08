@@ -537,9 +537,11 @@
         box(g, .07, .07, .07, c[0] * ew, eh, c[1] * ew, M('#e9b53a', { e: '#c98a10', ei: .5, m: .5 }));   // 隅の鬼瓦
       });
       box(g, w + .72, .05, w + .72, 0, y + h - .05, 0, M('#efe9da'));                                      // 軒裏の白い板
-      if (k === 1) { box(g, w * .4, h * .72, .26, 0, y + .08, w / 2 + .12, plasterDS); var bay = new T.Mesh(new T.ConeGeometry(w * .3, .22, 4), kawara); bay.geometry.rotateY(Math.PI / 4); bay.scale.set(1, 1, .8); bay.position.set(0, y + h * .8 + .12, w / 2 + .12); g.add(bay); }   // 出窓
+      if (k === 1) { box(g, w * .4, h * .72, .26, 0, y + .08, w / 2 + .12, plasterDS); var bay = new T.Mesh(new T.ConeGeometry(w * .3, .22, 4), kawara); bay.geometry.rotateY(Math.PI / 4); bay.scale.set(1, 1, .8); bay.position.set(0, y + h * .8 + .12, w / 2 + .12); g.add(bay);
+        var kt = new T.TextureLoader().load('kamon-original.png'); kt.encoding = T.sRGBEncoding; kt.anisotropy = 8;                                                      // 入口の上の白い看板にMORINOAの家紋
+        var kp = new T.Mesh(new T.PlaneGeometry(.54, .527), new T.MeshStandardMaterial({ map: kt, transparent: true, alphaTest: .05, roughness: .9 })); kp.position.set(0, y + .08 + h * .36, w / 2 + .12 + .13 + .006); g.add(kp); }   // 出窓
       if (k === 2) { var kr = new T.Mesh(new T.CylinderGeometry(.34, .34, w * .5, 14, 1, false, 0, Math.PI), kawara); kr.rotation.z = Math.PI / 2; kr.rotation.y = Math.PI / 2; kr.position.set(0, y + h + .1, w / 2 + .1); g.add(kr); kakenyo(g, 0, y + h + .1, w / 2 + .3, 0); }   // 唐破風
-      var eave = new T.Mesh(new T.ConeGeometry((w + .95) * .7071, .3, 4), kawara); eave.geometry.rotateY(Math.PI / 4); eave.position.y = y + h + .15; g.add(eave);
+      var eave = new T.Mesh(k < 5 ? new T.CylinderGeometry((W[k + 1] + .06) * .7071, (w + .95) * .7071, .3, 4, 1) : new T.ConeGeometry((w + .95) * .7071, .3, 4), kawara); eave.geometry.rotateY(Math.PI / 4); eave.position.y = y + h + .15; g.add(eave);       // 屋根は次の階の足元まで続く（階の間に隙間をつくらない）
       var ed = box(g, w + .78, .035, w + .78, 0, y + h - .01, 0, woodP);
       if (k === 1 || k === 3) { [0, 2].forEach(function (q) { var a2 = q * Math.PI / 2; var pr = prismRoof(g, w * .55, w * .3, .4, Math.sin(a2) * (w / 2 + .12), y + h + .04, Math.cos(a2) * (w / 2 + .12), kawara, a2 + Math.PI / 2); box(g, .1, .1, .06, Math.sin(a2) * (w / 2 + .3), y + h + .3, Math.cos(a2) * (w / 2 + .3), gold); }); }
       y += h + .3;
@@ -554,7 +556,7 @@
     return g;
   }
   mainDonjon(donjon);
-  tower(donjon, -3.9, .8, 1.0, 3, .85, .3); tower(donjon, 3.8, 1.0, .95, 3, .85, -.3); tower(donjon, .6, 3.9, .8, 2, .85, 0);   // 小天守
+  tower(donjon, -3.9, 0, 1.0, 3, .85, 0); tower(donjon, 3.9, 0, .95, 3, .85, 0); tower(donjon, 0, -3.9, .9, 3, .85, Math.PI);   // 小天守：入口（+z）を除く三方（左・右・背面）の中央に、天守を囲んで均等に置く
   // 渡櫓（天守をつなぐ）と白壁
   box(donjon, 2.6, .55, .5, -1.3, 1.1, .45, plaster); box(donjon, 2.4, .55, .5, 1.3, 1.1, .6, plaster);
   var wallRing = mesh(new T.CylinderGeometry(4.5, 4.6, .6, 48, 1, true), new T.MeshStandardMaterial({ color: '#efe9da', roughness: .9, side: T.DoubleSide }), 0, .3, 0, donjon);

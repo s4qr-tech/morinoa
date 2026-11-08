@@ -372,7 +372,7 @@
   /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
   window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
   (function () {
-    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=46';
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=50';
     cs.onload = function () {
       var root = window.__CASTLE_ROOT; if (!root) return; var k = .075;
       root.traverse(function (o) { if (o.isMesh && o.geometry && o.geometry.parameters && o.geometry.parameters.radiusTop === 15 && o.parent) o.parent.visible = false; });   // 庭（円い地面）は外す
@@ -408,6 +408,20 @@
         hotEls.forEach(function (o) { v.copy(o.pos).project(camera); var vis = v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05; o.el.style.display = vis ? '' : 'none'; if (vis) o.el.style.transform = 'translate(' + ((v.x * .5 + .5) * w).toFixed(1) + 'px,' + ((-v.y * .5 + .5) * h).toFixed(1) + 'px)'; });
       };
       var gl = new T.PointLight('#ffb25a', 1.2, 3.5, 1.6); gl.position.set(0, .8, .5); room.add(gl);                       // 城をほんのり照らす灯り
+      // 壁の内側に隠れて見えない各階の内装（仮の家具など）は描画から外す。各階の外壁・窓・屋根は残す
+      (function () {
+        var dk2 = window.__CASTLE_DONJON, Wd = [3.7, 3.1, 2.55, 2.05, 1.55, 1.1], Hd = [1.0, .95, .88, .8, .72, .62], yy = 1.62, bnd = [], gone = [], bb = new T.Box3(), lo = new T.Vector3(), hi = new T.Vector3();
+        for (var kk = 0; kk < 6; kk++) { bnd.push([yy, yy + Hd[kk], Wd[kk] / 2 - .09]); yy += Hd[kk] + .3; }
+        dk2.updateMatrixWorld(true);
+        dk2.traverse(function (m) {
+          if (!m.isMesh) return; bb.setFromObject(m); lo.copy(bb.min); hi.copy(bb.max); dk2.worldToLocal(lo); dk2.worldToLocal(hi);
+          var ext = Math.max(Math.abs(lo.x), Math.abs(hi.x), Math.abs(lo.z), Math.abs(hi.z));
+          if (ext <= .26 && lo.y >= 1.4) { gone.push(m); return; }                                                    // 中央の吹き抜け
+          for (var q = 0; q < 6; q++) if (lo.y >= bnd[q][0] - .002 && hi.y <= bnd[q][1] + .002 && ext <= bnd[q][2]) { gone.push(m); return; }
+        });
+        gone.forEach(function (m) { if (m.parent) m.parent.remove(m); if (m.geometry) m.geometry.dispose(); });
+        window.__hiddenInterior = gone.length;
+      })();
       mergeStatic(); needDraw = 6;
     };
     document.head.appendChild(cs);
