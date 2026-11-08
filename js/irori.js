@@ -8,7 +8,7 @@
 
   var canvas = document.getElementById('gl');
   var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
-  var dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  var dpr = Math.min(1.25, window.devicePixelRatio || 1);
   renderer.setPixelRatio(dpr);
   renderer.outputEncoding = T.sRGBEncoding;
   renderer.toneMapping = T.ACESFilmicToneMapping;
@@ -76,7 +76,7 @@
   key.position.set(-3, 5, 4); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
   var sc = key.shadow.camera; sc.left = -3; sc.right = 3; sc.top = 3; sc.bottom = -3; sc.near = 1; sc.far = 14; key.shadow.bias = -.0006;
   scene.add(key); scene.add(key.target);
-  var fire = new T.PointLight('#ff7a2a', 2.6, 6, 2);
+  var fire = new T.PointLight('#ff7a2a', 2.2, 6, 2);
   fire.position.set(0, .12, 0); fire.castShadow = false; scene.add(fire);
 
   /* ---------- 茶室 ---------- */
@@ -167,25 +167,46 @@
   wall(RW * 2, H, -RW, 0, 0, Math.PI / 2);                // 左
   wall(RW * 2, H, RW, 0, 0, -Math.PI / 2);                // 右
   wall(RW * 2, H, 0, 0, RW, Math.PI);                       // 手前（裏側）
-  // 仮置き：名刺（裏側の壁の中央）
+  // 裏側の壁の中央：会社ロゴ（透過の背景は白い紙色の上に重ねる）
   (function () {
-    var mt = new T.TextureLoader().load('meishi-daike.jpg?v=1'); mt.encoding = T.sRGBEncoding; mt.anisotropy = 8;
-    var mw = 4.6, mh = mw * 694 / 1179;
-    var card = new T.Mesh(new T.PlaneGeometry(mw, mh), new T.MeshStandardMaterial({ map: mt, emissive: new T.Color('#ffffff'), emissiveMap: mt, emissiveIntensity: .35, roughness: .9 }));
+    var cv = document.createElement('canvas'); cv.width = 2000; cv.height = 1414; var cg = cv.getContext('2d'); cg.fillStyle = '#f6f2e6'; cg.fillRect(0, 0, 2000, 1414);
+    var mt = new T.CanvasTexture(cv); mt.encoding = T.sRGBEncoding; mt.anisotropy = 8;
+    var im = new Image(); im.onload = function () { cg.drawImage(im, 0, 0, 2000, 1414); mt.needsUpdate = true; needDraw = 4; }; im.src = 'morinoa-logo-wall.webp?v=1';
+    var mw = 4.0, mh = mw * 1414 / 2000;
+    var card = new T.Mesh(new T.PlaneGeometry(mw, mh), new T.MeshStandardMaterial({ map: mt, emissive: new T.Color('#ffffff'), emissiveMap: mt, emissiveIntensity: .3, roughness: .9 }));
     card.position.set(0, 2.1, RW - .03); card.rotation.y = Math.PI; room.add(card);
     var fr = new T.Mesh(new T.PlaneGeometry(mw + .22, mh + .22), M('#2f1d10', { r: .6 })); fr.position.set(0, 2.1, RW - .02); fr.rotation.y = Math.PI; room.add(fr);
   })();
+  // 名刺の壁の掛け軸：左右に縦の掛け軸（建て直す。／盛り直す。）、上に横の軸（MORINOA。）
+  function kakejiku(txt, vertical, w, h, x, y) {
+    var cw = vertical ? 256 : 1024, ch = vertical ? 768 : 256, c = document.createElement('canvas'); c.width = cw; c.height = ch;
+    var g = c.getContext('2d'), t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 8;
+    function draw() {
+      g.fillStyle = '#e9dfc2'; g.fillRect(0, 0, cw, ch); g.fillStyle = '#254723';
+      if (vertical) { g.fillRect(0, 0, cw, 40); g.fillRect(0, ch - 40, cw, 40); } else { g.fillRect(0, 0, 40, ch); g.fillRect(cw - 40, 0, 40, ch); }
+      g.fillStyle = '#111D0F'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      if (vertical) { g.font = '800 118px "Shippori Mincho", serif'; var n0 = txt.length; txt.split('').forEach(function (chh, i) { g.fillText(chh, 128, ch / 2 + (i - (n0 - 1) / 2) * 125); }); }
+      else { g.font = '800 150px Barlow, "Shippori Mincho", sans-serif'; g.fillText(txt, cw / 2, ch / 2 + 6); }
+      t.needsUpdate = true;
+    }
+    draw(); if (document.fonts && document.fonts.load) { document.fonts.load('800 100px "Shippori Mincho"').then(draw); document.fonts.load('800 100px Barlow').then(draw); }
+    var gr = new T.Group(); gr.position.set(x, y, RW - .04); gr.rotation.y = Math.PI; room.add(gr);
+    var m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshStandardMaterial({ map: t, roughness: 1, emissive: new T.Color('#ffffff'), emissiveMap: t, emissiveIntensity: .22 })); gr.add(m);
+    var rodM = M('#3a2514', { r: .6 }); B(gr, w + .12, .05, .05, 0, h / 2, .01, rodM, false, false); B(gr, w + .12, .05, .05, 0, -h / 2, .01, rodM, false, false);
+    return gr;
+  }
+  kakejiku('建て直す', true, .9, 2.3, -4.0, 2.2); kakejiku('盛り直す', true, .9, 2.3, 4.0, 2.2);
   var shojiMat = new T.MeshStandardMaterial({ map: shoji, emissive: new T.Color('#ffb868'), emissiveMap: shoji, emissiveIntensity: 1.25, roughness: 1 });
   function shojiPanel(x, z, ry) {
     var g = new T.Group(); g.position.set(x, 0, z); g.rotation.y = ry; room.add(g);
-    var p = new T.Mesh(new T.PlaneGeometry(1.05, 2.1), shojiMat); p.position.set(0, 1.25, .02); g.add(p);
-    B(g, 1.12, .12, .1, 0, 2.3, .02, woodDark, false, false); B(g, 1.12, .12, .1, 0, .15, .02, woodDark, false, false);
+    var p = new T.Mesh(new T.PlaneGeometry(1.05, 2.7), shojiMat); p.position.set(0, 1.55, .02); g.add(p);
+    B(g, 1.12, .12, .1, 0, 2.9, .02, woodDark, false, false); B(g, 1.12, .12, .1, 0, .15, .02, woodDark, false, false);
   }
   for (var s = -3; s <= 3; s++) { shojiPanel(-RW + .02, s * 1.2 - .2, Math.PI / 2); shojiPanel(RW - .02, s * 1.2 - .2, -Math.PI / 2); }
   // 柱と長押
   [[-RW, -RW], [RW, -RW], [-RW, RW], [RW, RW], [-RW, 0], [RW, 0], [0, -RW]].forEach(function (p) { B(room, .22, H, .22, p[0], 0, p[1], woodDark); });
-  B(room, RW * 2, .16, .12, 0, 2.45, -RW + .06, woodDark, false, false);
-  B(room, .12, .16, RW * 2, -RW + .06, 2.45, 0, woodDark, false, false); B(room, .12, .16, RW * 2, RW - .06, 2.45, 0, woodDark, false, false);
+  B(room, RW * 2, .16, .12, 0, 3.05, -RW + .06, woodDark, false, false);
+  B(room, .12, .16, RW * 2, -RW + .06, 3.05, 0, woodDark, false, false); B(room, .12, .16, RW * 2, RW - .06, 3.05, 0, woodDark, false, false);
   // 天井（下からだけ見える）と梁
   var ceil = new T.Mesh(new T.PlaneGeometry(RW * 2, RW * 2), M('#4a2f1a', { r: .8 })); ceil.rotation.x = Math.PI / 2; ceil.position.y = H; room.add(ceil);
   var ceilParts = [ceil];
@@ -195,19 +216,22 @@
   // 床の間（奥）：一段高く、掛軸と花
   B(room, 3.2, .22, 1.3, 0, 0, -RW + .75, woodLight);
   B(room, 3.0, .04, 1.1, 0, .22, -RW + .75, M('#a64b2a', { r: .8 }), false, true);
-  function scrollTex() {
+  function scrollTex(txt, latin) {
     var c = document.createElement('canvas'); c.width = 256; c.height = 768; var g = c.getContext('2d'), t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4;
     function draw() {
       g.fillStyle = '#e9dfc2'; g.fillRect(0, 0, 256, 768); g.fillStyle = '#254723'; g.fillRect(0, 0, 256, 40); g.fillRect(0, 728, 256, 40);
-      g.fillStyle = '#111D0F'; g.font = '800 96px Barlow, "Zen Maru Gothic", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      'MORINOA'.split('').forEach(function (ch, i) { g.fillText(ch, 128, 100 + i * 92); });
+      var n = txt.length, sp = latin ? 92 : 125; g.fillStyle = '#111D0F'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = latin ? '800 96px Barlow, "Zen Maru Gothic", sans-serif' : '800 118px "Shippori Mincho", serif';
+      txt.split('').forEach(function (ch, i) { g.fillText(ch, 128, 384 + (i - (n - 1) / 2) * sp); });
       g.fillStyle = '#8C4229'; g.fillRect(190, 668, 38, 38); t.needsUpdate = true;
     }
-    draw(); if (document.fonts && document.fonts.load) document.fonts.load('800 96px Barlow').then(draw);
+    draw(); if (document.fonts && document.fonts.load) { document.fonts.load('800 96px Barlow').then(draw); document.fonts.load('800 100px "Shippori Mincho"').then(draw); }
     return t;
   }
-  var scrollMesh = new T.Mesh(new T.PlaneGeometry(.9, 2.2), new T.MeshStandardMaterial({ map: scrollTex(), roughness: 1 }));
-  scrollMesh.position.set(0, 1.5, -RW + .1); room.add(scrollMesh);
+  var scrollMesh = new T.Mesh(new T.PlaneGeometry(.9, 2.2), new T.MeshStandardMaterial({ map: scrollTex('モリノア', false), roughness: 1 }));
+  scrollMesh.position.set(-.55, 1.5, -RW + .1); room.add(scrollMesh);
+  var scrollMesh2 = new T.Mesh(new T.PlaneGeometry(.9, 2.2), new T.MeshStandardMaterial({ map: scrollTex('MORINOA', true), roughness: 1 }));
+  scrollMesh2.position.set(.55, 1.5, -RW + .1); room.add(scrollMesh2);
   var vase = new T.Mesh(new T.CylinderGeometry(.12, .18, .5, 14), M('#254723', { r: .4 })); vase.position.set(1.1, .52, -RW + .8); vase.castShadow = true; room.add(vase);
   [[0, .5, '#8AB657'], [.1, .62, '#8C4229'], [-.08, .56, '#E9C46A']].forEach(function (f) { B(room, .04, .5, .04, 1.1 + f[0], .76, -RW + .8, M(f[2]), false, false); var b = new T.Mesh(new T.SphereGeometry(.08, 10, 8), M(f[2])); b.position.set(1.1 + f[0], 1.34 + f[1] * .1, -RW + .8); room.add(b); });
 
@@ -313,10 +337,42 @@
     var a = roomCard.querySelector('.more'); if (r.link) { a.href = r.link; a.style.display = ''; } else a.style.display = 'none';
     roomCard.classList.add('on'); active = 99; goal.tx = pos.x; goal.ty = pos.y; goal.tz = pos.z; goal.dist = dist; goal.pol = 1.15; idle = 0; if (typeof hs !== 'undefined') hs.value = Math.max(-.1, Math.min(2.1, pos.y));
   }
+  /* ---- 静的な小物を素材ごとに一つにまとめて、描画命令（draw call）を減らす。見た目は変えない ---- */
+  function mergeStatic() {
+    scene.updateMatrixWorld(true);
+    var groups = {}, victims = [], skip = ceilParts;
+    scene.traverse(function (o) {
+      if (!o.isMesh || o.isInstancedMesh || Array.isArray(o.material) || skip.indexOf(o) >= 0) return;
+      var m = o.material, g = o.geometry;
+      if (!m || !m.isMeshStandardMaterial || m.map || m.emissiveMap || m.transparent || m.vertexColors || (m.clippingPlanes && m.clippingPlanes.length) || m.alphaTest) return;
+      if (!g || !g.attributes.position || !g.attributes.normal) return;
+      for (var p = o; p; p = p.parent) if (p.visible === false) return;
+      var key = [m.color.getHex(), m.emissive.getHex(), m.emissiveIntensity, m.roughness, m.metalness, m.side, m.flatShading ? 1 : 0, o.castShadow ? 1 : 0, o.receiveShadow ? 1 : 0].join('|');
+      (groups[key] = groups[key] || { mat: m, cast: o.castShadow, recv: o.receiveShadow, list: [] }).list.push(o); victims.push(o);
+    });
+    var made = 0;
+    Object.keys(groups).forEach(function (k) {
+      var gr = groups[k], nV = 0, nI = 0, parts = [];
+      gr.list.forEach(function (o) {
+        var g = o.geometry.clone(); g.applyMatrix4(o.matrixWorld);
+        var pc = g.attributes.position.count, ic = g.index ? g.index.count : pc; nV += pc; nI += ic; parts.push(g);
+      });
+      var pos = new Float32Array(nV * 3), nor = new Float32Array(nV * 3), idx = new Uint32Array(nI), vo = 0, io = 0;
+      parts.forEach(function (g) {
+        var pc = g.attributes.position.count; pos.set(g.attributes.position.array, vo * 3); nor.set(g.attributes.normal.array, vo * 3);
+        if (g.index) { var ia = g.index.array; for (var i = 0; i < ia.length; i++) idx[io + i] = ia[i] + vo; io += ia.length; } else { for (var i2 = 0; i2 < pc; i2++) idx[io + i2] = vo + i2; io += pc; }
+        vo += pc; g.dispose();
+      });
+      var mg = new T.BufferGeometry(); mg.setAttribute('position', new T.BufferAttribute(pos, 3)); mg.setAttribute('normal', new T.BufferAttribute(nor, 3)); mg.setIndex(new T.BufferAttribute(idx, 1));
+      var mm = new T.Mesh(mg, gr.mat); mm.castShadow = gr.cast; mm.receiveShadow = gr.recv; mm.frustumCulled = false; scene.add(mm); made++;
+    });
+    victims.forEach(function (o) { if (o.parent) o.parent.remove(o); o.geometry.dispose(); });
+    window.__mergeStats = { merged: victims.length, into: made };
+  }
   /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
   window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
   (function () {
-    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=41';
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=46';
     cs.onload = function () {
       var root = window.__CASTLE_ROOT; if (!root) return; var k = .075;
       root.traverse(function (o) { if (o.isMesh && o.geometry && o.geometry.parameters && o.geometry.parameters.radiusTop === 15 && o.parent) o.parent.visible = false; });   // 庭（円い地面）は外す
@@ -352,6 +408,7 @@
         hotEls.forEach(function (o) { v.copy(o.pos).project(camera); var vis = v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05; o.el.style.display = vis ? '' : 'none'; if (vis) o.el.style.transform = 'translate(' + ((v.x * .5 + .5) * w).toFixed(1) + 'px,' + ((-v.y * .5 + .5) * h).toFixed(1) + 'px)'; });
       };
       var gl = new T.PointLight('#ffb25a', 1.2, 3.5, 1.6); gl.position.set(0, .8, .5); room.add(gl);                       // 城をほんのり照らす灯り
+      mergeStatic(); needDraw = 6;
     };
     document.head.appendChild(cs);
   })();
@@ -426,7 +483,9 @@
   addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') goal.az -= .15; if (e.key === 'ArrowRight') goal.az += .15; if (e.key === 'Escape') { overview(); hs.value = goal.ty; } if (e.key === 'w' || e.key === 'PageUp') setY(goal.ty + .1); if (e.key === 's' || e.key === 'PageDown') setY(goal.ty - .1); });
 
   /* ---------- 描画ループ ---------- */
-  function resize() { var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w / h < 1 ? 58 : 40; camera.updateProjectionMatrix(); }
+  var needDraw = 3, renderUntil = performance.now() + 14000;
+  ['pointerdown', 'pointerup', 'wheel', 'keydown', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { needDraw = 4; }, { passive: true }); });
+  function resize() { needDraw = 4; var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w / h < 1 ? 58 : 40; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize); resize();
   var last = performance.now(), ftAcc = 0, ftN = 0, lowered = false, tmp = new T.Vector3();
   function damp(a, b, k, dt) { return a + (b - a) * (1 - Math.exp(-k * dt)); }
@@ -439,19 +498,18 @@
     ftAcc += dt; ftN++; if (ftN === 90) { if (ftAcc / 90 > .026 && !lowered && dpr > 1) { lowered = true; renderer.setPixelRatio(1.25); resize(); } ftAcc = 0; ftN = 0; }
     // 導入：上から降りて、囲炉裏を囲む視点へ
     if (!introDone) { introT += dt / 3.6; var e = ease(Math.min(1, introT)); goal.dist = (ENTER ? 6.2 : 8) + (5.2 - (ENTER ? 6.2 : 8)) * e; goal.pol = (ENTER ? 1.42 : .22) + (.78 - (ENTER ? 1.42 : .22)) * e; goal.az = ENTER ? 3.14 + (.6 - 3.14) * e : .6 + (1 - e) * 1.6; if (introT >= 1) { introDone = true; titleEl.classList.add('out'); } }
-    else { idle += dt; if (idle > 6 && active < 0) goal.az += dt * .05; }
+    else { idle += dt; }
     var k = introDone ? 5.2 : 9;
     cam.az = damp(cam.az, goal.az, k, dt); cam.pol = damp(cam.pol, goal.pol, k, dt); cam.dist = damp(cam.dist, goal.dist, k, dt);
     cam.tx = damp(cam.tx, goal.tx, 4.4, dt); cam.ty = damp(cam.ty, goal.ty, 4.4, dt); cam.tz = damp(cam.tz, goal.tz, 4.4, dt);
+    var moving = Math.abs(cam.az - goal.az) + Math.abs(cam.pol - goal.pol) + Math.abs(cam.dist - goal.dist) + Math.abs(cam.tx - goal.tx) + Math.abs(cam.ty - goal.ty) + Math.abs(cam.tz - goal.tz) > .0008;
+    var drawNow = moving || !introDone || needDraw > 0 || now < renderUntil;
     var sp = Math.sin(cam.pol), cp = Math.cos(cam.pol);
     camera.position.set(cam.tx + cam.dist * sp * Math.sin(cam.az), cam.ty + cam.dist * cp, cam.tz + cam.dist * sp * Math.cos(cam.az));
     var underBeam = camera.position.y < H - .7; ceilParts.forEach(function (m) { m.visible = underBeam; });          // 見下ろす時は、天井と梁を消す（梁が視界をふさがない）
-    camera.lookAt(cam.tx, cam.ty, cam.tz); if (window.__hotUpdate) { camera.updateMatrixWorld(); window.__hotUpdate(); }
+    camera.lookAt(cam.tx, cam.ty, cam.tz); if (drawNow && window.__hotUpdate) { camera.updateMatrixWorld(); window.__hotUpdate(); }
 
-    // 炎のゆらぎ
-    var fl = 1 + Math.sin(t * 7.1) * .06 + Math.sin(t * 13.3) * .05 + Math.sin(t * 3.7) * .04;
-    fire.intensity = 2.2 * fl; flames.forEach(function (f) { var s = 1 + Math.sin(t * 5 + f.ph) * .18 + Math.sin(t * 9.3 + f.ph * 2) * .08; f.m.scale.set(1 / Math.sqrt(s), s, 1 / Math.sqrt(s)); f.m.position.y = f.y0 + (s - 1) * f.h * .5; }); glow.emissiveIntensity = 1.2 + Math.sin(t * 2.2) * .35;
-    lanterns.forEach(function (l, i) { l.material.emissiveIntensity = .85 + Math.sin(t * 2 + i) * .08; });
+    // 炎は常時発光（ゆらめきの動きなし）：端末への負荷を抑える。灯りの強さは固定
     // 人影
     folks.forEach(function (f) {
       f.t += dt * f.spd; var ph = f.t % 2, p = ph < 1 ? ph : 2 - ph, a = f.path[0], b = f.path[1];
@@ -460,14 +518,14 @@
 
 
     // 印の位置
-    spots.forEach(function (s) {
+    if (drawNow) spots.forEach(function (s) {
       tmp.copy(s.pos); tmp.project(camera);
       var vis = tmp.z < 1 && Math.abs(tmp.x) < 1.2 && Math.abs(tmp.y) < 1.2;
       s.el.style.opacity = vis && introDone ? '1' : '0'; s.el.style.pointerEvents = vis && introDone ? 'auto' : 'none';
       s.el.style.transform = 'translate(' + ((tmp.x * .5 + .5) * innerWidth).toFixed(1) + 'px,' + ((-tmp.y * .5 + .5) * innerHeight).toFixed(1) + 'px)';
     });
-    if (window.__CASTLE_STEP) window.__CASTLE_STEP(dt);
-    renderer.render(scene, camera);
+    // 動きが止まったら描画しない（カメラ・導入・読み込み直後・操作直後だけ描く）：発熱と負荷を抑える
+    if (drawNow) { renderer.render(scene, camera); if (needDraw > 0) needDraw--; }
     requestAnimationFrame(frame);
   }
   if (document.fonts && document.fonts.load) document.fonts.load('800 40px "Shippori Mincho"').finally(function () { requestAnimationFrame(frame); }); else requestAnimationFrame(frame);

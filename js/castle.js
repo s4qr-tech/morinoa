@@ -129,7 +129,7 @@
   // 四方の木（桜・梅雨の木と紫陽花・紅葉・雪の松）
   for (var pt = 0; pt < 44; pt++) { var pa0 = rnd() * 6.283, pr0 = R(8.3, 11.6); seasonTree(plaza, Math.cos(pa0) * pr0, .02, Math.sin(pa0) * pr0, seasonOf(Math.cos(pa0), Math.sin(pa0)), R(1.2, 2.0)); }
   /* ---- 逆さに連なる町家の塊（下へ向かって細くなる） ---- */
-  var MASS_TOP = 9.0, MASS_BOT = 3.4, MR = 5.1;
+  var MASS_TOP = 8.15, MASS_BOT = 3.4, MR = 5.1;
   var mass = houses();
   var layers = 30;
   for (var li = 0; li < layers; li++) {
@@ -193,6 +193,21 @@
       put(H, wallBase, o, dw * .38, y + dh + .035, dw * .1, .09, .09, .09, col('#b0603a')); put(H, wallBase, o, dw * .38, y + dh + .12, dw * .1, .16, .13, .16, col('#4f8a3a'));
       for (var bk = 0; bk < 3; bk++) put(H, wallBase, o, dw * .02, y + dh + .035 + bk * .035, dw * .14, .2 - bk * .02, .03, .13, col(['#8C4229', '#254723', '#5BA0C1'][bk]));
       put(H, wallBase, o, -dw * .1, y + dh + .035, -dw * .08, .22, .015, .15, col('#2a2d34')); put(H, wallBase, o, -dw * .1, y + dh + .05, -dw * .17, .22, .14, .012, col('#7fe3ff'));
+      if (rnd() < .7) [[.64, 0, 1], [.74, .05, .9]].forEach(function (q) {                    // 過去にお取引した蒸留酒（透明な瓶・クリーム色のラベル・黄土色のキャップ）をデスクの横に
+        var bx = dw * q[0], bz = q[1], s = q[2], gl = col('#d6ecea');
+        put(H, cylBody, o, bx, y + .1 * s, bz, .075 * s, .2 * s, .075 * s, gl); put(H, cylNeck, o, bx, y + .26 * s, bz, .03 * s, .1 * s, .03 * s, gl); put(H, cylTop, o, bx, y + .325 * s, bz, .04 * s, .035 * s, .04 * s, col('#d8a838'));
+        put(H, wallBase, o, bx, y + .1 * s, bz + .039 * s, .06 * s, .12 * s, .008, col('#e6d19a')); put(H, wallBase, o, bx, y + .105 * s, bz + .043 * s, .045 * s, .03 * s, .008, col('#8a3a1a'));
+      });
+    } else if (kind === 4) {                                                     // ブラジルカラーの家（緑の壁・黄の屋根・青の扉と窓）：ブラジルとのご縁
+      var hw = w * 1.05, hd = d * .9, bh = .42 + h * .3, GR = '#009c3b', YE = '#ffdf00', BL = '#002776';
+      put(H, wallBase, o, 0, y, 0, hw, bh, hd, col(GR));
+      put(H, wallBase, o, 0, y + bh * .62, 0, hw + .006, .03, hd + .006, col('#ffffff'));
+      put(H, wallBase, o, 0, y + bh, 0, hw * 1.22, .05, hd * 1.2, col(YE));
+      put(H, wallBase, o, 0, y + bh + .05, 0, hw * .86, .06, hd * .86, col(YE));
+      put(H, wallBase, o, 0, y + bh + .11, 0, hw * .5, .06, hd * .5, col(YE));
+      put(H, wallBase, o, 0, y, hd * .5 + .004, hw * .24, bh * .58, .01, col(BL));
+      [-1, 1].forEach(function (sx) { put(H, wallBase, o, sx * hw * .3, y + bh * .66, hd * .5 + .004, hw * .18, bh * .22, .01, col(BL)); });
+      put(H, wallBase, o, 0, y + bh * .76, hd * .5 + .008, hw * .1, bh * .1, .01, col(YE));
     } else {                                                                     // 書棚：背表紙の色が並ぶ
       var sw = w * 1.1, sh = .5 + h * .6;
       put(H, wallBase, o, 0, y, 0, sw, sh, .14, col('#4a3322'));
@@ -245,6 +260,7 @@
     { y: 9.1, r: 7.0, rows: 2 }, { y: 11.2, r: 5.9, rows: 2 }, { y: 13.0, r: 4.7, rows: 1 }
   ];
   var rh = houses();
+  var itemN = 0;
   rings.forEach(function (rg, ri) {
     var disk = mesh(new T.CylinderGeometry(rg.r, rg.r * .96, .22, 72), M('#1d1f26', { r: .5, m: .3 }), 0, rg.y - .11, 0, castle);
     var band = mesh(new T.TorusGeometry(rg.r, .07, 8, 96), M('#e0301c', { e: '#d02010', ei: 1.3 }), 0, rg.y + .02, 0, castle); band.rotation.x = Math.PI / 2;
@@ -254,11 +270,13 @@
       var rr2 = rg.r - .62 - row * .95, cnt2 = Math.floor(2 * Math.PI * rr2 / .92);
       for (var j = 0; j < cnt2; j++) {
         var a2 = j / cnt2 * 6.283 + row * .2, w2 = R(.8, 1.0), d2 = R(.8, 1.0), h2 = R(.42, .7) + (row ? 0 : .08);
-        addItem(rh, Math.cos(a2) * rr2, rg.y, Math.sin(a2) * rr2, w2, h2, d2, Math.PI / 2 - a2, Math.floor(rnd() * 4));
+        var ik = (++itemN === 20 || itemN === 175 || itemN === 290) ? 4 : Math.floor(rnd() * 4);
+        if (ri === 2 && Math.max(Math.abs(Math.cos(a2) * rr2), Math.abs(Math.sin(a2) * rr2)) < 3.75) continue;                // 石垣の裾（天守の足元）にはお酒も建物も置かない
+        addItem(rh, Math.cos(a2) * rr2, rg.y, Math.sin(a2) * rr2, w2, h2, d2, Math.PI / 2 - a2, ik);
       }
     }
     var nL = [8, 6, 4][ri];
-    for (var lm2 = 0; lm2 < nL; lm2++) { var lang = (lm2 + .5) / nL * 6.283, lx2 = Math.cos(lang) * (rg.r - 1.05), lz2 = Math.sin(lang) * (rg.r - 1.05); landmark(castle, lm2 % 4, lx2, rg.y, lz2, lang); }
+    for (var lm2 = 0; lm2 < nL; lm2++) { var lang = (lm2 + .5) / nL * 6.283, lx2 = Math.cos(lang) * (rg.r - 1.05), lz2 = Math.sin(lang) * (rg.r - 1.05); if (ri === 2 && Math.max(Math.abs(lx2), Math.abs(lz2)) < 3.75) continue; landmark(castle, lm2 % 4, lx2, rg.y, lz2, lang); }
     // 環の縁の店（酒・PC・本・自然）と街灯
     var nS = [20, 16, 11][ri];
     for (var sI = 0; sI < nS; sI++) {
@@ -269,9 +287,29 @@
     var inner = new T.Mesh(new T.CylinderGeometry(rg.r - .3, rg.r - .3, .05, 72), M('#2a2d34', { r: .85 })); inner.position.y = rg.y + .02; castle.add(inner);     // 環の路面
     // 環の上の木：その方角の季節の木
     for (var m2 = 0; m2 < 9; m2++) {
-      var ma = rnd() * 6.283, mr = rg.r * R(.12, .5), tx = Math.cos(ma) * mr, tz = Math.sin(ma) * mr; seasonTree(castle, tx, rg.y, tz, seasonOf(tx, tz), .55);
+      var ma = rnd() * 6.283, mr = rg.r * R(.12, .5), tx = Math.cos(ma) * mr, tz = Math.sin(ma) * mr; if (ri === 2 && Math.max(Math.abs(tx), Math.abs(tz)) < 3.75) continue; seasonTree(castle, tx, rg.y, tz, seasonOf(tx, tz), .55);
     }
   });
+  // 石垣のまわりは日本庭園：白い砂利に砂紋、四辺に細い川（飛び石・橋）、外側の縁には桜と紅葉の大きな木
+  (function () {
+    var rg = rings[2], gy = rg.y + .05, gt = new T.Group(); castle.add(gt);
+    var gravel = mesh(new T.CylinderGeometry(rg.r - .3, rg.r - .3, .02, 72), M('#dcd5c2', { r: 1 }), 0, gy, 0, gt);
+    var rake = M('#bdb6a2', { r: 1 }), water = M('#4aa3d0', { r: .15, e: '#1d6fa0', ei: .35 }), rock = M('#8d8a80', { r: .95 }), rockD = M('#6e6c64', { r: .95 });
+    [0, 1, 2, 3].forEach(function (s) {
+      var g = new T.Group(); g.rotation.y = s * Math.PI / 2; gt.add(g);
+      [3.85, 4.0, 4.15].forEach(function (off) { var half = Math.sqrt(Math.max(.1, 4.38 * 4.38 - off * off)); box(g, half * 2, .012, .025, 0, gy + .01, off, rake); });   // 砂紋（熊手の筋）
+      var rw = box(g, 5.2, .02, .34, 0, gy + .01, 3.5, water);                                                      // 川
+      [-1, 1].forEach(function (sd) { for (var k = 0; k < 9; k++) { var rs = new T.Mesh(new T.DodecahedronGeometry(R(.05, .1), 0), k % 2 ? rock : rockD); rs.position.set(-2.4 + k * .6 + R(-.1, .1), gy + .05, 3.5 + sd * (.2 + R(0, .05))); rs.scale.set(1.3, .7, 1); g.add(rs); } });   // 護岸の石
+      for (var st = 0; st < 5; st++) { var fs = new T.Mesh(new T.CylinderGeometry(.11, .12, .05, 8), rock); fs.position.set(-1.6 + st * .8 + (s % 2 ? .2 : 0), gy + .03, 3.5 + R(-.05, .05)); g.add(fs); }   // 飛び石
+      if (s % 2 === 0) {                                                                                           // 橋（朱の太鼓橋風）
+        var br = box(g, .5, .05, .62, 1.9, gy + .1, 3.5, M('#b7282e', { r: .6 })); var bl = box(g, .5, .05, .62, 1.9, gy + .06, 3.5, M('#4a3322', { r: .7 }));
+        [-1, 1].forEach(function (sd) { box(g, .5, .08, .03, 1.9, gy + .14, 3.5 + sd * .3, M('#b7282e')); });
+      }
+    });
+    [45, 135, 225, 315].forEach(function (deg, qi) {                                                                // 外縁の桜と紅葉（背が高い）
+      [-9, 9].forEach(function (dd, di) { var a = (deg + dd) * Math.PI / 180, r = rg.r - .38; seasonTree(gt, Math.cos(a) * r, gy, Math.sin(a) * r, (qi + di) % 2 ? 2 : 0, 1.15); });
+    });
+  })();
   finish(rh, castle);
 
   /* ---- 芯柱（鉄筋コンクリート）：打ち放し、スリットの灯り、バルコニー ---- */
@@ -604,7 +642,7 @@
     return t;
   }
   // 地面から垂直に立つ簾の円柱で、地下の城下町を囲う。上から少し覗けるが、薄暗くて見えない。囲炉裏の火の色で逆光になり、中は見えない。
-  var CR = 5.75, CH = 8.75;                                                      // 囲うのは地下（逆さの町の塊）だけ。浮かぶ環・天守・庭は見せる
+  var CR = 5.75, CH = 8.98;                                                      // 囲うのは地下（逆さの町の塊）だけ。浮かぶ環・天守・庭は見せる
   function glowTex() {
     var c = document.createElement('canvas'); c.width = 8; c.height = 256; var g = c.getContext('2d');
     var gr = g.createLinearGradient(0, 256, 0, 0); gr.addColorStop(0, '#ffb060'); gr.addColorStop(.35, '#ff7a2a'); gr.addColorStop(.75, '#7a2a10'); gr.addColorStop(1, '#1a0a04'); g.fillStyle = gr; g.fillRect(0, 0, 8, 256);
