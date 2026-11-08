@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>囲炉裏の城下町｜MORINOA（試作）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Maru+Gothic:wght@500;700;900&family=Barlow:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F2EEE0;--ink:#111D0F;--forest:#254723;--avocado:#8AB657;--shu:#8C4229;--ukon:#E9B53A;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#120b07;color:var(--cream);font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;-webkit-font-smoothing:antialiased}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+#gl.grab{cursor:grabbing}
+.vig{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,rgba(255,140,50,.10),transparent 45%),radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(8,4,2,.62) 100%)}
+.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top)) 20px 0;pointer-events:none}
+.top a,.top button{pointer-events:auto}
+.logo{display:flex;align-items:center;gap:10px;color:var(--cream);text-decoration:none;font:700 15px 'Barlow',sans-serif;letter-spacing:.2em}
+.logo img{width:40px;height:40px}
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:rgba(242,238,224,.94);color:var(--ink);font:900 13px 'Zen Maru Gothic',sans-serif;letter-spacing:.08em;text-decoration:none}
+#title{position:fixed;inset:0;z-index:4;display:grid;place-content:center;text-align:center;pointer-events:none;transition:opacity 1.2s ease .2s}
+#title h1{font:800 clamp(34px,6vw,76px)/1.15 'Shippori Mincho',serif;letter-spacing:.14em;text-shadow:0 2px 24px rgba(0,0,0,.6)}
+#title p{margin-top:14px;font:700 13px 'Barlow',sans-serif;letter-spacing:.4em;opacity:.8}
+#title.out{opacity:0}
+#marks{position:fixed;inset:0;z-index:3;pointer-events:none}
+.mark{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;margin:-34px 0 0 -14px;background:none;border:0;cursor:pointer;color:var(--cream);opacity:0;transition:opacity .5s ease;will-change:transform}
+.mark i{display:block;width:28px;height:28px;border-radius:50%;background:var(--cream);box-shadow:0 0 0 5px rgba(242,238,224,.28),0 0 22px rgba(255,170,70,.9);animation:pulse 2.2s ease-in-out infinite}
+.mark i::after{content:"";display:block;width:10px;height:10px;margin:9px;border-radius:50%;background:var(--shu)}
+.mark span{padding:3px 10px;border-radius:999px;background:rgba(17,29,15,.82);font:900 12px 'Zen Maru Gothic',sans-serif;letter-spacing:.1em;white-space:nowrap}
+.mark.on i{background:var(--ukon)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+#cards{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:14px;overflow-x:auto;padding:0 20px calc(18px + env(safe-area-inset-bottom));scroll-snap-type:x proximity;scrollbar-width:none}
+#cards::-webkit-scrollbar{display:none}
+.card{flex:0 0 min(320px,78vw);scroll-snap-align:center;padding:18px 20px 16px;border-radius:14px;background:rgba(242,238,224,.95);color:var(--ink);cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.card.on{transform:translateY(-8px);box-shadow:0 14px 32px rgba(0,0,0,.45),0 0 0 3px var(--ukon)}
+.card h3{font:800 19px 'Shippori Mincho',serif;letter-spacing:.06em}
+.card .en{margin-top:2px;font:700 11px 'Barlow',sans-serif;letter-spacing:.2em;color:#5B5344}
+.card p:not(.en){margin-top:8px;font-size:13px;line-height:1.7;color:#3b3328}
+.soon{display:inline-block;margin-top:10px;font:700 11px 'Barlow',sans-serif;letter-spacing:.24em;color:#8C4229}
+.more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;min-height:36px;padding:0 16px;border-radius:999px;background:var(--forest);color:var(--cream);font:900 13px 'Barlow',sans-serif;text-decoration:none}
+#reset{position:fixed;right:20px;bottom:calc(168px + env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:rgba(17,29,15,.78);color:var(--cream);font:900 12px 'Zen Maru Gothic',sans-serif;letter-spacing:.1em;cursor:pointer}
+.hint{position:fixed;left:20px;bottom:calc(176px + env(safe-area-inset-bottom));z-index:4;font:700 11px 'Barlow',sans-serif;letter-spacing:.22em;opacity:.6;pointer-events:none}
+@media(max-width:700px){.hint{display:none}.card{padding:14px 16px}}
+@media(prefers-reduced-motion:reduce){.mark i{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="top">
+  <a class="logo" href="index.html" aria-label="MORINOA トップへ"><img src="kamon-cream.png" alt="" width="480" height="468">MORINOA</a>
+  <a class="back" href="index.html">サイトへ戻る</a>
+</div>
+<div class="vig"></div>
+<div id="title"><div><h1>囲炉裏の城下町</h1><p>MORINOA ／ A TOWN IN THE HEARTH</p></div></div>
+<div id="marks"></div>
+<p class="hint">DRAG ／ PINCH ／ SCROLL</p>
+<button id="reset" type="button">全体を見る</button>
+<div id="cards" aria-label="見どころ"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/irori.js?v=6"></script>
+</body>
+</html>
