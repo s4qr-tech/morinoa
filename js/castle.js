@@ -210,6 +210,7 @@
       [-.3, .3].forEach(function (lx) { var ln = new T.Mesh(new T.SphereGeometry(.04, 10, 8), M('#d02010', { e: '#ff2a10', ei: 1.7 })); ln.position.set(lx, .42, .2); g.add(ln); });
       box(g, .5, .1, .01, 0, .4, .21, M(se % 2 ? '#254723' : '#8C4229', { r: .9 }));
     } else if (type === 'pc') {                                                    // PCの店：光る画面の列、サーバー、ネオンの看板
+      (window.__CASTLE_PCS = window.__CASTLE_PCS || []).push(g);                  // 囲炉裏ページから「触れる画面」を選べるように
       box(g, .54, .03, .15, 0, .2, .1, M('#2a2d34', { r: .5 }));
       [-.17, 0, .17].forEach(function (mx, k) { box(g, .12, .085, .01, mx, .24, .04, M(k % 2 ? '#5fe0ff' : '#9bf0a0', { e: k % 2 ? '#2ab8e8' : '#4cc866', ei: 1.9 })); box(g, .015, .04, .015, mx, .2, .04, dk); box(g, .08, .012, .03, mx, .2, .13, M('#d8d8dc')); });
       box(g, .07, .2, .08, -.26, .03, -.1, M('#1f2127', { r: .5 })); box(g, .04, .14, .012, -.26, .06, -.06, M('#5fe0ff', { e: '#2ab8e8', ei: 1.5 }));
@@ -466,6 +467,7 @@
       box(g, w, h, w, 0, y, 0, plasterDS);
       box(g, w * .92, .03, w * .92, 0, y + .04, 0, glowY);                                      // 床の灯り（断面で見える）
       fitOut(g, k, y, w, h);
+      (window.__CASTLE_TIERS = window.__CASTLE_TIERS || []).push(y + h / 2);                         // 各階の中心の高さ（囲炉裏ページの「入れる部屋」用）
       if (k === 0) buildDoor(g, y, w);                                                                  // 重めの洋風の両開き扉
       [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (c) { box(g, .08, h, .08, c[0] * w * .4, y, c[1] * w * .4, redL); });
       var n = Math.max(3, Math.round(w / .46));
