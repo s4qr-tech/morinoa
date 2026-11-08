@@ -90,6 +90,17 @@
     m.position.set((x0 + x1) / 2, -.05, (z0 + z1) / 2); m.receiveShadow = true; room.add(m);
   }
   slab(-RW, -1, -RW, RW); slab(1, RW, -RW, RW); slab(-1, 1, -RW, -1); slab(-1, 1, 1, RW);
+  // 壁際の畳だけ少し暗く（壁・障子の明るさや光は変えず、床にだけ薄い影を重ねる）
+  (function () {
+    var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'), S = 256, E = 70;
+    [[0, 0, 0, E], [S, 0, S - E, 0], [0, S, 0, S - E], [0, 0, E, 0]].forEach(function (p, i) {
+      var gr = i < 1 ? g.createLinearGradient(0, 0, 0, E) : i === 1 ? g.createLinearGradient(S, 0, S - E, 0) : i === 2 ? g.createLinearGradient(0, S, 0, S - E) : g.createLinearGradient(0, 0, E, 0);
+      gr.addColorStop(0, 'rgba(12,6,2,.5)'); gr.addColorStop(1, 'rgba(12,6,2,0)'); g.fillStyle = gr;
+      if (i === 0) g.fillRect(0, 0, S, E); else if (i === 1) g.fillRect(S - E, 0, E, S); else if (i === 2) g.fillRect(0, S - E, S, E); else g.fillRect(0, 0, E, S);
+    });
+    var t = new T.CanvasTexture(c), sh = new T.Mesh(new T.PlaneGeometry(RW * 2, RW * 2), new T.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false }));
+    sh.rotation.x = -Math.PI / 2; sh.position.y = .006; sh.renderOrder = 1; room.add(sh);
+  })();
   // 囲炉裏：四角い木の框と穴
   var HR = .84;                                          // 穴の半径
   (function () {
@@ -305,7 +316,7 @@
   /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
   window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
   (function () {
-    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=39';
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=41';
     cs.onload = function () {
       var root = window.__CASTLE_ROOT; if (!root) return; var k = .075;
       root.traverse(function (o) { if (o.isMesh && o.geometry && o.geometry.parameters && o.geometry.parameters.radiusTop === 15 && o.parent) o.parent.visible = false; });   // 庭（円い地面）は外す

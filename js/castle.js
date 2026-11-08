@@ -156,15 +156,26 @@
   function addItem(H, x, y, z, w, h, d, yaw, kind) {
     var o = { x: x, z: z, yaw: yaw };
     var col = function (c) { return new T.Color(c); };
-    if (kind === 0) {                                                            // ウイスキーボトル：琥珀色の胴、肩、細い首、黒いキャップ、ラベル
-      var Hh = .55 + h * 1.1, bw = w * .62, amb = col(AMBER[Math.floor(rnd() * AMBER.length)]);
-      put(H, cylBody, o, 0, y + Hh * .3, 0, bw, Hh * .6, bw, amb);
-      put(H, cylTop, o, 0, y + Hh * .62, 0, bw * .6, Hh * .08, bw * .6, amb.clone().offsetHSL(0, 0, .04));
-      put(H, cylNeck, o, 0, y + Hh * .8, 0, bw * .28, Hh * .24, bw * .28, amb.clone().multiplyScalar(.85));
-      put(H, cylTop, o, 0, y + Hh * .96, 0, bw * .34, Hh * .07, bw * .34, col('#15110d'));
-      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .004, bw * .78, Hh * .28, .01, col('#efe6cc'));
-      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .008, bw * .78, Hh * .05, .01, col(rnd() > .5 ? '#8C4229' : '#254723'));
-      put(H, wallBase, o, -bw * .3, y + Hh * .3, bw * .42, bw * .05, Hh * .5, .01, amb.clone().offsetHSL(0, .1, .22));       // ガラスの光
+    if (kind === 0) {                                                            // ウイスキーボトル：参考の銘柄の形（丸肩・角瓶・マット瓶・濃緑の長首）を混ぜる
+      var rs = rnd(), st = rs < .14 ? 0 : rs < .36 ? 4 : rs < .56 ? 1 : rs < .74 ? 7 : rs < .92 ? 6 : [2, 3, 5][Math.floor(rnd() * 3)];       // 黄・紫キャップ・青・黒を多めに
+      var S = [
+        { body: AMBER[Math.floor(rnd() * AMBER.length)], cap: '#15110d', lab: rnd() > .5 ? '#8C4229' : '#254723', hm: 1, wm: 1, nk: .28, sq: 0 },                       // 琥珀の丸瓶
+        { body: '#2f4a2b', cap: '#6b2e8a', lab: '#e9dfc2', hm: 1.18, wm: .95, nk: .3, sq: 0, big: 1 },                                                              // 濃緑の長首瓶＋紫のキャップ＋クリームの大ラベル
+        { body: ['#d9a441', '#4a2012', '#1f3a2a'][Math.floor(rnd() * 3)], cap: '#b9bcc2', lab: '#f4f4f0', hm: 1.1, wm: .9, nk: .36, sq: 1 },                           // 角瓶＋銀のキャップ＋白いロゴ
+        { body: '#a55a2a', cap: '#5a1a2a', lab: '#e9b8b0', hm: 1, wm: 1.05, nk: .3, sq: 0, big: 1 },                                                                 // 丸い肩の琥珀瓶＋ワインレッドのキャップ＋桃色のラベル
+        { body: '#f1de2a', cap: '#f1de2a', lab: '#f7f4ea', hm: .78, wm: 1.2, nk: .42, sq: 0, mat: 1, tag: '#d9482b' },                                               // マットな黄色の胴太瓶
+        { body: '#5fd0b8', cap: '#5fd0b8', lab: '#f7f4ea', hm: .78, wm: 1.2, nk: .42, sq: 0, mat: 1 },                                                              // マットなターコイズ
+        { body: '#15151a', cap: '#15151a', lab: '#c9a96b', hm: .9, wm: 1.08, nk: .4, sq: 0, mat: 1 },                                                                 // マットな黒
+        { body: '#2b5fa8', cap: '#b9bcc2', lab: '#f4f4f0', hm: 1.05, wm: .98, nk: .32, sq: 0 }                                                                       // 青いガラス瓶＋銀のキャップ
+      ][st];
+      var Hh = (.55 + h * 1.1) * S.hm, bw = w * .62 * S.wm, amb = col(S.body), bodyG = S.sq ? wallBase : cylBody;
+      put(H, bodyG, o, 0, y + Hh * .3, 0, bw, Hh * .6, bw, amb);
+      put(H, S.sq ? wallBase : cylTop, o, 0, y + Hh * .62, 0, bw * (S.sq ? .9 : .6), Hh * .08, bw * (S.sq ? .9 : .6), amb.clone().offsetHSL(0, 0, S.mat ? 0 : .04));
+      put(H, cylNeck, o, 0, y + Hh * .8, 0, bw * S.nk, Hh * .24, bw * S.nk, amb.clone().multiplyScalar(S.mat ? 1 : .85));
+      put(H, cylTop, o, 0, y + Hh * .96, 0, bw * (S.nk + .08), Hh * .07, bw * (S.nk + .08), col(S.cap));
+      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .004, bw * .78, Hh * (S.big ? .34 : .28), .01, col(S.lab));
+      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .008, bw * .78, Hh * .05, .01, col(S.tag || (rnd() > .5 ? '#8C4229' : '#254723')));
+      if (!S.mat) put(H, wallBase, o, -bw * .3, y + Hh * .3, bw * .42, bw * .05, Hh * .5, .01, amb.clone().offsetHSL(0, .1, .22));       // ガラスの光
     } else if (kind === 1) {                                                     // デスクトップPC：光る画面、本体、キーボード
       var ms = w * 1.15, mh = h * .7 + .22, scr = col(['#6fe3ff', '#9bf0a0', '#ffd37a', '#ff9ac8'][Math.floor(rnd() * 4)]);
       put(H, wallBase, o, -ms * .1, y, 0, ms * .62, .03, ms * .4, col('#1b1d22'));
@@ -205,7 +216,7 @@
     if (type !== 'nature') { [[-.28, -.17], [.28, -.17], [-.28, .17], [.28, .17]].forEach(function (c) { box(g, .02, .46, .02, c[0], .03, c[1], dk); }); box(g, .7, .03, .5, 0, .49, 0, M('#2b2e34', { r: .5 })); }
     if (type === 'sake') {                                                         // 居酒屋・酒蔵：カウンター、酒瓶の棚、酒樽、赤提灯、暖簾
       box(g, .52, .13, .1, 0, .03, .15, M('#8a5a2e', { r: .7 })); box(g, .5, .02, .08, 0, .34, -.12, wd); box(g, .5, .02, .08, 0, .22, -.12, wd);
-      for (var i = 0; i < 9; i++) { var bc = ['#2e6a4a', '#8C4229', '#e9dfc2', '#3f6f9a'][i % 4]; [.34, .22].forEach(function (yy) { var bt = new T.Mesh(new T.CylinderGeometry(.011, .015, .09, 6), M(bc, { r: .3 })); bt.position.set(-.2 + i * .05, yy + .06, -.12); g.add(bt); }); }
+      for (var i = 0; i < 9; i++) { var bc = ['#f1de2a', '#2b5fa8', '#15151a', '#6b2e8a', '#2e6a4a', '#f1de2a', '#2b5fa8', '#8C4229'][(i + se) % 8]; [.34, .22].forEach(function (yy) { var bt = new T.Mesh(new T.CylinderGeometry(.011, .015, .09, 6), M(bc, { r: .3 })); bt.position.set(-.2 + i * .05, yy + .06, -.12); g.add(bt); }); }
       [-.18, .18].forEach(function (bx) { var br = new T.Mesh(new T.CylinderGeometry(.06, .06, .11, 12), wd); br.position.set(bx, .09, .02); g.add(br); var bd = new T.Mesh(new T.TorusGeometry(.061, .006, 4, 14), M('#c9c9c9', { m: .6, r: .4 })); bd.rotation.x = Math.PI / 2; bd.position.set(bx, .09, .02); g.add(bd); });
       [-.3, .3].forEach(function (lx) { var ln = new T.Mesh(new T.SphereGeometry(.04, 10, 8), M('#d02010', { e: '#ff2a10', ei: 1.7 })); ln.position.set(lx, .42, .2); g.add(ln); });
       box(g, .5, .1, .01, 0, .4, .21, M(se % 2 ? '#254723' : '#8C4229', { r: .9 }));
