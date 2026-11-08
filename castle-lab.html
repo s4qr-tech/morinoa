@@ -30,6 +30,13 @@ button.on{background:var(--cream);color:var(--ink)}
 .note{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .4s;white-space:nowrap;font:700 12px 'Zen Maru Gothic',sans-serif;letter-spacing:.08em;color:var(--bp)}
 .note i{display:block;width:44px;height:1px;background:var(--bp)} .note i::before{content:"";display:block;width:7px;height:7px;margin:-3px 0 0 -3px;border:1px solid var(--bp);border-radius:50%;background:#06122a}
 .note span{padding:2px 8px;border:1px solid rgba(142,200,255,.6);background:rgba(6,18,42,.7)}
+#under-view{position:fixed;inset:0;z-index:4;display:grid;place-items:center;text-align:center;background:#000;opacity:0;pointer-events:none;transition:opacity .9s ease}
+body.under #under-view{opacity:1;pointer-events:auto}
+#under-view .eyebrow{font:700 12px 'Barlow',sans-serif;letter-spacing:.4em;opacity:.55}
+#under-view h2{margin-top:14px;font:800 clamp(30px,6vw,64px)/1.1 'Barlow',sans-serif;letter-spacing:.18em;color:#F2EEE0;text-shadow:0 0 28px rgba(255,170,70,.35)}
+#under-view .sub{margin-top:18px;font:500 14px/2 'Shippori Mincho',serif;letter-spacing:.12em;opacity:.8}
+#under-view button{margin-top:26px}
+body.under .top,body.under .bottom,body.under .hint{z-index:5}
 .hint{position:fixed;left:22px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:4;font:700 11px 'Barlow',sans-serif;letter-spacing:.22em;opacity:.55;pointer-events:none}
 @media(max-width:700px){.hint{display:none}h1{font-size:16px}}
 </style>
@@ -39,18 +46,18 @@ button.on{background:var(--cream);color:var(--ink)}
 <div class="grid"></div><div class="vig"></div>
 <div class="top">
   <h1>城の作り込み<small>CASTLE STUDY ／ 試作</small></h1>
-  <div class="btns"><button id="bp" type="button">設計図にする</button><a class="lnk" href="irori.html">囲炉裏へ戻る</a></div>
+  <div class="btns"><button id="cut" type="button">断面にする</button><button id="bp" type="button">設計図にする</button><a class="lnk" href="irori.html">囲炉裏へ戻る</a></div>
 </div>
 <div id="notes"></div>
+<div id="under-view"><div><p class="eyebrow">B1 ／ UNDERGROUND</p><h2>COMING SOON</h2><p class="sub">地下はいま、暗闇の中。<br>これからの活動を、ここに積み上げていきます。</p><button id="under-back" type="button">天守へ戻る</button></div></div>
 <p class="hint">DRAG ／ PINCH ／ SCROLL</p>
 <div class="bottom">
   <button data-go="all" type="button" class="on">全景</button>
-  <button data-go="donjon" type="button">天守</button>
-  <button data-go="rings" type="button">円環の町</button>
-  <button data-go="base" type="button">逆さの町</button>
-  <button data-go="court" type="button">中庭・火床</button>
+  <button data-go="donjon" type="button">天守に寄る</button>
+  <button data-go="garden" type="button">庭</button>
+  <button id="under" type="button">地下 ｜ COMING SOON</button>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/castle.js?v=8"></script>
+<script src="js/castle.js?v=18"></script>
 </body>
 </html>
