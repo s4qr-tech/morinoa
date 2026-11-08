@@ -306,12 +306,71 @@
   folk('#5BA0C1', [[-.3, .03, .06], [-.7, .03, .06]], .14); folk('#e9c46a', [[.2, .03, -.3], [.2, .03, .5]], .09);
   folk('#f2eee0', [[-.6, .03, -.2], [.4, .03, -.2]], .11);
 
+
+
+  /* ---- 囲炉裏の枠いっぱいに：円形だった庭を四角に（四方の季節）、街並み（ボトル・PC・机・書棚）、地下は簾で覆う ---- */
+  (function () {
+    var hearth = new T.Group(); room.add(hearth);
+    var Q = [[-1, -1, '#b9d49a', 0], [1, -1, '#1f6f6a', 1], [-1, 1, '#b8793a', 2], [1, 1, '#eef3f8', 3]];   // 春・梅雨・秋・冬
+    Q.forEach(function (q) {
+      var gm = new T.Mesh(new T.BoxGeometry(.73, .16, .73), new T.MeshStandardMaterial({ color: q[2], roughness: .9, emissive: new T.Color(q[3] === 1 ? '#0e5a55' : q[3] === 3 ? '#8fa8c0' : '#000'), emissiveIntensity: q[3] === 1 ? .35 : .12 }));
+      gm.position.set(q[0] * .375, -.2, q[1] * .375); gm.receiveShadow = true; hearth.add(gm);
+      for (var i = 0; i < 3; i++) {                                                  // 季節の木
+        var tx = q[0] * (.15 + rnd() * .45), tz = q[1] * (.15 + rnd() * .45), sc = .8 + rnd() * .5, tr = new T.Group(); tr.position.set(tx, -.12, tz); tr.scale.setScalar(sc); hearth.add(tr);
+        B(tr, .02, .09, .02, 0, 0, 0, M(q[3] === 1 ? '#2a1f16' : '#3a2a1c'), false, false);
+        if (q[3] === 3) { var pn = new T.Mesh(new T.ConeGeometry(.06, .12, 7), M('#2e5a3c')); pn.position.y = .15; tr.add(pn); var sn = new T.Mesh(new T.ConeGeometry(.05, .06, 7), M('#f3f7fb')); sn.position.y = .19; tr.add(sn); }
+        else { var cols = q[3] === 0 ? ['#f7b9cf', '#ffd6e4'] : q[3] === 1 ? ['#1f5a3a', '#2a6b46'] : ['#e0662a', '#c7311a']; for (var j = 0; j < 3; j++) { var bl = new T.Mesh(new T.SphereGeometry(.045 + rnd() * .02, 8, 6), M(cols[j % 2], { e: q[3] === 2 ? '#8a2a10' : '#000', ei: q[3] === 2 ? .6 : 1 })); bl.position.set((rnd() - .5) * .07, .1 + rnd() * .05, (rnd() - .5) * .07); tr.add(bl); } }
+      }
+    });
+    // 街並み：枠のまわりに、ウイスキーボトル・デスクトップPC・作業机・書棚をびっしり
+    var BC = ['#c9801f', '#b36a14', '#d99a2b', '#8a4a12'], SC = ['#6fe3ff', '#9bf0a0', '#ffd37a', '#ff9ac8'], BK = ['#8C4229', '#254723', '#5BA0C1', '#e9b53a', '#b7282e', '#4E9495'];
+    for (var side = 0; side < 4; side++) for (var n = 0; n < 9; n++) {
+      var u = -.66 + n * .165, off = .64, ax = side % 2 ? off * (side === 1 ? 1 : -1) : u, az = side % 2 ? u : off * (side === 0 ? 1 : -1), yaw = side * Math.PI / 2, g = new T.Group(); g.position.set(ax, -.12, az); g.rotation.y = yaw + Math.PI; hearth.add(g);
+      var kind = (n + side) % 4;
+      if (kind === 0) { var bt = new T.Mesh(new T.CylinderGeometry(.03, .036, .13, 10), M(BC[n % 4], { r: .3 })); bt.position.y = .065; g.add(bt); var nk = new T.Mesh(new T.CylinderGeometry(.01, .014, .07, 8), M(BC[n % 4], { r: .3 })); nk.position.y = .165; g.add(nk); B(g, .02, .02, .02, 0, .2, 0, M('#15110d')); B(g, .05, .05, .005, 0, .03, .037, M('#efe6cc')); }
+      else if (kind === 1) { B(g, .1, .07, .012, 0, .05, 0, M('#14161a')); B(g, .088, .056, .004, 0, .057, .008, M(SC[n % 4], { e: SC[n % 4], ei: .9 })); B(g, .02, .04, .02, 0, .01, 0, M('#2a2d34')); B(g, .06, .01, .03, 0, 0, .05, M('#d8d8dc')); }
+      else if (kind === 2) { B(g, .13, .015, .08, 0, .06, 0, M('#8a5a2e')); [-1, 1].forEach(function (sx) { B(g, .012, .06, .012, sx * .055, 0, 0, M('#4a3322')); }); B(g, .03, .05, .03, .04, .075, 0, M('#4f8a3a')); B(g, .06, .02, .04, -.03, .075, 0, M(BK[n % 6])); }
+      else { B(g, .12, .15, .035, 0, 0, 0, M('#4a3322')); for (var r = 0; r < 3; r++) for (var b = 0; b < 6; b++) B(g, .015, .035, .02, -.05 + b * .02, .02 + r * .045, .012, M(BK[(b + r) % 6])); }
+    }
+    // 地下は簾で覆う：穴の四方を、簾の面（火の逆光で内側が光る）にする
+    function sudare() {
+      var c = document.createElement('canvas'); c.width = 256; c.height = 128; var cx = c.getContext('2d'); cx.fillStyle = '#7a6238'; cx.fillRect(0, 0, 256, 128);
+      for (var x = 0; x < 256; x += 8) { cx.fillStyle = (x / 8) % 2 ? '#c9b27a' : '#b89a5c'; cx.fillRect(x, 0, 6, 128); }
+      cx.fillStyle = '#254723'; cx.fillRect(0, 0, 256, 14); cx.fillStyle = '#c9a96b'; cx.fillRect(0, 12, 256, 3);
+      cx.fillStyle = '#efe6cc'; cx.fillRect(0, 54, 256, 24); cx.fillStyle = '#111D0F'; cx.font = '800 17px Barlow, sans-serif'; cx.textAlign = 'center'; cx.fillText('COMING SOON', 128, 72);
+      var tx = new T.CanvasTexture(c); tx.encoding = T.sRGBEncoding; return tx;
+    }
+    var sm = new T.MeshStandardMaterial({ map: sudare(), roughness: .9, side: T.DoubleSide, emissive: new T.Color('#ff7a2a'), emissiveIntensity: .55 });
+    [[0, -.755, 0], [0, .755, 0], [-.755, 0, Math.PI / 2], [.755, 0, Math.PI / 2]].forEach(function (p2) { var pl = new T.Mesh(new T.PlaneGeometry(1.5, .22), sm); pl.position.set(p2[0], -.11, p2[1]); pl.rotation.y = p2[2]; hearth.add(pl); });
+    var low = new T.PointLight('#ff8a3d', 1.4, 2.2, 1.6); low.position.set(0, -.2, 0); hearth.add(low);
+  })();
+  /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
+  window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
+  (function () {
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=33';
+    cs.onload = function () {
+      var root = window.__CASTLE_ROOT; if (!root) return; var k = .05;
+      // 城のすべて（天守閣・城下町・御簾の囲い・庭）を縮小して、囲炉裏の枠の中に収め、鎖で吊るす
+      root.scale.setScalar(k); root.position.set(0, -.1, 0); scene.add(root);
+      root.traverse(function (o) { if (o.isPointLight) { o.distance *= k; o.intensity *= .4; } });
+      town.visible = false; if (typeof kagi !== 'undefined') kagi.visible = false; if (typeof steam !== 'undefined') steam.length = 0;                                  // 灰の上の町、鉄瓶、湯気を外す
+      // 吊るす鎖：城の天守の頂から、天井の梁まで
+      var topY = root.position.y + 22.9 * k, chain = new T.Group(); room.add(chain);
+      var ironM = M('#1b1b1e', { m: .6, r: .4 });
+      B(chain, .026, H - topY - .1, .026, 0, topY, 0, ironM, false, false);
+      for (var ci = 0; ci < 9; ci++) { var lk = new T.Mesh(new T.TorusGeometry(.03, .008, 6, 12), ironM); lk.position.set(0, topY + .12 + ci * ((H - topY - .4) / 9), 0); lk.rotation.y = ci % 2 ? 0 : Math.PI / 2; chain.add(lk); }
+      var hk = new T.Mesh(new T.TorusGeometry(.07, .014, 8, 18, Math.PI * 1.4), ironM); hk.position.set(0, topY + .02, 0); chain.add(hk);              // 自在鉤の環
+      var ceilBar = B(chain, .5, .05, .05, 0, H - .06, 0, ironM, false, false);
+      var gl = new T.PointLight('#ffb25a', 1.2, 3.5, 1.6); gl.position.set(0, .8, .5); room.add(gl);                       // 城をほんのり照らす灯り
+    };
+    document.head.appendChild(cs);
+  })();
   /* ---------- 見どころ（カード＋印） ---------- */
   var spots = [
-    { id: 'castle', jp: '経営・事業開発', en: 'Management', txt: '経営戦略から事業再生・新規事業まで、再生と成長を支援します。', href: 'service-support.html', pos: new T.Vector3(-.42, .72, -.4) },
-    { id: 'studio', jp: 'IP・デザイン', en: 'IP & Design', txt: 'IPの企画・ブランド設計・デザインで、事業の物語を形にします。', href: 'service-ip.html', pos: new T.Vector3(.54, .3, .25) },
-    { id: 'hall', jp: 'MORINOA 一座', en: 'Organization', txt: '戦略を描く者と、現場で実行する者。二つの座が一体となって動きます。', href: 'index.html#org', pos: new T.Vector3(-.05, .34, -.41) },
-    { id: 'gate', jp: '事例・実績', en: 'Works', txt: '再生・IP・デザインの取り組みを、ここに並べていきます。', href: '', pos: new T.Vector3(-.01, .28, -.12) }
+    { id: 'castle', jp: '経営・事業開発', en: 'Management', txt: '経営戦略から事業再生・新規事業まで、再生と成長を支援します。', href: 'service-support.html', pos: new T.Vector3(0, 1.2, 0) },
+    { id: 'studio', jp: 'IP・デザイン', en: 'IP & Design', txt: 'IPの企画・ブランド設計・デザインで、事業の物語を形にします。', href: 'service-ip.html', pos: new T.Vector3(0, .85, 0) },
+    { id: 'hall', jp: 'MORINOA 一座', en: 'Organization', txt: '戦略を描く者と、現場で実行する者。二つの座が一体となって動きます。', href: 'index.html#org', pos: new T.Vector3(0, .55, 0) },
+    { id: 'gate', jp: '事例・実績', en: 'Works', txt: '再生・IP・デザインの取り組みを、ここに並べていきます。', href: '', pos: new T.Vector3(0, .25, 0) }
   ];
   var wrapMarks = document.getElementById('marks'), cardsEl = document.getElementById('cards');
   spots.forEach(function (s, i) {
@@ -322,19 +381,35 @@
   });
 
   /* ---------- カメラ：慣性つきの周回、イージングつきの移動 ---------- */
-  var cam = { az: .6, pol: .22, dist: 7, tx: 0, ty: .05, tz: 0 };           // 現在値
-  var goal = { az: .6, pol: .78, dist: 5.0, tx: 0, ty: .0, tz: 0 };         // 目標値
+  var ENTER = /[?&]enter=1/.test(location.search);                                                    // 天守の扉をくぐって入ってきた：部屋の入口の低い目線から、囲炉裏のまわりへ
+  var S0 = ENTER ? { az: 3.14, pol: 1.42, dist: 6.2 } : { az: .6, pol: .22, dist: 7 };
+  var cam = { az: S0.az, pol: S0.pol, dist: S0.dist, tx: 0, ty: .6, tz: 0 };           // 現在値
+  var goal = { az: .6, pol: .78, dist: 5.0, tx: 0, ty: .6, tz: 0 };         // 目標値
   var idle = 0, active = -1, introT = 0, introDone = false;
   var CLAMP = { pmin: .25, pmax: 1.38, dmin: .8, dmax: 6.2 };
   function focus(i) {
     active = i; idle = 0; var p = spots[i].pos;
-    goal.tx = p.x; goal.ty = p.y - .3; goal.tz = p.z; goal.dist = 1.3; goal.pol = 1.0;
+    goal.tx = p.x; goal.ty = p.y; goal.tz = p.z; goal.dist = 1.8; goal.pol = 1.15;
     spots.forEach(function (s, k) { s.card.classList.toggle('on', k === i); s.el.classList.toggle('on', k === i); });
     spots[i].card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
-  function overview() { active = -1; goal.tx = 0; goal.ty = 0; goal.tz = 0; goal.dist = 5.0; goal.pol = .78; spots.forEach(function (s) { s.card.classList.remove('on'); s.el.classList.remove('on'); }); }
+  function overview() { active = -1; goal.tx = 0; goal.ty = .6; goal.tz = 0; goal.dist = 4.4; goal.pol = .78; spots.forEach(function (s) { s.card.classList.remove('on'); s.el.classList.remove('on'); }); }
   document.getElementById('reset').addEventListener('click', overview);
 
+
+  /* ---- 覗く：天守閣へ寄って扉の高さから中を見る／離れる ---- */
+  var peeking = false, peekBtn = document.getElementById('peek'), peekTimers = [];
+  function clearPeek() { peekTimers.forEach(clearTimeout); peekTimers = []; }
+  peekBtn.addEventListener('click', function () {
+    peeking = !peeking; peekBtn.textContent = peeking ? '離れる' : '覗く'; idle = 0; clearPeek(); var door = window.__CASTLE_DOOR || function () {};
+    if (peeking) {                                                                  // 扉の前へ → 扉が開く → 御簾をくぐって、天守閣の中の囲炉裏の間をのぞく
+      goal.az = 0; goal.pol = 1.5; goal.ty = .62; goal.tx = 0; goal.tz = 0; goal.dist = 1.7;
+      peekTimers.push(setTimeout(function () { door(1); }, 900));
+      peekTimers.push(setTimeout(function () { goal.dist = .3; }, 1900));
+    } else {                                                                        // 引いて、扉を閉じ、全体へ
+      goal.dist = 1.7; peekTimers.push(setTimeout(function () { door(0); goal.dist = 5.0; goal.pol = .78; goal.ty = .55; }, 900));
+    }
+  });
   var drag = null;
   canvas.addEventListener('pointerdown', function (e) { drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; canvas.setPointerCapture(e.pointerId); idle = 0; canvas.classList.add('grab'); });
   canvas.addEventListener('pointermove', function (e) {
@@ -366,7 +441,7 @@
     // 性能が足りなければ解像度を下げる（なめらかさ優先）
     ftAcc += dt; ftN++; if (ftN === 90) { if (ftAcc / 90 > .026 && !lowered && dpr > 1) { lowered = true; renderer.setPixelRatio(1.25); resize(); } ftAcc = 0; ftN = 0; }
     // 導入：上から降りて、囲炉裏を囲む視点へ
-    if (!introDone) { introT += dt / 3.6; var e = ease(Math.min(1, introT)); goal.dist = 8 + (5.0 - 8) * e; goal.pol = .22 + (.78 - .22) * e; goal.az = .6 + (1 - e) * 1.6; if (introT >= 1) { introDone = true; titleEl.classList.add('out'); } }
+    if (!introDone) { introT += dt / 3.6; var e = ease(Math.min(1, introT)); goal.dist = (ENTER ? 6.2 : 8) + (4.4 - (ENTER ? 6.2 : 8)) * e; goal.pol = (ENTER ? 1.42 : .22) + (.78 - (ENTER ? 1.42 : .22)) * e; goal.az = ENTER ? 3.14 + (.6 - 3.14) * e : .6 + (1 - e) * 1.6; if (introT >= 1) { introDone = true; titleEl.classList.add('out'); } }
     else { idle += dt; if (idle > 6 && active < 0) goal.az += dt * .05; }
     var k = introDone ? 5.2 : 9;
     cam.az = damp(cam.az, goal.az, k, dt); cam.pol = damp(cam.pol, goal.pol, k, dt); cam.dist = damp(cam.dist, goal.dist, k, dt);
@@ -394,6 +469,7 @@
       s.el.style.opacity = vis && introDone ? '1' : '0'; s.el.style.pointerEvents = vis && introDone ? 'auto' : 'none';
       s.el.style.transform = 'translate(' + ((tmp.x * .5 + .5) * innerWidth).toFixed(1) + 'px,' + ((-tmp.y * .5 + .5) * innerHeight).toFixed(1) + 'px)';
     });
+    if (window.__CASTLE_STEP) window.__CASTLE_STEP(dt);
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }

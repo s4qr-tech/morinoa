@@ -36,7 +36,11 @@ body.under #under-view{opacity:1;pointer-events:auto}
 #under-view h2{margin-top:14px;font:800 clamp(30px,6vw,64px)/1.1 'Barlow',sans-serif;letter-spacing:.18em;color:#F2EEE0;text-shadow:0 0 28px rgba(255,170,70,.35)}
 #under-view .sub{margin-top:18px;font:500 14px/2 'Shippori Mincho',serif;letter-spacing:.12em;opacity:.8}
 #under-view button{margin-top:26px}
-body.under .top,body.under .bottom,body.under .hint{z-index:5}
+body.under .top,body.under .bottom,body.under .fadeov{position:fixed;inset:0;z-index:9;background:#120b07;opacity:0;pointer-events:none;transition:opacity .9s ease}
+body.fade .fadeov{opacity:1}
+body.fade-in .fadeov{opacity:0;animation:fadein 1.4s ease both}
+@keyframes fadein{from{opacity:1}to{opacity:0}}
+.hint{z-index:5}
 .hint{position:fixed;left:22px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:4;font:700 11px 'Barlow',sans-serif;letter-spacing:.22em;opacity:.55;pointer-events:none}
 @media(max-width:700px){.hint{display:none}h1{font-size:16px}}
 </style>
@@ -46,9 +50,10 @@ body.under .top,body.under .bottom,body.under .hint{z-index:5}
 <div class="grid"></div><div class="vig"></div>
 <div class="top">
   <h1>城の作り込み<small>CASTLE STUDY ／ 試作</small></h1>
-  <div class="btns"><button id="cut" type="button">断面にする</button><button id="bp" type="button">設計図にする</button><a class="lnk" href="irori.html">囲炉裏へ戻る</a></div>
+  <div class="btns"><button id="cut" type="button">断面にする</button><a class="lnk" id="goIrori" href="irori.html?enter=1">囲炉裏へ戻る</a></div>
 </div>
 <div id="notes"></div>
+<div class="fadeov"></div>
 <div id="under-view"><div><p class="eyebrow">B1 ／ UNDERGROUND</p><h2>COMING SOON</h2><p class="sub">地下はいま、暗闇の中。<br>これからの活動を、ここに積み上げていきます。</p><button id="under-back" type="button">天守へ戻る</button></div></div>
 <p class="hint">DRAG ／ PINCH ／ SCROLL</p>
 <div class="bottom">
@@ -58,6 +63,6 @@ body.under .top,body.under .bottom,body.under .hint{z-index:5}
   <button id="under" type="button">地下 ｜ COMING SOON</button>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/castle.js?v=18"></script>
+<script src="js/castle.js?v=30"></script>
 </body>
 </html>

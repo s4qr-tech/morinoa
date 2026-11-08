@@ -41,6 +41,13 @@ html,body{height:100%;overflow:hidden;background:#120b07;color:var(--cream);font
 .soon{display:inline-block;margin-top:10px;font:700 11px 'Barlow',sans-serif;letter-spacing:.24em;color:#8C4229}
 .more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;min-height:36px;padding:0 16px;border-radius:999px;background:var(--forest);color:var(--cream);font:900 13px 'Barlow',sans-serif;text-decoration:none}
 #reset{position:fixed;right:20px;bottom:calc(168px + env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:rgba(17,29,15,.78);color:var(--cream);font:900 12px 'Zen Maru Gothic',sans-serif;letter-spacing:.1em;cursor:pointer}
+.fadeov{position:fixed;inset:0;z-index:9;background:#120b07;pointer-events:none;opacity:0}
+body.enter .fadeov{animation:fadein 1.6s ease both}
+@keyframes fadein{from{opacity:1}to{opacity:0}}
+#marks,#cards,#reset,.hint{display:none !important}
+.act{position:fixed;z-index:6;min-height:48px;padding:0 26px;border:2px solid rgba(242,238,224,.7);border-radius:999px;background:rgba(17,10,5,.62);color:#F2EEE0;font:900 14px 'Zen Maru Gothic',sans-serif;letter-spacing:.16em;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;backdrop-filter:blur(6px)}
+#back2{top:calc(16px + env(safe-area-inset-top));right:20px}
+#peek{left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%)}
 .hint{position:fixed;left:20px;bottom:calc(176px + env(safe-area-inset-bottom));z-index:4;font:700 11px 'Barlow',sans-serif;letter-spacing:.22em;opacity:.6;pointer-events:none}
 @media(max-width:700px){
   .hint{display:none}
@@ -59,15 +66,18 @@ html,body{height:100%;overflow:hidden;background:#120b07;color:var(--cream);font
 <canvas id="gl"></canvas>
 <div class="top">
   <a class="logo" href="index.html" aria-label="MORINOA トップへ"><img src="kamon-cream.png" alt="" width="480" height="468">MORINOA</a>
-  <a class="back" href="index.html">サイトへ戻る</a>
+  
 </div>
 <div class="vig"></div>
+<div class="fadeov"></div>
 <div id="title"><div><h1>囲炉裏の城下町</h1><p>MORINOA ／ A TOWN IN THE HEARTH</p></div></div>
 <div id="marks"></div>
 <p class="hint">DRAG ／ PINCH ／ SCROLL</p>
-<button id="reset" type="button">全体を見る</button>
+<button id="reset" type="button" style="display:none">全体を見る</button>
 <div id="cards" aria-label="見どころ"></div>
+<a class="act" id="back2" href="index.html">戻る</a>
+<button class="act" id="peek" type="button" style="display:none">覗く</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/irori.js?v=15"></script>
+<script src="js/irori.js?v=23"></script>
 </body>
 </html>

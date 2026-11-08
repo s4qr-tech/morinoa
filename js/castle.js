@@ -5,14 +5,18 @@
 (function () {
   'use strict';
   var T = THREE; if (!T) return;
-  var canvas = document.getElementById('gl');
-  var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
-  var dpr = Math.min(2, devicePixelRatio || 1); renderer.setPixelRatio(dpr);
-  renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
-  var scene = new T.Scene();
+  // 埋め込みモード：囲炉裏の城下町（irori.html）から呼ぶときは、描画・光・操作は持ち込まず、城の形だけを作る
+  var EMBED = window.__CASTLE_EMBED || null;
+  var STUB = { addEventListener: function () {}, appendChild: function () {}, setPointerCapture: function () {}, classList: { toggle: function () {}, add: function () {}, remove: function () {} }, style: {} };
+  function $(id) { return (!EMBED && document.getElementById(id)) || STUB; }
+  var canvas = $('gl');
+  var renderer = EMBED ? EMBED.renderer : new T.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
+  var dpr = Math.min(2, devicePixelRatio || 1);
+  if (!EMBED) { renderer.setPixelRatio(dpr); renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0; }
+  var scene = EMBED ? EMBED.scene : new T.Scene();
   var NIGHT = new T.Color('#06122a'), BLUE = new T.Color('#0a2038');
-  scene.background = NIGHT; scene.fog = new T.Fog('#06122a', 30, 90);
-  var camera = new T.PerspectiveCamera(42, 1, .1, 200);
+  if (!EMBED) { scene.background = NIGHT; scene.fog = new T.Fog('#06122a', 30, 90); }
+  var camera = EMBED ? EMBED.camera : new T.PerspectiveCamera(42, 1, .1, 200);
 
   var seed = 5, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
   var R = function (a, b) { return a + rnd() * (b - a); };
@@ -50,12 +54,12 @@
   var plaza = new T.Group(); root.add(plaza);
 
   /* ---- 光 ---- */
-  scene.add(new T.AmbientLight('#2a3d66', .55));
-  var moon = new T.DirectionalLight('#7f9be0', .55); moon.position.set(-12, 30, 18); scene.add(moon);
-  scene.add(new T.HemisphereLight('#3b5aa8', '#120a05', .35));
-  var fireL = new T.PointLight('#ff8a3d', 4.2, 18, 1.8); fireL.position.set(0, 1.1, 0); scene.add(fireL);
-  var warm = new T.PointLight('#ffb25a', 2.4, 22, 1.6); warm.position.set(0, 10, 0); scene.add(warm);
-  var top = new T.PointLight('#fff1d2', 1.6, 18, 1.8); top.position.set(0, 21, 0); scene.add(top);
+  if (!EMBED) scene.add(new T.AmbientLight('#2a3d66', .55));
+  var moon = new T.DirectionalLight('#7f9be0', .55); moon.position.set(-12, 30, 18); if (!EMBED) scene.add(moon);
+  if (!EMBED) scene.add(new T.HemisphereLight('#3b5aa8', '#120a05', .35));
+  var fireL = new T.PointLight('#ff8a3d', 4.2, 18, 1.8); fireL.position.set(0, 1.1, 0); if (!EMBED) scene.add(fireL);
+  var warm = new T.PointLight('#ffb25a', 2.4, 22, 1.6); warm.position.set(0, 10, 0); if (!EMBED) scene.add(warm);
+  var top = new T.PointLight('#fff1d2', 1.6, 18, 1.8); top.position.set(0, 21, 0); if (!EMBED) scene.add(top);
 
   /* ---- 中庭：円形の火床、青緑の水面、打ち放しの曲面壁 ---- */
   function disc(parent, rIn, rOut, y, h, mat, seg) { var g = new T.RingGeometry(rIn, rOut, seg || 64); g.rotateX(-Math.PI / 2); return mesh(g, mat, 0, y, 0, parent); }
@@ -96,6 +100,9 @@
   }
   function addHouse(H, x, y, z, w, h, d, yaw, wall, roof) {
     dummy.position.set(x, y + h / 2, z); dummy.rotation.set(0, yaw, 0); dummy.scale.set(w, h, d); dummy.updateMatrix(); pushGeo(H, wallBase, dummy.matrix, wall);
+    var fx = Math.sin(yaw), fz = Math.cos(yaw), dd = d * .5 + .012;
+    dummy.position.set(x + fx * dd, y + h * .3, z + fz * dd); dummy.rotation.set(0, yaw, 0); dummy.scale.set(w * .22, h * .56, .02); dummy.updateMatrix(); pushGeo(H, wallBase, dummy.matrix, new T.Color('#2a1c12'));
+    [-1, 1].forEach(function (sd) { dummy.position.set(x + fx * dd + Math.cos(yaw) * sd * w * .3, y + h * .62, z + fz * dd - Math.sin(yaw) * sd * w * .3); dummy.scale.set(w * .16, h * .22, .02); dummy.updateMatrix(); pushGeo(H, wallBase, dummy.matrix, new T.Color('#ffcf80')); });
     var se = seasonOf(x, z); if (se !== 0 || rnd() > .35) roof = new T.Color(SEAS[se].roof); var rh = h * .36 + .05; dummy.position.set(x, y + h + rh / 2, z); dummy.scale.set(w * 1.34, rh, d * 1.34); dummy.updateMatrix(); pushGeo(H, roofBase, dummy.matrix, roof);
   }
   function finish(H, parent) {
@@ -120,7 +127,7 @@
   }
 
   // 四方の木（桜・梅雨の木と紫陽花・紅葉・雪の松）
-  for (var pt = 0; pt < 44; pt++) { var pa0 = rnd() * 6.283, pr0 = R(7.2, 11.6); seasonTree(plaza, Math.cos(pa0) * pr0, .02, Math.sin(pa0) * pr0, seasonOf(Math.cos(pa0), Math.sin(pa0)), R(1.2, 2.0)); }
+  for (var pt = 0; pt < 44; pt++) { var pa0 = rnd() * 6.283, pr0 = R(8.3, 11.6); seasonTree(plaza, Math.cos(pa0) * pr0, .02, Math.sin(pa0) * pr0, seasonOf(Math.cos(pa0), Math.sin(pa0)), R(1.2, 2.0)); }
   /* ---- 逆さに連なる町家の塊（下へ向かって細くなる） ---- */
   var MASS_TOP = 9.0, MASS_BOT = 3.4, MR = 5.1;
   var mass = houses();
@@ -137,6 +144,90 @@
   }
   finish(mass, castle);
 
+
+
+  /* ---- 町を構成するもの：家ではなく、関わる人たちの仕事場と地域 ---- */
+  var cylBody = new T.CylinderGeometry(.5, .5, 1, 12).toNonIndexed(), cylNeck = new T.CylinderGeometry(.5, .5, 1, 8).toNonIndexed(), cylTop = new T.CylinderGeometry(.5, .5, 1, 12).toNonIndexed();
+  var AMBER = ['#c9801f', '#b36a14', '#d99a2b', '#8a4a12', '#5a3a1a'];
+  function put(H, base, o, lx, y, lz, sx, sy, sz, color) {                       // o = {x, z, yaw}：品物の座標系で部品を置く
+    var c = Math.cos(o.yaw), sn = Math.sin(o.yaw);
+    dummy.position.set(o.x + lx * c + lz * sn, y, o.z - lx * sn + lz * c); dummy.rotation.set(0, o.yaw, 0); dummy.scale.set(sx, sy, sz); dummy.updateMatrix(); pushGeo(H, base, dummy.matrix, color);
+  }
+  function addItem(H, x, y, z, w, h, d, yaw, kind) {
+    var o = { x: x, z: z, yaw: yaw };
+    var col = function (c) { return new T.Color(c); };
+    if (kind === 0) {                                                            // ウイスキーボトル：琥珀色の胴、肩、細い首、黒いキャップ、ラベル
+      var Hh = .55 + h * 1.1, bw = w * .62, amb = col(AMBER[Math.floor(rnd() * AMBER.length)]);
+      put(H, cylBody, o, 0, y + Hh * .3, 0, bw, Hh * .6, bw, amb);
+      put(H, cylTop, o, 0, y + Hh * .62, 0, bw * .6, Hh * .08, bw * .6, amb.clone().offsetHSL(0, 0, .04));
+      put(H, cylNeck, o, 0, y + Hh * .8, 0, bw * .28, Hh * .24, bw * .28, amb.clone().multiplyScalar(.85));
+      put(H, cylTop, o, 0, y + Hh * .96, 0, bw * .34, Hh * .07, bw * .34, col('#15110d'));
+      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .004, bw * .78, Hh * .28, .01, col('#efe6cc'));
+      put(H, wallBase, o, 0, y + Hh * .3, bw * .5 + .008, bw * .78, Hh * .05, .01, col(rnd() > .5 ? '#8C4229' : '#254723'));
+      put(H, wallBase, o, -bw * .3, y + Hh * .3, bw * .42, bw * .05, Hh * .5, .01, amb.clone().offsetHSL(0, .1, .22));       // ガラスの光
+    } else if (kind === 1) {                                                     // デスクトップPC：光る画面、本体、キーボード
+      var ms = w * 1.15, mh = h * .7 + .22, scr = col(['#6fe3ff', '#9bf0a0', '#ffd37a', '#ff9ac8'][Math.floor(rnd() * 4)]);
+      put(H, wallBase, o, -ms * .1, y, 0, ms * .62, .03, ms * .4, col('#1b1d22'));
+      put(H, wallBase, o, -ms * .1, y + .03, -.02, ms * .1, mh * .3, .06, col('#2a2d34'));
+      put(H, wallBase, o, -ms * .1, y + .03 + mh * .3, -.03, ms * .82, mh * .62, .06, col('#14161a'));
+      put(H, wallBase, o, -ms * .1, y + .03 + mh * .3 + mh * .06, .002, ms * .74, mh * .5, .01, scr);
+      put(H, wallBase, o, ms * .52, y, -.02, ms * .22, mh * .9, ms * .46, col('#2a2d34'));
+      put(H, wallBase, o, ms * .52, y + mh * .6, ms * .23 + .004, ms * .16, .02, .01, col('#5fe0ff'));
+      put(H, wallBase, o, -ms * .1, y + .006, ms * .26, ms * .55, .02, ms * .13, col('#d8d8dc'));
+    } else if (kind === 2) {                                                     // 作業机：天板、灯り、鉢植え、積んだ本、ノートPC
+      var dw = w * 1.35, dh = .16 + h * .22;
+      put(H, wallBase, o, 0, y + dh, 0, dw, .035, dw * .6, col('#8a5a2e'));
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (q) { put(H, wallBase, o, q[0] * dw * .44, y, q[1] * dw * .26, .03, dh, .03, col('#4a3322')); });
+      put(H, wallBase, o, -dw * .35, y + dh + .035, -dw * .1, .03, .22, .03, col('#2a2d34')); put(H, wallBase, o, -dw * .32, y + dh + .24, -dw * .06, .12, .03, .08, col('#ffd37a'));
+      put(H, wallBase, o, dw * .38, y + dh + .035, dw * .1, .09, .09, .09, col('#b0603a')); put(H, wallBase, o, dw * .38, y + dh + .12, dw * .1, .16, .13, .16, col('#4f8a3a'));
+      for (var bk = 0; bk < 3; bk++) put(H, wallBase, o, dw * .02, y + dh + .035 + bk * .035, dw * .14, .2 - bk * .02, .03, .13, col(['#8C4229', '#254723', '#5BA0C1'][bk]));
+      put(H, wallBase, o, -dw * .1, y + dh + .035, -dw * .08, .22, .015, .15, col('#2a2d34')); put(H, wallBase, o, -dw * .1, y + dh + .05, -dw * .17, .22, .14, .012, col('#7fe3ff'));
+    } else {                                                                     // 書棚：背表紙の色が並ぶ
+      var sw = w * 1.1, sh = .5 + h * .6;
+      put(H, wallBase, o, 0, y, 0, sw, sh, .14, col('#4a3322'));
+      for (var rr = 0; rr < 4; rr++) for (var bn = 0; bn < 8; bn++) put(H, wallBase, o, -sw * .4 + bn * sw * .115, y + .05 + rr * sh * .24, .075, sw * .09, sh * .2, .02, col(BOOKC[(bn + rr * 3) % 8]));
+    }
+  }
+  // 地域のしるし：鳥居・灯台・山・五重塔（環の縁に点在）
+  function landmark(parent, type, x, y, z, a) {
+    var g = new T.Group(); g.position.set(x, y, z); g.rotation.y = Math.PI / 2 - a; parent.add(g);
+    if (type === 0) { var rd = M('#C23219', { r: .6 }); box(g, .04, .5, .04, -.2, 0, 0, rd); box(g, .04, .5, .04, .2, 0, 0, rd); box(g, .5, .05, .06, 0, .44, 0, rd); box(g, .42, .035, .05, 0, .34, 0, rd); }
+    else if (type === 1) { var lh = new T.Mesh(new T.CylinderGeometry(.07, .11, .55, 10), M('#efe6cc')); lh.position.y = .28; g.add(lh); var lt = new T.Mesh(new T.CylinderGeometry(.09, .09, .1, 10), M('#ffcf80', { e: '#ff9d3a', ei: 1.9 })); lt.position.y = .6; g.add(lt); var lr = new T.Mesh(new T.ConeGeometry(.11, .1, 10), M('#b7282e')); lr.position.y = .71; g.add(lr); }
+    else if (type === 2) { var mt = new T.Mesh(new T.ConeGeometry(.3, .6, 6), M('#6f8f6a', { r: .95 })); mt.position.y = .3; g.add(mt); var sn2 = new T.Mesh(new T.ConeGeometry(.13, .2, 6), M('#f3f7fb')); sn2.position.y = .52; g.add(sn2); }
+    else { for (var t2 = 0; t2 < 5; t2++) { var w2 = .26 - t2 * .04; box(g, w2, .09, w2, 0, t2 * .12, 0, M('#efe6cc')); var rf = new T.Mesh(new T.ConeGeometry(w2 * .95, .07, 4), M('#2b2e34')); rf.geometry.rotateY(Math.PI / 4); rf.position.y = t2 * .12 + .12; g.add(rf); } }
+  }
+  /* ---- 環の縁の「店」：酒（酒蔵・居酒屋）／PCの画面／本棚／自然（池・木・竹） ---- */
+  var BOOKC = ['#8C4229', '#254723', '#5BA0C1', '#e9b53a', '#b7282e', '#4E9495', '#efe6cc', '#6a4a8a'];
+  function stall(parent, type, x, y, z, a, se) {
+    var g = new T.Group(); g.position.set(x, y, z); g.rotation.y = Math.PI / 2 - a; parent.add(g);
+    var wd = M('#6b4a2a', { r: .8 }), dk = M('#241a12', { r: .8 });
+    box(g, .62, .03, .42, 0, 0, 0, wd);
+    if (type !== 'nature') { [[-.28, -.17], [.28, -.17], [-.28, .17], [.28, .17]].forEach(function (c) { box(g, .02, .46, .02, c[0], .03, c[1], dk); }); box(g, .7, .03, .5, 0, .49, 0, M('#2b2e34', { r: .5 })); }
+    if (type === 'sake') {                                                         // 居酒屋・酒蔵：カウンター、酒瓶の棚、酒樽、赤提灯、暖簾
+      box(g, .52, .13, .1, 0, .03, .15, M('#8a5a2e', { r: .7 })); box(g, .5, .02, .08, 0, .34, -.12, wd); box(g, .5, .02, .08, 0, .22, -.12, wd);
+      for (var i = 0; i < 9; i++) { var bc = ['#2e6a4a', '#8C4229', '#e9dfc2', '#3f6f9a'][i % 4]; [.34, .22].forEach(function (yy) { var bt = new T.Mesh(new T.CylinderGeometry(.011, .015, .09, 6), M(bc, { r: .3 })); bt.position.set(-.2 + i * .05, yy + .06, -.12); g.add(bt); }); }
+      [-.18, .18].forEach(function (bx) { var br = new T.Mesh(new T.CylinderGeometry(.06, .06, .11, 12), wd); br.position.set(bx, .09, .02); g.add(br); var bd = new T.Mesh(new T.TorusGeometry(.061, .006, 4, 14), M('#c9c9c9', { m: .6, r: .4 })); bd.rotation.x = Math.PI / 2; bd.position.set(bx, .09, .02); g.add(bd); });
+      [-.3, .3].forEach(function (lx) { var ln = new T.Mesh(new T.SphereGeometry(.04, 10, 8), M('#d02010', { e: '#ff2a10', ei: 1.7 })); ln.position.set(lx, .42, .2); g.add(ln); });
+      box(g, .5, .1, .01, 0, .4, .21, M(se % 2 ? '#254723' : '#8C4229', { r: .9 }));
+    } else if (type === 'pc') {                                                    // PCの店：光る画面の列、サーバー、ネオンの看板
+      box(g, .54, .03, .15, 0, .2, .1, M('#2a2d34', { r: .5 }));
+      [-.17, 0, .17].forEach(function (mx, k) { box(g, .12, .085, .01, mx, .24, .04, M(k % 2 ? '#5fe0ff' : '#9bf0a0', { e: k % 2 ? '#2ab8e8' : '#4cc866', ei: 1.9 })); box(g, .015, .04, .015, mx, .2, .04, dk); box(g, .08, .012, .03, mx, .2, .13, M('#d8d8dc')); });
+      box(g, .07, .2, .08, -.26, .03, -.1, M('#1f2127', { r: .5 })); box(g, .04, .14, .012, -.26, .06, -.06, M('#5fe0ff', { e: '#2ab8e8', ei: 1.5 }));
+      box(g, .3, .05, .01, .05, .4, .21, M(se % 2 ? '#ff4fa8' : '#4fd6ff', { e: se % 2 ? '#e0208a' : '#18a8d8', ei: 1.8 }));
+    } else if (type === 'lib') {                                                   // 書庫：背表紙の並ぶ書棚、読書灯
+      box(g, .52, .44, .1, 0, .03, -.1, M('#4a3322', { r: .8 }));
+      for (var r2 = 0; r2 < 3; r2++) for (var b = 0; b < 11; b++) box(g, .03, .08 + (b % 3) * .015, .07, -.23 + b * .046, .08 + r2 * .13, -.07, M(BOOKC[(b + r2 * 3 + se) % 8], { r: .8 }));
+      box(g, .22, .03, .12, 0, .16, .12, M('#6b4a2a')); var lp = new T.Mesh(new T.ConeGeometry(.04, .05, 8), M('#ffcf80', { e: '#ff9d3a', ei: 1.8 })); lp.position.set(.05, .24, .12); g.add(lp);
+    } else {                                                                        // 自然：池、苔の庭、木、竹、石灯籠
+      var pond = new T.Mesh(new T.CircleGeometry(.2, 20), M('#2b9d95', { e: '#168a82', ei: .5, r: .15 })); pond.rotation.x = -Math.PI / 2; pond.position.set(.05, .035, .05); g.add(pond);
+      box(g, .6, .02, .4, 0, .03, 0, M('#6f9a5a', { r: 1 })).scale.set(1, 1, 1);
+      for (var st = 0; st < 5; st++) mesh(new T.SphereGeometry(R(.02, .04), 6, 5), M('#8d8a80', { r: .95 }), .05 + Math.cos(st * 1.3) * .2, .04, .05 + Math.sin(st * 1.3) * .2, g);
+      seasonTree(g, -.2, .03, -.08, se, .22); seasonTree(g, .22, .03, -.1, se, .18);
+      for (var bm = 0; bm < 5; bm++) { var bb = new T.Mesh(new T.CylinderGeometry(.007, .007, R(.22, .34), 5), M('#6bb25a', { r: .7 })); bb.position.set(.15 + bm * .02, .2, .12 + (bm % 2) * .03); g.add(bb); }
+      box(g, .05, .05, .05, -.22, .03, .14, M('#9a968a')); box(g, .06, .02, .06, -.22, .08, .14, M('#9a968a')); var sl = new T.Mesh(new T.SphereGeometry(.018, 6, 5), M('#ffcf80', { e: '#ff9d3a', ei: 1.5 })); sl.position.set(-.22, .12, .14); g.add(sl);
+    }
+    return g;
+  }
   /* ---- 浮かぶ円環：町家の環と、赤い帯、光る縁 ---- */
   var rings = [
     { y: 9.1, r: 7.0, rows: 2 }, { y: 11.2, r: 5.9, rows: 2 }, { y: 13.0, r: 4.7, rows: 1 }
@@ -146,13 +237,24 @@
     var disk = mesh(new T.CylinderGeometry(rg.r, rg.r * .96, .22, 72), M('#1d1f26', { r: .5, m: .3 }), 0, rg.y - .11, 0, castle);
     var band = mesh(new T.TorusGeometry(rg.r, .07, 8, 96), M('#e0301c', { e: '#d02010', ei: 1.3 }), 0, rg.y + .02, 0, castle); band.rotation.x = Math.PI / 2;
     var rim = mesh(new T.TorusGeometry(rg.r * .96, .035, 6, 96), M('#9fe9ff', { e: '#6fd6ff', ei: 1.8 }), 0, rg.y - .22, 0, castle); rim.rotation.x = Math.PI / 2;
-    for (var row = 0; row < rg.rows; row++) {
-      var rr2 = rg.r - .55 - row * .78, cnt2 = Math.floor(2 * Math.PI * rr2 / .82);
+    var nRows = Math.floor((rg.r - 1.75) / .95) + 1;                              // 環の縁から中心（芯柱のすぐ外）まで、隙間なく埋める
+    for (var row = 0; row < nRows; row++) {
+      var rr2 = rg.r - .62 - row * .95, cnt2 = Math.floor(2 * Math.PI * rr2 / .92);
       for (var j = 0; j < cnt2; j++) {
-        var a2 = j / cnt2 * 6.283 + row * .2, w2 = R(.5, .7), d2 = R(.5, .7), h2 = R(.34, .58) + (row ? 0 : .08);
-        addHouse(rh, Math.cos(a2) * rr2, rg.y, Math.sin(a2) * rr2, w2, h2, d2, -a2 + Math.PI / 2, pick(rnd() > .55 ? WALL_L : WALL_D), pick(ROOF_D));
+        var a2 = j / cnt2 * 6.283 + row * .2, w2 = R(.8, 1.0), d2 = R(.8, 1.0), h2 = R(.42, .7) + (row ? 0 : .08);
+        addItem(rh, Math.cos(a2) * rr2, rg.y, Math.sin(a2) * rr2, w2, h2, d2, Math.PI / 2 - a2, Math.floor(rnd() * 4));
       }
     }
+    var nL = [8, 6, 4][ri];
+    for (var lm2 = 0; lm2 < nL; lm2++) { var lang = (lm2 + .5) / nL * 6.283, lx2 = Math.cos(lang) * (rg.r - 1.05), lz2 = Math.sin(lang) * (rg.r - 1.05); landmark(castle, lm2 % 4, lx2, rg.y, lz2, lang); }
+    // 環の縁の店（酒・PC・本・自然）と街灯
+    var nS = [20, 16, 11][ri];
+    for (var sI = 0; sI < nS; sI++) {
+      var sa = sI / nS * 6.283 + R(-.05, .05), sx = Math.cos(sa) * (rg.r - .1), sz = Math.sin(sa) * (rg.r - .1);
+      stall(castle, ['sake', 'pc', 'lib', 'nature'][(sI + ri) % 4], sx, rg.y, sz, sa, seasonOf(sx, sz));
+    }
+    for (var lI = 0; lI < nS * 2; lI++) { var la = lI / (nS * 2) * 6.283 + .08, lx = Math.cos(la) * (rg.r - .04), lz = Math.sin(la) * (rg.r - .04); box(castle, .02, .22, .02, lx, rg.y, lz, M('#2a2216')); var lm = new T.Mesh(new T.SphereGeometry(.035, 8, 6), M('#ffcf80', { e: '#ff9d3a', ei: 1.8 })); lm.position.set(lx, rg.y + .24, lz); castle.add(lm); }
+    var inner = new T.Mesh(new T.CylinderGeometry(rg.r - .3, rg.r - .3, .05, 72), M('#2a2d34', { r: .85 })); inner.position.y = rg.y + .02; castle.add(inner);     // 環の路面
     // 環の上の木：その方角の季節の木
     for (var m2 = 0; m2 < 9; m2++) {
       var ma = rnd() * 6.283, mr = rg.r * R(.12, .5), tx = Math.cos(ma) * mr, tz = Math.sin(ma) * mr; seasonTree(castle, tx, rg.y, tz, seasonOf(tx, tz), .55);
@@ -217,7 +319,8 @@
   function fitOut(parentG, k, y, w, h) {
     var Z = 1.38, g = new T.Group(); g.scale.setScalar(Z); parentG.add(g);
     var hw = w * .36, y0 = y + .06; g.position.y = -(y0) * (Z - 1);
-    if (k === 0) {                                                  // 城下町：通りと小さな町家、提灯
+    if (k === 0) { buildHall(parentG, y, w, h); }
+    else if (k === -1) {                                            // （旧）城下町：通りと小さな町家、提灯
       box(g, w * .8, .02, .16, 0, y0, 0, M('#d9c48a'));
       for (var i = -2; i <= 2; i++) [-1, 1].forEach(function (sd) {
         var hh = R(.2, .32), ww = R(.2, .3); box(g, ww, hh, .2, i * hw * .42, y0, sd * (.2 + R(0, .08)), M(rnd() > .5 ? '#e8e2d2' : '#cfc6b2'));
@@ -284,6 +387,75 @@
     }
     finish(H, parent); return parent.children[parent.children.length - 1];
   }
+
+  /* ---- 扉：重めの洋風の両開き。鋼とダークウッドの框、浮き出しの鏡板、真鍮の取っ手・蝶番・蹴込み板、ガラス窓、石の段、壁灯。内側へ開く ---- */
+  var doorL = null, doorR = null;
+  function buildDoor(g, y, w) {
+    var zF = w / 2 + .03, steel = M('#241a14', { r: .5, m: .4 }), panelM = M('#34261c', { r: .55, m: .25 }), brass = M('#c9a24a', { m: .8, r: .3 }), glassM = M('#ffc678', { e: '#ff9a40', ei: 1.6, r: .2 }), stone = M('#8d8a80', { r: .95 });
+    var d = new T.Group(); d.position.set(0, y, 0); g.add(d);
+    box(d, .84, .9, .02, 0, .02, zF - .05, M('#ffc678', { e: '#ff9a40', ei: 1.9, r: .6 }));                      // 開いたとき、奥に見える暖かい光
+    box(d, .1, .98, .1, -.47, 0, zF, steel); box(d, .1, .98, .1, .47, 0, zF, steel); box(d, 1.08, .1, .12, 0, .93, zF, steel);   // 框と楣
+    box(d, 1.14, .035, .14, 0, 1.03, zF, brass); box(d, .34, .06, .02, 0, .96, zF + .07, brass);                                  // 金の庇と銘板
+    box(d, .92, .03, .1, 0, 0, zF - .01, M('#14100c'));                                                                           // 敷居
+    box(d, 1.4, .05, .34, 0, -.05, zF + .26, stone); box(d, 1.2, .05, .24, 0, 0, zF + .17, stone);                              // 石の段
+    [-1, 1].forEach(function (sd) {                                                                                                // 壁灯
+      box(d, .02, .02, .1, sd * .66, .7, zF + .03, brass); var lamp = new T.Mesh(new T.SphereGeometry(.05, 10, 8), M('#ffcf80', { e: '#ff9d3a', ei: 2.0 })); lamp.position.set(sd * .66, .7, zF + .1); d.add(lamp);
+      box(d, .05, .08, .05, sd * .66, .56, zF + .08, brass);
+    });
+    function leaf(dir) {
+      var lg = new T.Group(); var cx = dir * .21;
+      box(lg, .42, .86, .045, cx, 0, 0, steel);
+      box(lg, .3, .24, .014, cx, .06, .03, panelM); box(lg, .3, .18, .014, cx, .36, .03, panelM);                                    // 浮き出しの鏡板
+      box(lg, .3, .22, .014, cx, .6, .03, glassM);                                                                                    // 上のガラス窓
+      box(lg, .014, .22, .018, cx, .6, .036, steel); box(lg, .3, .014, .018, cx, .7, .036, steel);                                  // 窓の桟
+      box(lg, .38, .07, .014, cx, .0, .03, brass);                                                                                     // 蹴込み板
+      var hd = new T.Mesh(new T.CylinderGeometry(.013, .013, .34, 8), brass); hd.position.set(dir * .37, .42, .06); lg.add(hd);     // 縦長の取っ手
+      box(lg, .025, .03, .035, dir * .37, .27, .04, brass); box(lg, .025, .03, .035, dir * .37, .55, .04, brass);
+      [.1, .42, .74].forEach(function (hy) { box(lg, .03, .07, .06, dir * .012, hy, .0, brass); });                                // 蝶番
+      for (var sx = 0; sx < 3; sx++) for (var sy = 0; sy < 2; sy++) { var st = new T.Mesh(new T.SphereGeometry(.009, 6, 5), brass); st.position.set(cx + (sx - 1) * .09, .1 + sy * .14, .04); lg.add(st); }   // 鋲
+      return lg;
+    }
+    doorL = leaf(1); doorL.position.set(-.42, .02, zF); d.add(doorL);
+    doorR = leaf(-1); doorR.position.set(.42, .02, zF); d.add(doorR);
+    box(d, .012, .84, .03, 0, .03, zF + .01, brass);                                                                                   // 召し合わせの縦框
+  }
+
+  /* ---- 天守一階の内部：扉の奥に御簾、そのさきに囲炉裏の間（畳・囲炉裏・自在鉤・座布団と人影・掛軸・灯り） ---- */
+  function tatamiTex2() {
+    var c = document.createElement('canvas'); c.width = 256; c.height = 256; var g2 = c.getContext('2d');
+    for (var i = 0; i < 2; i++) for (var j = 0; j < 2; j++) { var h2 = (i + j) % 2 === 0; g2.fillStyle = h2 ? '#bfc18a' : '#b6b880'; g2.fillRect(i * 128, j * 128, 128, 128); g2.strokeStyle = h2 ? '#a6a872' : '#9fa26b'; g2.lineWidth = 1; for (var k2 = 0; k2 < 128; k2 += 4) { g2.beginPath(); if (h2) { g2.moveTo(i * 128, j * 128 + k2); g2.lineTo(i * 128 + 128, j * 128 + k2); } else { g2.moveTo(i * 128 + k2, j * 128); g2.lineTo(i * 128 + k2, j * 128 + 128); } g2.stroke(); } g2.strokeStyle = 'rgba(70,74,44,.7)'; g2.lineWidth = 2; g2.strokeRect(i * 128 + 1, j * 128 + 1, 126, 126); }
+    var t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(1.6, 1.6); t.encoding = T.sRGBEncoding; return t;
+  }
+  function buildHall(g, y, w, h) {
+    var hall = new T.Group(); hall.position.set(0, y, 0); g.add(hall); var wd = M('#5a3a22', { r: .7 }), dk = M('#2b1d12', { r: .7 });
+    var fl = new T.Mesh(new T.BoxGeometry(w * .94, .03, w * .94), new T.MeshStandardMaterial({ map: tatamiTex2(), roughness: .95 })); fl.position.y = .075; hall.add(fl);       // 畳
+    // 囲炉裏
+    box(hall, .76, .05, .1, 0, .09, -.33, wd); box(hall, .76, .05, .1, 0, .09, .33, wd); box(hall, .1, .05, .56, -.33, .09, 0, wd); box(hall, .1, .05, .56, .33, .09, 0, wd);
+    box(hall, .56, .02, .56, 0, .06, 0, M('#7a756b', { r: 1 }));
+    var ember = new T.Mesh(new T.SphereGeometry(.12, 12, 8), M('#ff8a2a', { e: '#ff6a10', ei: 2.4 })); ember.scale.set(1, .55, 1); ember.position.set(0, .15, 0); hall.add(ember);
+    box(hall, .05, .09, .05, -.12, .09, .02, M('#ff5a10', { e: '#ff4a08', ei: 1.8 })); box(hall, .05, .06, .05, .13, .09, -.04, M('#ff7a22', { e: '#ff5a10', ei: 1.8 }));
+    var hl = new T.PointLight('#ff8a3d', 2.6, 3.2, 1.6); hl.position.set(0, .3, 0); hall.add(hl);
+    // 自在鉤と鉄瓶
+    box(hall, .015, h - .35, .015, .1, .6, -.1, M('#1b1b1e', { m: .6, r: .4 }));
+    var kt = new T.Mesh(new T.SphereGeometry(.07, 12, 8), M('#1f1f23', { m: .7, r: .35 })); kt.scale.set(1, .8, 1); kt.position.set(.1, .5, -.1); hall.add(kt);
+    // 座布団と、囲炉裏を囲んで座る人影
+    [[-.62, 0, '#254723', '#e9b53a'], [.62, .1, '#4E9495', '#efe6cc'], [0, -.62, '#8C4229', '#e9b53a'], [-.3, .62, '#5BA0C1', '#8C4229']].forEach(function (s2, i) {
+      box(hall, .26, .03, .26, s2[0], .09, s2[1], M(s2[2], { r: .9 })); var py = .12, px = s2[0], pz = s2[1];
+      box(hall, .15, .12, .1, px, py, pz, M(s2[2], { r: .85 })); box(hall, .17, .02, .11, px, py + .07, pz, M(s2[3]));
+      var hd = new T.Mesh(new T.SphereGeometry(.045, 10, 8), M('#f2d6b0')); hd.position.set(px, py + .17, pz); hall.add(hd); box(hall, .09, .04, .08, px, py + .19, pz, M('#16110d'));
+    });
+    // 柱と梁、障子の灯り、掛軸
+    box(hall, w * .94, .04, .04, 0, h - .1, -w * .46, dk); box(hall, .04, .04, w * .94, -w * .46, h - .1, 0, dk); box(hall, .04, .04, w * .94, w * .46, h - .1, 0, dk);
+    [-1, 1].forEach(function (sd) { box(hall, .02, h * .55, w * .6, sd * (w * .465), .2, 0, M('#f6e9c9', { e: '#ffb868', ei: 1.0, r: 1 })); });
+    box(hall, .26, .6, .015, 0, .25, -w * .46, M('#e9dfc2')); box(hall, .26, .05, .02, 0, .25, -w * .458, M('#254723')); box(hall, .26, .05, .02, 0, .8, -w * .458, M('#254723'));
+    [[-.7, -.7], [.7, -.7]].forEach(function (c) { var ln = new T.Mesh(new T.CylinderGeometry(.05, .05, .12, 10), M('#f3d9a2', { e: '#ff9b3a', ei: 1.0 })); ln.position.set(c[0], h - .25, c[1]); hall.add(ln); });
+    // 御簾：扉と囲炉裏のあいだに垂らす（くぐり抜ける）。トップの御簾と同じ竹色、深緑の縁、朱の房
+    var mc = misuTex(); mc.repeat.set(1, 1);
+    var misuIn = new T.Mesh(new T.PlaneGeometry(1.3, .88), new T.MeshStandardMaterial({ map: mc, roughness: .9, side: T.DoubleSide, emissive: new T.Color('#2a1c08'), emissiveIntensity: .4, transparent: true, opacity: .96 }));
+    misuIn.position.set(0, .54, w * .5 - .62); hall.add(misuIn);
+    box(hall, 1.34, .03, .04, 0, .96, w * .5 - .62, M('#3a2a18', { r: .8 }));
+    [-.6, -.2, .2, .6].forEach(function (tx) { box(hall, .012, .22, .012, tx, .12, w * .5 - .6, M('#2a2216')); var tsl = new T.Mesh(new T.ConeGeometry(.03, .1, 6), M('#b7282e')); tsl.rotation.x = Math.PI; tsl.position.set(tx, .1, w * .5 - .6); hall.add(tsl); });
+  }
   function mainDonjon(parent) {
     var g = new T.Group(); parent.add(g); var y = 0;
     var stoneMesh = stoneWall(g, 0); stoneRef = stoneMesh; y = 1.62;
@@ -294,6 +466,7 @@
       box(g, w, h, w, 0, y, 0, plasterDS);
       box(g, w * .92, .03, w * .92, 0, y + .04, 0, glowY);                                      // 床の灯り（断面で見える）
       fitOut(g, k, y, w, h);
+      if (k === 0) buildDoor(g, y, w);                                                                  // 重めの洋風の両開き扉
       [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (c) { box(g, .08, h, .08, c[0] * w * .4, y, c[1] * w * .4, redL); });
       var n = Math.max(3, Math.round(w / .46));
       for (var f = 0; f < 4; f++) {
@@ -346,7 +519,7 @@
 
   /* ---- 断面（透視図）：カメラ側の半分を切り取り、内部の吹き抜けと灯りの床を見せる ---- */
   renderer.localClippingEnabled = true;
-  var cutPlane = new T.Plane(new T.Vector3(0, 0, -1), 0), cutOn = false, cutBtn = document.getElementById('cut');
+  var cutPlane = new T.Plane(new T.Vector3(0, 0, -1), 0), cutOn = false, cutBtn = $('cut');
   function setCut(on) {
     cutOn = on; cutBtn.classList.toggle('on', on);
     [donjon, core, ish].forEach(function (grp) { grp.traverse(function (o) { if (!o.isMesh) return; var ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(function (m) { m.clippingPlanes = on ? [cutPlane] : null; m.needsUpdate = true; }); }); });
@@ -365,7 +538,7 @@
 
   /* ---- 設計図モード ---- */
   var line = new T.MeshBasicMaterial({ color: '#8ec8ff', wireframe: true, transparent: true, opacity: .55 });
-  var orig = [], bp = false, bpBtn = document.getElementById('bp');
+  var orig = [], bp = false, bpBtn = $('bp');
   function setBP(on) {
     bp = on; document.body.classList.toggle('bp', on); bpBtn.classList.toggle('on', on);
     scene.traverse(function (o) { if (!(o.isMesh)) return; if (on) { if (!o.userData.m) o.userData.m = o.material; o.material = line; } else if (o.userData.m) o.material = o.userData.m; });
@@ -383,7 +556,7 @@
     { t: '離れ ｜ 緑青屋根・焼杉・露天', p: new T.Vector3(3.8, 9.9, 0), id: 'n6' },
     { t: '火床 ｜ 沈む円形の座', p: new T.Vector3(2.3, .6, 0), id: 'n7' }
   ];
-  var noteWrap = document.getElementById('notes');
+  var noteWrap = $('notes');
   notes.forEach(function (n) { var e = document.createElement('div'); e.className = 'note'; e.innerHTML = '<i></i><span>' + n.t + '</span>'; noteWrap.appendChild(e); n.el = e; });
 
   /* ---- カメラ ---- */
@@ -402,33 +575,52 @@
 
 
   /* ---- 表示は「白い天守」だけ。石垣より下（地下）は真っ暗にして、COMING SOON のボタンから ---- */
-  var underView = document.getElementById('under-view'), underBtn = document.getElementById('under'), underOn = false;
-  if (stoneRef) stoneRef.visible = false;                                       // 石垣は隠す（白い天守から上を見せる）
+  var underView = $('under-view'), underBtn = $('under'), underOn = false;
+  if (stoneRef) stoneRef.visible = true;                                        // MORINOAカラーの石垣は見せる
   /* 地下の城下町は見せず、外観を覆う：逆さの町家の塊は風呂敷で包み、浮かぶ環は簾で巻く */
-  var covers = new T.Group(); castle.add(covers);
-  function clothTex() {
+  var covers = new T.Group(); castle.add(covers); var platRef = null;
+  // 逆さの町は、トップの御簾のように：竹の簾に、深緑の縁と金の丸飾り、垂れ下がる朱の房。ゆるく揺れる。
+  function misuTex() {
     var c = document.createElement('canvas'); c.width = 1024; c.height = 512; var g = c.getContext('2d');
-    g.fillStyle = '#2d5a3a'; g.fillRect(0, 0, 1024, 512);
-    g.strokeStyle = 'rgba(223,235,200,.22)'; g.lineWidth = 3;
-    for (var y = 0; y < 512; y += 48) for (var x = (y / 48 % 2) * 24; x < 1024; x += 48) { g.beginPath(); g.arc(x, y, 24, 0, 6.283); g.stroke(); }          // 七宝つなぎ
-    g.fillStyle = 'rgba(17,29,15,.55)'; g.fillRect(0, 196, 1024, 120);
-    g.fillStyle = '#F2EEE0'; g.textAlign = 'center'; g.font = '800 70px "Barlow", sans-serif';
-    for (var k = 0; k < 2; k++) g.fillText('COMING SOON', 256 + k * 512, 280);
+    g.fillStyle = '#c9b27a'; g.fillRect(0, 0, 1024, 512);
+    for (var y = 70; y < 512; y += 7) { g.fillStyle = (y / 7) % 2 ? 'rgba(120,95,50,.55)' : 'rgba(255,240,200,.12)'; g.fillRect(0, y, 1024, 3); }          // 横の簾の目
+    g.fillStyle = '#2a2216'; for (var x = 0; x < 1024; x += 128) g.fillRect(x - 3, 70, 6, 442);                                                          // 縦の紐
+    g.fillStyle = '#254723'; g.fillRect(0, 0, 1024, 70); g.fillStyle = '#c9a96b'; g.fillRect(0, 64, 1024, 6); g.fillRect(0, 0, 1024, 5);            // 深緑の縁と金の線
+    for (var m = 0; m < 8; m++) { var cx = m * 128 + 64; g.fillStyle = '#c9a96b'; g.beginPath(); g.arc(cx, 34, 20, 0, 6.283); g.fill(); g.fillStyle = '#254723'; g.beginPath(); g.arc(cx, 34, 12, 0, 6.283); g.fill(); g.fillStyle = '#c9a96b'; g.beginPath(); g.arc(cx, 34, 5, 0, 6.283); g.fill(); }
     var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8; return t;
   }
-  var prof = [[0, 2.9], [.5, 3.2], [1.6, 4.4], [2.8, 5.6], [3.9, 6.9], [4.9, 8.2], [6.1, 9.3], [6.9, 10.1], [6.5, 11.4], [5.6, 12.6], [4.9, 13.2], [3.6, 13.3]];
-  var clothG = new T.LatheGeometry(prof.map(function (q) { return new T.Vector2(q[0], q[1]); }), 96);
-  var cp = clothG.attributes.position;
-  for (var vi = 0; vi < cp.count; vi++) {                                       // 風呂敷のたるみとひだ
-    var vx = cp.getX(vi), vy = cp.getY(vi), vz = cp.getZ(vi), ang = Math.atan2(vz, vx), rr3 = Math.hypot(vx, vz);
-    var wob = 1 + .045 * Math.sin(ang * 9 + vy * .8) + .025 * Math.sin(ang * 17 - vy * 1.6); cp.setXYZ(vi, vx * wob, vy, vz * wob);
+  // 地面から垂直に立つ簾の円柱で、地下の城下町を囲う。上から少し覗けるが、薄暗くて見えない。囲炉裏の火の色で逆光になり、中は見えない。
+  var CR = 5.75, CH = 8.75;                                                      // 囲うのは地下（逆さの町の塊）だけ。浮かぶ環・天守・庭は見せる
+  function glowTex() {
+    var c = document.createElement('canvas'); c.width = 8; c.height = 256; var g = c.getContext('2d');
+    var gr = g.createLinearGradient(0, 256, 0, 0); gr.addColorStop(0, '#ffb060'); gr.addColorStop(.35, '#ff7a2a'); gr.addColorStop(.75, '#7a2a10'); gr.addColorStop(1, '#1a0a04'); g.fillStyle = gr; g.fillRect(0, 0, 8, 256);
+    var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
   }
-  clothG.computeVertexNormals();
-  var clothMat = new T.MeshStandardMaterial({ map: clothTex(), roughness: .95, side: T.DoubleSide });
-  clothMat.map.repeat.set(2, 1);
-  var cloth = new T.Mesh(clothG, clothMat); covers.add(cloth);
-  var knotM = M('#2d5a3a', { r: .9 });                                           // 結び目
-  [[0, 2.7, .0], [.35, 2.45, .1], [-.35, 2.45, -.1]].forEach(function (k) { var kn = new T.Mesh(new T.SphereGeometry(.28, 10, 8), knotM); kn.position.set(k[0], k[1], k[2]); covers.add(kn); });
+  var misuMat = new T.MeshStandardMaterial({ map: misuTex(), roughness: .9, side: T.DoubleSide, emissive: new T.Color('#ffffff'), emissiveMap: glowTex(), emissiveIntensity: .85 });
+  misuMat.map.repeat.set(2, 1);
+  var misu = new T.Mesh(new T.CylinderGeometry(CR, CR, CH, 120, 1, true), misuMat); misu.position.y = CH / 2; covers.add(misu);
+  var rimC = new T.Mesh(new T.TorusGeometry(CR, .09, 6, 120), M('#3a2a18', { r: .8 })); rimC.rotation.x = Math.PI / 2; rimC.position.y = CH; covers.add(rimC);       // 掛け棒
+  // 朱の房（縁から垂れ、ゆっくり揺れる）
+  var tassels = [], tmat = M('#b7282e', { r: .7 }), tcord = M('#2a2216', { r: .8 });
+  for (var ti = 0; ti < 16; ti++) {
+    var ta = ti / 16 * Math.PI * 2, tg = new T.Group(); tg.position.set(Math.cos(ta) * (CR + .14), CH - .1, Math.sin(ta) * (CR + .14)); covers.add(tg);
+    var cord = new T.Mesh(new T.CylinderGeometry(.025, .025, .9, 5), tcord); cord.position.y = -.45; tg.add(cord);
+    var bead = new T.Mesh(new T.SphereGeometry(.12, 8, 6), M('#e9b53a', { m: .6, r: .35 })); bead.position.y = -.92; tg.add(bead);
+    var tas = new T.Mesh(new T.ConeGeometry(.17, .7, 8), tmat); tas.position.y = -1.3; tas.rotation.x = Math.PI; tg.add(tas);
+    tassels.push({ g: tg, ph: ti * .9 });
+  }
+  // 「COMING SOON」は、簾の円柱を一周ぐるりと取り巻く帯にして貼る（曲面に沿わせ、はみ出さない）
+  (function () {
+    var c = document.createElement('canvas'); c.width = 1024; c.height = 200; var g = c.getContext('2d');
+    g.fillStyle = '#efe6cc'; g.fillRect(0, 0, 1024, 200);
+    g.fillStyle = '#254723'; g.fillRect(0, 0, 1024, 16); g.fillRect(0, 184, 1024, 16); g.fillStyle = '#c9a96b'; g.fillRect(0, 16, 1024, 4); g.fillRect(0, 180, 1024, 4);
+    g.fillStyle = '#111D0F'; g.textAlign = 'left'; g.font = '800 92px "Barlow", sans-serif'; g.fillText('COMING SOON', 40, 128);
+    g.fillStyle = '#8C4229'; g.font = '800 54px "Shippori Mincho", serif'; g.fillText('これからの活動', 560, 124);
+    g.fillStyle = '#254723'; g.beginPath(); g.arc(990, 100, 12, 0, 6.283); g.fill();
+    var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8; t.repeat.set(Math.round(2 * Math.PI * CR / 4.3), 1);
+    var band = new T.Mesh(new T.CylinderGeometry(CR + .035, CR + .035, 1.15, 160, 1, true), new T.MeshStandardMaterial({ map: t, roughness: .85, emissive: new T.Color('#ffffff'), emissiveMap: t, emissiveIntensity: .22 }));
+    band.position.y = 4.9; covers.add(band);
+  })();
   function sudareTex() {
     var c = document.createElement('canvas'); c.width = 256; c.height = 256; var g = c.getContext('2d');
     g.fillStyle = '#7a6238'; g.fillRect(0, 0, 256, 256);
@@ -437,16 +629,6 @@
     var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.wrapT = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8; return t;
   }
   var sTex = sudareTex();
-  rings.forEach(function (rg) {                                                  // 各環の縁に簾を垂らし、上の町家も隠す高さまで
-    var len = 1.9, st = sTex.clone(); st.needsUpdate = true; st.repeat.set(Math.round(rg.r * 2 * Math.PI / .7), 1);
-    var sd = new T.Mesh(new T.CylinderGeometry(rg.r + .14, rg.r + .14, len, 96, 1, true), new T.MeshStandardMaterial({ map: st, roughness: .9, side: T.DoubleSide }));
-    sd.position.y = rg.y + .55 - len / 2; covers.add(sd);
-    var cap = new T.Mesh(new T.TorusGeometry(rg.r + .14, .06, 6, 96), M('#3a2a18', { r: .8 })); cap.rotation.x = Math.PI / 2; cap.position.y = rg.y + .55; covers.add(cap);   // 簾の掛け棒
-  });
-  // 中身（町家・環の上面）は見せない：覆いの内側に隠れるよう、覆い以外の地下の部品を非表示
-  castle.children.forEach(function (c) { if (c !== donjon && c !== covers && !c.isLight) c.visible = false; });
-  // ただし環の円盤（足場）と縁の光は見せて、浮かぶ姿を残す
-  castle.children.forEach(function (c) { if (c.isMesh && c.geometry && (c.geometry.type === 'CylinderGeometry' && c.material && c.material.metalness === .3)) c.visible = true; });
   plaza.visible = true;
   function setUnder(on) {
     underOn = on; document.body.classList.toggle('under', on); underBtn.classList.toggle('on', on);
@@ -455,9 +637,28 @@
     if (!on) go('all');
   }
   underBtn.addEventListener('click', function () { setUnder(!underOn); });
-  document.getElementById('under-back').addEventListener('click', function () { setUnder(false); });
+  $('under-back').addEventListener('click', function () { setUnder(false); });
 
-  function resize() { var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w / h < 1 ? 60 : 42; camera.updateProjectionMatrix(); }
+
+  /* ---- 「囲炉裏へ戻る」：天守へズームインし、扉をくぐって、天守の中の囲炉裏の間へ ---- */
+  var goIrori = $('goIrori'), entering = false;
+  var DOOR_Y = 13.1 + 1.62 + .5, doorT = 0, doorA = 0;
+  goIrori.addEventListener('click', function (e) {
+    e.preventDefault(); if (entering) return; entering = true; idle = -1e6;
+    if (underOn) setUnder(false);
+    goal.az = 0; goal.pol = 1.5708; goal.ty = DOOR_Y; goal.dist = 5.5;                                   // まず天守の正面へ
+    setTimeout(function () { doorT = 1; }, 700);                                                           // 扉がゆっくり内側へ開く
+    setTimeout(function () { goal.dist = .5; }, 1700);                                                    // 開いた扉をくぐる
+    setTimeout(function () { document.body.classList.add('fade'); }, 3000);
+    setTimeout(function () { location.href = goIrori.getAttribute('href'); }, 3900);
+  });
+  if (/[?&]exit=1/.test(location.search)) {                                                               // 囲炉裏の間から出てきた：扉の中から、天守を引いて全景へ
+    cam.dist = .35; cam.az = 0; cam.pol = 1.5708; cam.ty = DOOR_Y; goal.dist = .35; goal.az = 0; goal.pol = 1.5708; goal.ty = DOOR_Y; document.body.classList.add('fade-in');
+    doorA = 1; doorT = 1; setTimeout(function () { go('all'); goal.az = .9; doorT = 0; }, 1500);
+  }
+
+  function resize() {
+    if (EMBED) return; var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w / h < 1 ? 60 : 42; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize); resize();
   function damp(a, b, k, dt) { return a + (b - a) * (1 - Math.exp(-k * dt)); }
   var last = performance.now(), tmp = new T.Vector3(), acc = 0, nF = 0, lowered = false, tt = 0;
@@ -470,6 +671,8 @@
     camera.position.set(cam.dist * sp * Math.sin(cam.az), cam.ty + cam.dist * cp, cam.dist * sp * Math.cos(cam.az)); camera.lookAt(0, cam.ty, 0);
     var fl = 1 + Math.sin(tt * 7.1) * .07 + Math.sin(tt * 12.9) * .05; fireL.intensity = 4.2 * fl; fireMesh.scale.set(1 + Math.sin(tt * 9) * .05, .8 + Math.sin(tt * 6) * .08, 1);
     castle.rotation.y = Math.sin(tt * .15) * .02;
+    doorA += (doorT - doorA) * (1 - Math.exp(-2.4 * dt)); if (doorL) { doorL.rotation.y = doorA * 1.75; doorR.rotation.y = -doorA * 1.75; }
+    if (typeof tassels !== 'undefined') { tassels.forEach(function (q) { q.g.rotation.z = Math.sin(tt * 1.3 + q.ph) * .14; q.g.rotation.x = Math.cos(tt * 1.1 + q.ph) * .1; }); if (platRef) platRef.rotation.y = Math.sin(tt * .8) * .12; }
     if (cutOn) { var cx = camera.position.x, cz = camera.position.z, cl = Math.hypot(cx, cz) || 1; cutPlane.normal.set(-cx / cl, 0, -cz / cl); cutPlane.constant = 0; }                                          // ごくゆっくり揺れる
     var pa2 = pts.geometry.attributes.position.array;
     for (var i = 0; i < N; i++) {
@@ -481,6 +684,8 @@
     notes.forEach(function (n) { tmp.copy(n.p).project(camera); var vis = bp && tmp.z < 1 && Math.abs(tmp.x) < 1.1 && Math.abs(tmp.y) < 1.1; n.el.style.opacity = vis ? 1 : 0; n.el.style.transform = 'translate(' + ((tmp.x * .5 + .5) * innerWidth).toFixed(1) + 'px,' + ((-tmp.y * .5 + .5) * innerHeight).toFixed(1) + 'px)'; });
     renderer.render(scene, camera); requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+  if (!EMBED) requestAnimationFrame(frame);
+  window.__CASTLE_ROOT = root; window.__CASTLE_DONJON = donjon;
+  window.__CASTLE_DOOR = function (v) { doorT = v; }; window.__CASTLE_STEP = function (dt) { doorA += (doorT - doorA) * (1 - Math.exp(-2.4 * dt)); if (doorL) { doorL.rotation.y = doorA * 1.75; doorR.rotation.y = -doorA * 1.75; } };
   go('all');
 })();
