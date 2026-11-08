@@ -8,7 +8,7 @@
 
   var canvas = document.getElementById('gl');
   var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
-  var dpr = Math.min(2, window.devicePixelRatio || 1);
+  var dpr = Math.min(1.5, window.devicePixelRatio || 1);
   renderer.setPixelRatio(dpr);
   renderer.outputEncoding = T.sRGBEncoding;
   renderer.toneMapping = T.ACESFilmicToneMapping;
@@ -73,10 +73,10 @@
   scene.add(new T.AmbientLight('#4a2f1c', .05));
   scene.add(new T.HemisphereLight('#ffbf80', '#150b05', .06));
   var key = new T.DirectionalLight('#ffc98a', .05);
-  key.position.set(-3, 5, 4); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
+  key.position.set(-3, 5, 4); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
   var sc = key.shadow.camera; sc.left = -3; sc.right = 3; sc.top = 3; sc.bottom = -3; sc.near = 1; sc.far = 14; key.shadow.bias = -.0006;
   scene.add(key); scene.add(key.target);
-  var fire = new T.PointLight('#ff7a2a', 5.5, 6, 2);
+  var fire = new T.PointLight('#ff7a2a', 2.6, 6, 2);
   fire.position.set(0, .12, 0); fire.castShadow = false; scene.add(fire);
 
   /* ---------- 茶室 ---------- */
@@ -90,20 +90,35 @@
     m.position.set((x0 + x1) / 2, -.05, (z0 + z1) / 2); m.receiveShadow = true; room.add(m);
   }
   slab(-RW, -1, -RW, RW); slab(1, RW, -RW, RW); slab(-1, 1, -RW, -1); slab(-1, 1, 1, RW);
-  // 囲炉裏の縁（框）
-  B(room, 2.2, .08, .3, 0, 0, -.95, woodLight); B(room, 2.2, .08, .3, 0, 0, .95, woodLight);
-  B(room, .3, .08, 1.6, -.95, 0, 0, woodLight); B(room, .3, .08, 1.6, .95, 0, 0, woodLight);
-  // 穴の側板と灰
-  var pit = M('#3b2616');
-  B(room, 1.6, .22, .05, 0, -.22, -.775, pit); B(room, 1.6, .22, .05, 0, -.22, .775, pit);
-  B(room, .05, .22, 1.6, -.775, -.22, 0, pit); B(room, .05, .22, 1.6, .775, -.22, 0, pit);
-  B(room, 1.5, .06, 1.5, 0, -.24, 0, M('#7a756b', { r: 1 }), false, true);       // 灰の層
-  // 灰の隙間から漏れる熾火
-  var glow = M('#ff6a1a', { e: '#ff5a10', ei: 1.4, r: .6 }); var glowM = [];
-  for (var i = 0; i < 26; i++) {
-    var gx = (rnd() - .5) * 1.4, gz = (rnd() - .5) * 1.4, onEdge = rnd() > .5;
-    var m = B(room, onEdge ? .22 : .08, .02, onEdge ? .05 : .1, Math.max(-.72, Math.min(.72, gx)), -.19, Math.max(-.72, Math.min(.72, gz)), glow, false, false); glowM.push(m);
+  // 囲炉裏：四角い木の框と穴
+  var HR = .84;                                          // 穴の半径
+  (function () {
+    var fw = M('#8a6038', { r: .65 }), fd = M('#4a2f1a', { r: .7 }), L = HR * 2 + .06;
+    // 框（太い木の縁。四辺をしっかり囲む）＋ 角の留め
+    B(room, 2.5, .12, .36, 0, 0, -(HR + .18), fw); B(room, 2.5, .12, .36, 0, 0, HR + .18, fw);
+    B(room, .36, .12, L, -(HR + .18), 0, 0, fw); B(room, .36, .12, L, HR + .18, 0, 0, fw);
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (c) { B(room, .42, .15, .42, c[0] * (HR + .18), 0, c[1] * (HR + .18), fd); });
+    // 穴の内側は木の板で囲う
+    B(room, L, .34, .06, 0, -.3, -HR, fd); B(room, L, .34, .06, 0, -.3, HR, fd);
+    B(room, .06, .34, L, -HR, -.3, 0, fd); B(room, .06, .34, L, HR, -.3, 0, fd);
+    var ashM = M('#6a655c', { r: 1 });
+    var ash = new T.Mesh(new T.BoxGeometry(HR * 2 - .02, .06, HR * 2 - .02), ashM); ash.position.y = -.26; ash.receiveShadow = true; room.add(ash);
+    // 焦げ（灰の上の黒ずみ）
+    var scorchM = new T.MeshBasicMaterial({ color: '#2a2420', transparent: true, opacity: .55, depthWrite: false });
+    for (var s = 0; s < 6; s++) { var sr = .16 + rnd() * .2, sc2 = new T.Mesh(new T.CircleGeometry(sr, 18), scorchM); sc2.rotation.x = -Math.PI / 2; var sa = rnd() * 6.283, sd = rnd() * .45; sc2.position.set(Math.cos(sa) * sd, -.228, Math.sin(sa) * sd); sc2.scale.set(1, 1, .7 + rnd() * .5); room.add(sc2); }
+  })();
+  // 火のついた炭（少しだけ）
+  var glow = M('#ff6a1a', { e: '#ff5a10', ei: 1.5, r: .6 }); var glowM = [];
+  var coalM = M('#1b1511', { r: .9 });
+  for (var i = 0; i < 9; i++) {
+    var ca = rnd() * 6.283, cd = .08 + rnd() * .42, cx0 = Math.cos(ca) * cd, cz0 = Math.sin(ca) * cd, cw = .1 + rnd() * .08;
+    var coal = B(room, cw, .06, cw * .7, cx0, -.22, cz0, coalM, false, false); coal.rotation.y = rnd() * 3;
+    var ember = B(room, cw * .8, .012, cw * .5, cx0, -.188, cz0, glow, false, false); ember.rotation.y = coal.rotation.y; glowM.push(ember);
   }
+  for (var i2 = 0; i2 < 8; i2++) {                          // 灰の隙間の小さな熾火
+    var ea = rnd() * 6.283, ed = rnd() * .7; var em = B(room, .05, .01, .035, Math.cos(ea) * ed, -.228, Math.sin(ea) * ed, glow, false, false); glowM.push(em);
+  }
+  var hearthLight = new T.PointLight('#ff7a2a', .45, 2.0, 1.8); hearthLight.position.set(0, -.12, 0); room.add(hearthLight);
 
   // 壁（内向き）と障子
   var wallM = M('#3a2818', { r: .9 });
@@ -241,118 +256,17 @@
     B(g, .46, .04, .46, 0, .52, 0, woodDark, false, false); B(g, .46, .04, .46, 0, .06, 0, woodDark, false, false);
   });
 
-  /* ---------- 囲炉裏の中の城下町 ---------- */
-  var town = new T.Group(); town.position.y = -.18; room.add(town);
-  var BASE = 0;                                          // town 内の地面は y=0（灰の上 -.5）
-  var u = .1;                                            // 一区画
-  function V(gx, gz, w, d, h, col, y0, o) { return B(town, w * u, h * u, d * u, (gx + w / 2 - 7.5) * u, (y0 || 0) * u + .02, (gz + d / 2 - 7.5) * u, M(col, o)); }
-  // 地面（芝・道・川）
-  V(0, 0, 15, 15, .4, '#8fb05f', 0);                                       // 芝
-  V(0, 6, 15, 2, .5, '#d9c48a', 0); V(6, 0, 2, 15, .5, '#d9c48a', 0);      // 十字の道
-  V(11, 0, 4, 15, .3, '#5BA0C1', 0, { r: .35 });                           // 川
-  V(10.4, 6, 5.2, 2, .9, '#8a5a2e', 0);                                    // 橋
-  // 城（左奥）
-  function castle(gx, gz) {
-    V(gx, gz, 5, 5, 1.2, '#7f7b72', 0); V(gx + .5, gz + .5, 4, 4, 1.2, '#8f8b82', 1.2);
-    var yy = 2.4;
-    [[3.2, '#f2eee0', '#2b2e33'], [2.4, '#f2eee0', '#2b2e33'], [1.6, '#f2eee0', '#8C4229']].forEach(function (t, i) {
-      var o = (5 - t[0]) / 2; V(gx + o, gz + o, t[0], t[0], 1.1, t[1], yy);
-      V(gx + o - .5, gz + o - .5, t[0] + 1, t[0] + 1, .35, t[2], yy + 1.1); V(gx + o - .1, gz + o - .1, t[0] + .2, t[0] + .2, .3, t[2], yy + 1.45);
-      yy += 1.75;
-    });
-    V(gx + 2.3, gz + 2.3, .4, .4, .5, '#e9c46a', yy, { e: '#e9a42a', ei: .6 });  // 金の飾り
-    V(gx + 1.5, gz - .6, 2, .8, .7, '#7f7b72', 0);                              // 門
-  }
-  castle(.8, 1);
-  // 家
-  function house(gx, gz, w, d, h, wall, roof, noren) {
-    V(gx, gz, w, d, h, wall, 0.4);
-    V(gx - .3, gz - .3, w + .6, d + .6, .35, roof, .4 + h); V(gx + .2, gz + .2, w - .4, d - .4, .35, roof, .4 + h + .35);
-    if (noren) V(gx + w * .3, gz - .12, w * .4, .12, h * .5, noren, .4 + h * .35, { r: .9 });
-  }
-  var shops = [[1, 8.5, 3, 2.4, 1.2, '#f2eee0', '#3b2c22', '#254723'], [4.2, 8.5, 2.6, 2.4, 1.2, '#f2eee0', '#3b2c22', '#8C4229'],
-    [8, 8.8, 2.6, 2.4, 1.3, '#f2eee0', '#3b2c22', '#5BA0C1'], [1, 12, 2.6, 2.2, 1.1, '#e9dfc2', '#3b2c22', '#8C4229'],
-    [4.2, 12, 3, 2.2, 1.2, '#f2eee0', '#2b2e33', '#254723'], [8, 12, 2.4, 2.2, 1.1, '#e9dfc2', '#3b2c22', '#5BA0C1'],
-    [8.2, 2.2, 2.2, 2.6, 1.2, '#f2eee0', '#8C4229', '#e9c46a'], [8.2, .2, 2.4, 1.6, 1, '#e9dfc2', '#3b2c22', null]];
-  shops.forEach(function (s) { house.apply(null, s); });
-  // 工房（奥絵師の絵筆の看板つき）
-  house(11.4, 8.8, 3, 2.4, 1.4, '#f2eee0', '#8C4229', '#e9c46a');
-  // 一座の屋敷（家紋の旗）
-  house(5.4, 1.6, 3.2, 3.6, 1.6, '#f2eee0', '#254723', '#e9c46a');
-  V(8.3, 1.4, .25, .25, 3, '#2f1d10', .4); V(8.55, 1.5, 1.1, .1, 1.2, '#254723', 1.9);
-  // 木々
-  function tree(gx, gz, sakura) {
-    V(gx, gz, .5, .5, 1.2, '#6b4a2a', .4);
-    var c = sakura ? '#e9a0b4' : '#4f8a3a'; V(gx - .6, gz - .6, 1.7, 1.7, .9, c, 1.6); V(gx - .3, gz - .3, 1.1, 1.1, .7, c, 2.5);
-  }
-  tree(.4, 6.2, true); tree(13.2, 3, true); tree(.4, 3, false); tree(5.4, 6.5, false); tree(13.6, 13.4, false);
-  // 鳥居（入口）
-  V(6.6, 6.1, .3, .3, 1.8, '#C23219', .4); V(8.1, 6.1, .3, .3, 1.8, '#C23219', .4); V(6.4, 6.1, 2.2, .3, .3, '#C23219', 2.2); V(6.5, 6.1, 2, .25, .22, '#C23219', 1.85);
-  // 灯籠（光る）
-  [[5, 5.6], [9, 5.6], [5, 8.4], [9, 8.4]].forEach(function (p) { V(p[0], p[1], .35, .35, .9, '#d9c48a', .4); V(p[0] - .02, p[1] - .02, .4, .4, .4, '#ffcf80', 1.3, { e: '#ff9d3a', ei: 1.6 }); });
-  // 縁取りの熾火（灰の縁を橙に）
-  var rim = M('#ff7a22', { e: '#ff5a10', ei: 1.1 });
-  B(town, 1.52, .015, .03, 0, .02, -.755, rim, false, false); B(town, 1.52, .015, .03, 0, .02, .755, rim, false, false);
-  B(town, .03, .015, 1.52, -.755, .02, 0, rim, false, false); B(town, .03, .015, 1.52, .755, .02, 0, rim, false, false);
-
-  // 行き交う人（ごく小さな人影）
-  var folks = [];
-  function folk(col, path, spd) {
-    var g = new T.Group(); town.add(g);
-    B(g, .04, .06, .03, 0, 0, 0, M('#2f1d10'), false, false); B(g, .045, .07, .035, 0, .06, 0, M(col), false, false); B(g, .04, .04, .04, 0, .13, 0, M('#f2d6b0'), false, false);
-    folks.push({ g: g, path: path, spd: spd, t: rnd() * 10 });
-  }
-  folk('#8C4229', [[-.7, 0.03, .06], [.2, .03, .06]], .12); folk('#254723', [[.55, .03, -.65], [.55, .03, .62]], .1);
-  folk('#5BA0C1', [[-.3, .03, .06], [-.7, .03, .06]], .14); folk('#e9c46a', [[.2, .03, -.3], [.2, .03, .5]], .09);
-  folk('#f2eee0', [[-.6, .03, -.2], [.4, .03, -.2]], .11);
-
-
-
-  /* ---- 囲炉裏の枠いっぱいに：円形だった庭を四角に（四方の季節）、街並み（ボトル・PC・机・書棚）、地下は簾で覆う ---- */
-  (function () {
-    var hearth = new T.Group(); room.add(hearth);
-    var Q = [[-1, -1, '#b9d49a', 0], [1, -1, '#1f6f6a', 1], [-1, 1, '#b8793a', 2], [1, 1, '#eef3f8', 3]];   // 春・梅雨・秋・冬
-    Q.forEach(function (q) {
-      var gm = new T.Mesh(new T.BoxGeometry(.73, .16, .73), new T.MeshStandardMaterial({ color: q[2], roughness: .9, emissive: new T.Color(q[3] === 1 ? '#0e5a55' : q[3] === 3 ? '#8fa8c0' : '#000'), emissiveIntensity: q[3] === 1 ? .35 : .12 }));
-      gm.position.set(q[0] * .375, -.2, q[1] * .375); gm.receiveShadow = true; hearth.add(gm);
-      for (var i = 0; i < 3; i++) {                                                  // 季節の木
-        var tx = q[0] * (.15 + rnd() * .45), tz = q[1] * (.15 + rnd() * .45), sc = .8 + rnd() * .5, tr = new T.Group(); tr.position.set(tx, -.12, tz); tr.scale.setScalar(sc); hearth.add(tr);
-        B(tr, .02, .09, .02, 0, 0, 0, M(q[3] === 1 ? '#2a1f16' : '#3a2a1c'), false, false);
-        if (q[3] === 3) { var pn = new T.Mesh(new T.ConeGeometry(.06, .12, 7), M('#2e5a3c')); pn.position.y = .15; tr.add(pn); var sn = new T.Mesh(new T.ConeGeometry(.05, .06, 7), M('#f3f7fb')); sn.position.y = .19; tr.add(sn); }
-        else { var cols = q[3] === 0 ? ['#f7b9cf', '#ffd6e4'] : q[3] === 1 ? ['#1f5a3a', '#2a6b46'] : ['#e0662a', '#c7311a']; for (var j = 0; j < 3; j++) { var bl = new T.Mesh(new T.SphereGeometry(.045 + rnd() * .02, 8, 6), M(cols[j % 2], { e: q[3] === 2 ? '#8a2a10' : '#000', ei: q[3] === 2 ? .6 : 1 })); bl.position.set((rnd() - .5) * .07, .1 + rnd() * .05, (rnd() - .5) * .07); tr.add(bl); } }
-      }
-    });
-    // 街並み：枠のまわりに、ウイスキーボトル・デスクトップPC・作業机・書棚をびっしり
-    var BC = ['#c9801f', '#b36a14', '#d99a2b', '#8a4a12'], SC = ['#6fe3ff', '#9bf0a0', '#ffd37a', '#ff9ac8'], BK = ['#8C4229', '#254723', '#5BA0C1', '#e9b53a', '#b7282e', '#4E9495'];
-    for (var side = 0; side < 4; side++) for (var n = 0; n < 9; n++) {
-      var u = -.66 + n * .165, off = .64, ax = side % 2 ? off * (side === 1 ? 1 : -1) : u, az = side % 2 ? u : off * (side === 0 ? 1 : -1), yaw = side * Math.PI / 2, g = new T.Group(); g.position.set(ax, -.12, az); g.rotation.y = yaw + Math.PI; hearth.add(g);
-      var kind = (n + side) % 4;
-      if (kind === 0) { var bt = new T.Mesh(new T.CylinderGeometry(.03, .036, .13, 10), M(BC[n % 4], { r: .3 })); bt.position.y = .065; g.add(bt); var nk = new T.Mesh(new T.CylinderGeometry(.01, .014, .07, 8), M(BC[n % 4], { r: .3 })); nk.position.y = .165; g.add(nk); B(g, .02, .02, .02, 0, .2, 0, M('#15110d')); B(g, .05, .05, .005, 0, .03, .037, M('#efe6cc')); }
-      else if (kind === 1) { B(g, .1, .07, .012, 0, .05, 0, M('#14161a')); B(g, .088, .056, .004, 0, .057, .008, M(SC[n % 4], { e: SC[n % 4], ei: .9 })); B(g, .02, .04, .02, 0, .01, 0, M('#2a2d34')); B(g, .06, .01, .03, 0, 0, .05, M('#d8d8dc')); }
-      else if (kind === 2) { B(g, .13, .015, .08, 0, .06, 0, M('#8a5a2e')); [-1, 1].forEach(function (sx) { B(g, .012, .06, .012, sx * .055, 0, 0, M('#4a3322')); }); B(g, .03, .05, .03, .04, .075, 0, M('#4f8a3a')); B(g, .06, .02, .04, -.03, .075, 0, M(BK[n % 6])); }
-      else { B(g, .12, .15, .035, 0, 0, 0, M('#4a3322')); for (var r = 0; r < 3; r++) for (var b = 0; b < 6; b++) B(g, .015, .035, .02, -.05 + b * .02, .02 + r * .045, .012, M(BK[(b + r) % 6])); }
-    }
-    // 地下は簾で覆う：穴の四方を、簾の面（火の逆光で内側が光る）にする
-    function sudare() {
-      var c = document.createElement('canvas'); c.width = 256; c.height = 128; var cx = c.getContext('2d'); cx.fillStyle = '#7a6238'; cx.fillRect(0, 0, 256, 128);
-      for (var x = 0; x < 256; x += 8) { cx.fillStyle = (x / 8) % 2 ? '#c9b27a' : '#b89a5c'; cx.fillRect(x, 0, 6, 128); }
-      cx.fillStyle = '#254723'; cx.fillRect(0, 0, 256, 14); cx.fillStyle = '#c9a96b'; cx.fillRect(0, 12, 256, 3);
-      cx.fillStyle = '#efe6cc'; cx.fillRect(0, 54, 256, 24); cx.fillStyle = '#111D0F'; cx.font = '800 17px Barlow, sans-serif'; cx.textAlign = 'center'; cx.fillText('COMING SOON', 128, 72);
-      var tx = new T.CanvasTexture(c); tx.encoding = T.sRGBEncoding; return tx;
-    }
-    var sm = new T.MeshStandardMaterial({ map: sudare(), roughness: .9, side: T.DoubleSide, emissive: new T.Color('#ff7a2a'), emissiveIntensity: .55 });
-    [[0, -.755, 0], [0, .755, 0], [-.755, 0, Math.PI / 2], [.755, 0, Math.PI / 2]].forEach(function (p2) { var pl = new T.Mesh(new T.PlaneGeometry(1.5, .22), sm); pl.position.set(p2[0], -.11, p2[1]); pl.rotation.y = p2[2]; hearth.add(pl); });
-    var low = new T.PointLight('#ff8a3d', 1.4, 2.2, 1.6); low.position.set(0, -.2, 0); hearth.add(low);
-  })();
+  var folks = [], town = { visible: false };
   /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
   window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
   (function () {
-    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=33';
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=38';
     cs.onload = function () {
-      var root = window.__CASTLE_ROOT; if (!root) return; var k = .05;
+      var root = window.__CASTLE_ROOT; if (!root) return; var k = .06;
+      root.traverse(function (o) { if (o.isMesh && o.geometry && o.geometry.parameters && o.geometry.parameters.radiusTop === 15 && o.parent) o.parent.visible = false; });   // 庭（円い地面）は外す
       // 城のすべて（天守閣・城下町・御簾の囲い・庭）を縮小して、囲炉裏の枠の中に収め、鎖で吊るす
-      root.scale.setScalar(k); root.position.set(0, -.1, 0); scene.add(root);
-      root.traverse(function (o) { if (o.isPointLight) { o.distance *= k; o.intensity *= .4; } });
+      root.scale.setScalar(k); root.position.set(0, .1, 0); scene.add(root);
+      root.traverse(function (o) { if (o.isPointLight) { o.distance *= k; o.intensity *= .06; } });
       town.visible = false; if (typeof kagi !== 'undefined') kagi.visible = false; if (typeof steam !== 'undefined') steam.length = 0;                                  // 灰の上の町、鉄瓶、湯気を外す
       // 吊るす鎖：城の天守の頂から、天井の梁まで
       var topY = root.position.y + 22.9 * k, chain = new T.Group(); room.add(chain);
@@ -453,7 +367,7 @@
 
     // 炎のゆらぎ
     var fl = 1 + Math.sin(t * 7.1) * .06 + Math.sin(t * 13.3) * .05 + Math.sin(t * 3.7) * .04;
-    fire.intensity = 5.5 * fl; glow.emissiveIntensity = 1.2 + Math.sin(t * 2.2) * .35;
+    fire.intensity = 2.2 * fl; glow.emissiveIntensity = 1.2 + Math.sin(t * 2.2) * .35;
     lanterns.forEach(function (l, i) { l.material.emissiveIntensity = .85 + Math.sin(t * 2 + i) * .08; });
     // 人影
     folks.forEach(function (f) {

@@ -586,8 +586,9 @@
     for (var y = 70; y < 512; y += 7) { g.fillStyle = (y / 7) % 2 ? 'rgba(120,95,50,.55)' : 'rgba(255,240,200,.12)'; g.fillRect(0, y, 1024, 3); }          // 横の簾の目
     g.fillStyle = '#2a2216'; for (var x = 0; x < 1024; x += 128) g.fillRect(x - 3, 70, 6, 442);                                                          // 縦の紐
     g.fillStyle = '#254723'; g.fillRect(0, 0, 1024, 70); g.fillStyle = '#c9a96b'; g.fillRect(0, 64, 1024, 6); g.fillRect(0, 0, 1024, 5);            // 深緑の縁と金の線
-    for (var m = 0; m < 8; m++) { var cx = m * 128 + 64; g.fillStyle = '#c9a96b'; g.beginPath(); g.arc(cx, 34, 20, 0, 6.283); g.fill(); g.fillStyle = '#254723'; g.beginPath(); g.arc(cx, 34, 12, 0, 6.283); g.fill(); g.fillStyle = '#c9a96b'; g.beginPath(); g.arc(cx, 34, 5, 0, 6.283); g.fill(); }
-    var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8; return t;
+    var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8;
+    var km = new Image(); km.onload = function () { for (var m = 0; m < 8; m++) g.drawImage(km, m * 128 + 64 - 27, 34 - 26, 54, 52); t.needsUpdate = true; }; km.src = 'kamon-cream.png';      // 縁の飾りはMORINOAの家紋
+    return t;
   }
   // 地面から垂直に立つ簾の円柱で、地下の城下町を囲う。上から少し覗けるが、薄暗くて見えない。囲炉裏の火の色で逆光になり、中は見えない。
   var CR = 5.75, CH = 8.75;                                                      // 囲うのは地下（逆さの町の塊）だけ。浮かぶ環・天守・庭は見せる
@@ -615,11 +616,11 @@
     g.fillStyle = '#efe6cc'; g.fillRect(0, 0, 1024, 200);
     g.fillStyle = '#254723'; g.fillRect(0, 0, 1024, 16); g.fillRect(0, 184, 1024, 16); g.fillStyle = '#c9a96b'; g.fillRect(0, 16, 1024, 4); g.fillRect(0, 180, 1024, 4);
     g.fillStyle = '#111D0F'; g.textAlign = 'left'; g.font = '800 92px "Barlow", sans-serif'; g.fillText('COMING SOON', 40, 128);
-    g.fillStyle = '#8C4229'; g.font = '800 54px "Shippori Mincho", serif'; g.fillText('これからの活動', 560, 124);
-    g.fillStyle = '#254723'; g.beginPath(); g.arc(990, 100, 12, 0, 6.283); g.fill();
+    g.fillStyle = '#8C4229'; g.font = '800 40px "Shippori Mincho", serif'; g.fillText('これからの活動', 625, 118);
     var t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; t.encoding = T.sRGBEncoding; t.anisotropy = 8; t.repeat.set(Math.round(2 * Math.PI * CR / 4.3), 1);
     var band = new T.Mesh(new T.CylinderGeometry(CR + .035, CR + .035, 1.15, 160, 1, true), new T.MeshStandardMaterial({ map: t, roughness: .85, emissive: new T.Color('#ffffff'), emissiveMap: t, emissiveIntensity: .22 }));
     band.position.y = 4.9; covers.add(band);
+    var km = new Image(); km.onload = function () { g.drawImage(km, 925, 55, 92, 90); t.needsUpdate = true; }; km.src = 'kamon-original.png';                    // MORINOAの家紋
   })();
   function sudareTex() {
     var c = document.createElement('canvas'); c.width = 256; c.height = 256; var g = c.getContext('2d');
