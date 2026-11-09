@@ -598,6 +598,7 @@
     scene.background = on ? BLUE : NIGHT; scene.fog.color = on ? BLUE : NIGHT;
   }
   bpBtn.addEventListener('click', function () { setBP(!bp); });
+  if (!window.__CASTLE_EMBED && /[?&]bp=1/.test(location.search)) setBP(true);                         // castle-lab.html?bp=1 で設計図（線画）モードのまま開く
 
   /* ---- 注記（設計図の書き込み）---- */
   var notes = [

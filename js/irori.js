@@ -372,7 +372,7 @@
   /* ---- 現在の城（castle.js）を、鉄瓶に代わって囲炉裏の上に吊るす。城下町は城の中にあるので、灰の上の町は外す ---- */
   window.__CASTLE_EMBED = { scene: scene, renderer: renderer, camera: camera };
   (function () {
-    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=50';
+    var cs = document.createElement('script'); cs.src = 'js/castle.js?v=51';
     cs.onload = function () {
       var root = window.__CASTLE_ROOT; if (!root) return; var k = .075;
       root.traverse(function (o) { if (o.isMesh && o.geometry && o.geometry.parameters && o.geometry.parameters.radiusTop === 15 && o.parent) o.parent.visible = false; });   // 庭（円い地面）は外す
