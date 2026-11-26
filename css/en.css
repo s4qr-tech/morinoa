@@ -1,0 +1,56 @@
+/* 英語版（en/）だけの調整。日本語版は読み込まない。
+   縦書きの日本語はそのまま残し、横書きの英語を添える。 */
+
+/* 英文は字間を詰め、単語の途中で折らない */
+html[lang="en"] body{word-break:normal;overflow-wrap:break-word;}
+html[lang="en"] .nav-links a{letter-spacing:.06em;white-space:nowrap;}
+html[lang="en"] .lang-switch{font-family:var(--maru);}
+
+/* 見出し：英文は語が長いので、せまい画面では一段小さくする */
+/* トップの大見出し：日本語版と同じ３行に収める（いちばん長い行に合わせた大きさ） */
+html[lang="en"] .hero h1{white-space:nowrap;letter-spacing:-.01em;font-size:clamp(23px,6.35vw,40px);}
+@media(min-width:821px){html[lang="en"] .hero h1{font-size:clamp(31px,3.85vw,45px);}}
+@media(min-width:1280px){html[lang="en"] .hero h1{font-size:42px;}}
+@media(min-width:1400px){
+  html[lang="en"] .hero h1{font-size:45px;}
+  html[lang="en"] .hero-grid{grid-template-columns:minmax(0,2.49fr) minmax(0,1fr);} /* 右のロゴ札を日本語版と同じ幅にする */
+}
+html[lang="en"] .sec-title,html[lang="en"] .display,html[lang="en"] h3{text-wrap:balance;}
+html[lang="en"] .hero-tag{letter-spacing:.04em;line-height:1.6;max-width:100%;}
+html[lang="en"] .hero-motto{letter-spacing:.06em;}
+html[lang="en"] .mekuru{letter-spacing:.12em;}
+
+/* ABOUT：縦書きの見出し（日本語）はそのまま。英語の標語を本文の先頭に横書きで添える */
+.en-motto{font-family:var(--pop);font-size:clamp(22px,2.6vw,34px);line-height:1.25;color:var(--forest);margin-bottom:-20px;}
+
+/* 旗指物：旗の下に英語を添える（竿の下端より下に置く） */
+.hata-en{position:absolute;left:50%;top:calc(100% + 32px);transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--maru);font-size:12px;font-weight:700;letter-spacing:.04em;line-height:1.4;color:var(--forest);}
+html[lang="en"] .tate-trio{margin-bottom:56px;}
+
+/* 一座の名札：漢字の縦書きは残し、役の読みと役割を横書きで添える */
+html[lang="en"] .org-card.fuda .org-role{width:84%;letter-spacing:.06em;line-height:1.45;font-family:var(--maru);font-size:12px;}
+html[lang="en"] .org-role b{display:block;font-size:14px;color:var(--ink);}
+html[lang="en"] .org-card.fuda .org-item{letter-spacing:.04em;}
+html[lang="en"] .org-card.fuda .org-item::before{content:"象";}
+
+/* SERVICE の居合：斬り口の内側に収める */
+html[lang="en"] .slash-card h3{font-size:clamp(21px,2.2vw,28px);line-height:1.25;letter-spacing:0;}
+html[lang="en"] .slash-card p{font-size:14.5px;line-height:1.65;}
+
+/* 五手：カードが細いので、題と本文を詰める */
+html[lang="en"] #flow .step h3{letter-spacing:0;font-size:18px;}
+html[lang="en"] #flow .step p{font-size:13.5px;line-height:1.65;}
+
+/* 事業ページ */
+html[lang="en"] .detail-hero h1{text-wrap:balance;line-height:1.2;}
+@media(max-width:820px){
+  html[lang="en"] .detail-hero h1{font-size:clamp(30px,9vw,46px);}
+  html[lang="en"] .sec-title{font-size:clamp(26px,7.6vw,36px);}
+}
+html[lang="en"] .frow-s{white-space:nowrap;}
+
+/* IPページ「Three Moves」：英単語が途中で割れないように */
+html[lang="en"] .ip-brutal .frow-t,html[lang="en"] .frow-t{white-space:nowrap;letter-spacing:0;font-size:clamp(28px,3.3vw,46px);}
+/* IPページの札：題は３行までに収まる大きさ */
+html[lang="en"] .ip-brutal .feature-card h3{font-size:clamp(21px,2.1vw,28px);line-height:1.3;}

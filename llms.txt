@@ -1,6 +1,6 @@
 # MORINOA（合同会社モリノア）
 
-> 建て直す。盛り直す。MORINOAは、将軍以下一座で現場に入り、戦略と実行の両輪で事業を立て直す会社です。関わるすべての人とともに、事業の持続的な成長と社会的・経済的価値の創出を目指します（CSV経営）。
+> 建て直す。盛り直す。MORINOAは、一座で現場に入り、戦略と実行の両輪で事業を立て直す会社です。関わるすべての人とともに、事業の持続的な成長と社会的・経済的価値の創出を目指します（CSV経営）。
 
 ## 事業
 - [経営・事業開発](https://morinoa.com/service-support.html): 経営戦略、事業再生、新規事業開発、事業構造の再設計、市場開拓など、企業・事業の再生と成長の支援
@@ -12,3 +12,11 @@
 ## 問い合わせ
 - お問い合わせフォーム: https://forms.gle/eSTg1UBF56mVySoMA
 - Instagram: https://www.instagram.com/morinoa.ip/
+
+## English
+> Rebuild. Revive. MORINOA works on site as one troupe, rebuilding businesses through both strategy and execution, using Creating Shared Value (CSV) management.
+
+- [Top](https://morinoa.com/en/)
+- [Management & Business Development](https://morinoa.com/en/service-support.html): management strategy, turnarounds, new ventures, business restructuring and market development
+- [IP & Design](https://morinoa.com/en/service-ip.html): IP planning and development, brand architecture, design, and reinterpretation of culture and local resources
+- The inquiry form is currently in Japanese: https://forms.gle/eSTg1UBF56mVySoMA

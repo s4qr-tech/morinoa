@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://morinoa.com/</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://morinoa.com/service-support.html</loc><lastmod>2026-11-07</lastmod></url>
-  <url><loc>https://morinoa.com/service-ip.html</loc><lastmod>2026-11-07</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://morinoa.com/</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/"/>
+  </url>
+  <url>
+    <loc>https://morinoa.com/en/</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/"/>
+  </url>
+  <url>
+    <loc>https://morinoa.com/service-support.html</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/service-support.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/service-support.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/service-support.html"/>
+  </url>
+  <url>
+    <loc>https://morinoa.com/en/service-support.html</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/service-support.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/service-support.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/service-support.html"/>
+  </url>
+  <url>
+    <loc>https://morinoa.com/service-ip.html</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/service-ip.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/service-ip.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/service-ip.html"/>
+  </url>
+  <url>
+    <loc>https://morinoa.com/en/service-ip.html</loc>
+    <lastmod>2026-11-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://morinoa.com/service-ip.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://morinoa.com/en/service-ip.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://morinoa.com/service-ip.html"/>
+  </url>
 </urlset>

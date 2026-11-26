@@ -34,7 +34,8 @@ document.querySelectorAll('.org-card.has-back').forEach(function(card){
   if (!btn || !menu) return;
   function set(open){
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    var en = document.documentElement.lang === 'en';
+    btn.setAttribute('aria-label', open ? (en ? 'Close menu' : 'メニューを閉じる') : (en ? 'Open menu' : 'メニューを開く'));
     menu.hidden = !open;
   }
   btn.addEventListener('click', function(e){ e.stopPropagation(); set(menu.hidden); });
@@ -61,4 +62,12 @@ document.querySelectorAll('.org-card.has-back').forEach(function(card){
     card.style.transform = 'perspective(900px) rotateY(' + (x * 9).toFixed(2) + 'deg) rotateX(' + (-y * 9).toFixed(2) + 'deg)';
   });
   card.addEventListener('pointerleave', function(){ card.style.transform = ''; });
+})();
+
+// 言語切り替え：見ている場所（#service など）を引き継ぐ
+(function(){
+  var a = document.querySelector('.lang-switch');
+  if (!a) return;
+  var base = a.getAttribute('href');
+  a.addEventListener('click', function(){ a.setAttribute('href', base + location.hash); });
 })();

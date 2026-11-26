@@ -253,14 +253,15 @@
     body.classList.toggle('motion-off', !motionOn());
     if (toggle) {
       toggle.setAttribute('aria-pressed', motionOn() ? 'true' : 'false');
-      toggle.querySelector('span').textContent = motionOn() ? '演出 ON' : '演出 OFF';
+      var en = document.documentElement.lang === 'en';
+      toggle.querySelector('span').textContent = (en ? 'Motion ' : '演出 ') + (motionOn() ? 'ON' : 'OFF');
     }
   }
   if (visits >= 2 || reduce) {
     toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'motion-toggle';
-    toggle.setAttribute('aria-label', 'ページの演出を切り替える');
+    toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Toggle page animations' : 'ページの演出を切り替える');
     toggle.innerHTML = '<i aria-hidden="true"></i><span></span>';
     toggle.addEventListener('click', function(){
       lsSet(PREF_KEY, motionOn() ? 'off' : 'on');
