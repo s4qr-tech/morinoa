@@ -252,10 +252,10 @@ def build(name, pairs):
     html = re.sub(r'<(span|div) class="(svc-num|step-kanji|detail-flow-num)"((?:(?!lang=)[^>])*)>', r'<\1 class="\2" lang="ja"\3>', html)
     html = re.sub(r'(<div class="fuda-name"><b)>', r'\1 lang="ja">', html)
 
-    # 言語切り替え：EN → 日本語
+    # 言語切り替え：EN → JPN
     ja_href = "../" if name == "index.html" else "../" + name
     html, n = re.subn(r'<a class="nav-cta lang-switch"[^>]*>EN</a>',
-                      '<a class="nav-cta lang-switch" href="%s" lang="ja" hreflang="ja">日本語</a>' % ja_href, html)
+                      '<a class="nav-cta lang-switch" href="%s" hreflang="ja" aria-label="JPN: Japanese version">JPN</a>' % ja_href, html)
     if n != 1:
         missing.append("言語切り替えボタン")
 
